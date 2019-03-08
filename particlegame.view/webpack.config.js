@@ -3,8 +3,8 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     devtool: 'source-map',
-    entry: './index.tsx',
-    output: { filename: 'dist/particlegame.js' },
+    // entry: './index.tsx', output: { filename: 'dist/particlegame.js' },
+    entry: './test/test.ts', output: { filename: 'dist/test.js' },
     module: {
         rules: [
             {
@@ -36,5 +36,5 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(['dist'])
-    ],
+    ]
 };

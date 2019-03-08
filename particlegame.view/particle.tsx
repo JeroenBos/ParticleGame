@@ -3,6 +3,9 @@ import * as React from "react";
 export interface ParticleProps {
     x: number;
     y: number;
+    vx: number;
+    vy: number;
+    size: number;
 }
 export interface ParticleState {
 }
@@ -15,9 +18,7 @@ export class Particle extends React.Component<ParticleProps, ParticleState> {
     }
     render() {
         return (
-            <svg height="100" width="100">
-                <circle cx="50" cy="50" r="40" stroke="black" strokeWidth="3" fill="red" />
-            </svg>
+            <circle cx={this.props.x} cy={this.props.y} r={this.props.size / 2} stroke="black" strokeWidth="3" fill="red" />
         );
     }
 }
