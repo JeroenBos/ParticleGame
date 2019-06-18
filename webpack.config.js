@@ -1,29 +1,27 @@
 const nodeEnv = process.env.NODE_ENV || 'development';
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-module.exports = {
+
+
+// var nodeExternals = require('webpack-node-externals');
+
+var sharedConfig = {
     devtool: 'source-map',
-    // entry: './index.tsx', output: { filename: 'dist/particlegame.js' },
-    entry: './test/test.ts', output: { filename: 'dist/test.js' },
+
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
                 loader: 'ts-loader'
             },
-            // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             {
                 enforce: "pre",
                 test: /\.js$/,
                 loader: "source-map-loader"
-            }
+            },
         ]
     },
-    // uncommenting the following would be a performance optimization (use browser caching)
-    // externals: {
-    //     "react": "React",
-    //     "react-dom": "ReactDOM"
-    // },
+
     resolve: {
         extensions: ['.ts', '.js', '.tsx', '.jsx'],
     },
@@ -38,3 +36,26 @@ module.exports = {
         new CleanWebpackPlugin(['dist'])
     ]
 };
+
+
+var mainConfig = {
+    ...sharedConfig,
+    // mode: process.env.NODE_ENV || 'development',
+    name: 'main',
+    entry: './index.tsx',
+    output: { filename: './dist/particlegame.js' },
+    externals: {
+        "react": "React",
+        "react-dom": "ReactDOM"
+    }
+};
+var testConfig = {
+    ...sharedConfig,
+    // mode: 'development',
+    name: 'test',
+    entry: './test/test.ts',
+    output: { filename: './dist/test.js' },
+    // externals: [nodeExternals()]
+};
+
+module.exports = [mainConfig, testConfig];
