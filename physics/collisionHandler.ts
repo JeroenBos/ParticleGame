@@ -1,5 +1,6 @@
 import { ICollectionHandler } from "../physics.base";
 import { ParticleProps } from "../particle";
+import { Transformations } from "./transformations";
 
 export class CollisionHandler implements ICollectionHandler<ParticleProps> {
     collide(p: Readonly<ParticleProps>, q: Readonly<ParticleProps>): ParticleProps[] {
@@ -7,18 +8,27 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
     }
 
     private placeAdjacent(p: Readonly<ParticleProps>, q: Readonly<ParticleProps>): ParticleProps[] {
-        const p_mass = 1;
-        const q_mass = 1;
-        const p_rm = { r: p, m: p_mass };
-        const q_rm = { r: q, m: q_mass };
+        const p_m = 1;
+        const q_m = 1;
 
-        const d = this.distance(p, q);
+        const p_rm = { r: p, m: p_m, size: p.size };
+        const q_rm = { r: q, m: q_m, size: q.size };
+
         const com = this.com(p_rm, q_rm);
-        const r_p = this.position(p_rm, com, d);
-        const r_q = this.position(q_rm, com, d);
+        const { D: [xp, xq], inverseTransformation } = Transformations.rotate2(p_rm.r, q_rm.r, com.r);
 
-        const p_new = { ...p, ...r_p };
-        const q_new = { ...q, ...r_q };
+        const xPrime_p = position1D(xp, xq, 1);
+        const xPrime_q = position1D(xq, xp, -1);
+
+        function position1D(xp: number, xq: number, sign: number): number {
+            return p_m * xp + q_m * xq + sign * p_m * p.size + sign * p_m * q.size;
+        }
+
+        const rNew_p = inverseTransformation(xPrime_p);
+        const rNew_q = inverseTransformation(xPrime_q);
+
+        const p_new = { ...p, ...rNew_p };
+        const q_new = { ...q, ...rNew_q };
         return [p_new, q_new];
     }
 
@@ -33,39 +43,29 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
     private distance(p: Readonly<vector>, q: Readonly<vector>): vector {
         return { x: q.x - p.x, y: q.y - p.y };
     }
-    private position(p: Readonly<rm>, com: Readonly<rm>, d: vector): vector {
-        const m1 = p.m;
-        const m2 = com.m - m1;
-        const w_x = com.m * com.r.x - m2 * d.x;
-        const w_y = com.m * com.r.y - m2 * d.y;
+    private position(p: Readonly<rms>, q: Readonly<rms>, sign: number): vector {
+        if (sign != 1 && sign != -1)
+            throw new Error();
 
-        const r = Math.sqrt((w_x * w_x + w_y * w_y) / (m1 + m2));
+        function position1D(xp: number, xq: number): number {
+            return p.m * xp + q.m * xq + sign * p.m * p.size + sign * p.m * q.size;
+        }
 
-        const d_abs = Math.sqrt(d.x * d.x + d.y * d.y);
-        const r_abs_test = m2 / com.m * d_abs; 
-        // const r_abs = Math.sqrt(r.x * r.x + r.y * r.y);
+        const x = position1D(p.r.x, q.r.x);
+        const y = position1D(p.r.y, q.r.y);
 
-        const x = com.r.x;
-        const y = com.r.y;
-
-        const Rsquared = x * x + y * y;
-        const R = Math.sqrt(Rsquared);
-        const D = Math.sqrt(Rsquared + r * r);
-
-        const thetaplusphi = Math.atan2(y, x);
-        const theta = Math.atan2(r, R);
-        const ϕ = Math.atan2(y, x) - Math.atan2(r, R);
-        const X = D * Math.cos(ϕ);
-        const Y = D * Math.sin(ϕ);
-        return { x: X, y: Y };
+        return { x, y };
     }
 }
 
-interface vector {
+export interface vector {
     x: number,
     y: number
 }
 interface rm {
     r: vector,
     m: number
+}
+interface rms extends rm {
+    size: number
 }
