@@ -4,18 +4,28 @@ import { ParticleProps } from "../particle";
 export class CollisionDetector implements ICollectionDetector<ParticleProps> {
     detect(particles: ParticleProps[]): { collisions: Collision[], freeParticles: ParticleProps[] } {
         const collisions: Collision[] = [];
-        const freeParticles: ParticleProps[] = [];
-        particles.forEach((p, pi) => {
-            for (let qi = pi; qi < particles.length; qi++) {
+
+        const collided = new Array<boolean>(particles.length);
+        for (let i = 0; i < particles.length; i++) {
+            collided[i] = false;
+        }
+        for (let pi = 0; pi < particles.length; pi++) {
+            const p = particles[pi];
+            for (let qi = 0; qi < pi; qi++) {
                 const q = particles[qi];
-                if (pi != qi && this.collideQ(p, q)) {
+                if (this.collideQ(p, q)) {
                     collisions.push({ i: pi, j: qi });
-                    return;
+                    collided[pi] = true;
+                    collided[qi] = true;
                 }
             }
-            freeParticles.push(p);
-        });
+        };
 
+        const freeParticles: ParticleProps[] = [];
+        for (let i = 0; i < particles.length; i++) {
+            if (!collided[i])
+                freeParticles.push(particles[i]);
+        }
         return { collisions, freeParticles };
     }
 
