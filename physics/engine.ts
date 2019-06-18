@@ -1,15 +1,19 @@
 import { ParticleProps } from "../particle";
 import { IEngine, ICollectionDetector, IComputeForce, ICollectionHandler, IConfine } from "../physics.base";
 import Extensions from "../extensions";
+import { Invariants } from '../invariants/.invariants';
 
 export default class Engine implements IEngine<ParticleProps, Dv> {
     private readonly numberOfAllowedNonDecreasingCollisionCount = 1;
+    public readonly collisionDetector: ICollectionDetector<ParticleProps>;
     constructor(
-        public readonly collisionDetector: ICollectionDetector<ParticleProps>,
+        collisionDetector: ICollectionDetector<ParticleProps>,
         public readonly collisionHandler: ICollectionHandler<ParticleProps>,
         public readonly forceComputer: IComputeForce<ParticleProps, Dv>,
         public readonly confiner: IConfine<ParticleProps>
-    ) { }
+    ) {
+        this.collisionDetector = Invariants.For(collisionDetector);
+    }
 
     public evolve(particles: ParticleProps[]): ParticleProps[] {
 
