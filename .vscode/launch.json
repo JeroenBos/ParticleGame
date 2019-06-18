@@ -14,12 +14,9 @@
                 "--colors",
                 "${workspaceFolder}/dist/test.js"
             ],
-            "internalConsoleOptions": "openOnSessionStart",
+            "console": "internalConsole",
+            "internalConsoleOptions": "neverOpen",
             "sourceMaps": true,
-            // "sourceMapPathOverrides": {
-            //     "webpack:///./test/*": "${workspaceFolder}/particlegame.view/test/*",
-            //     "webpack:///./**.ts": "${workspaceFolder}/particlegame.view/**.ts"
-            // },
         }
     ]
 }
