@@ -29,7 +29,6 @@ export default class Engine implements IEngine<ParticleProps, Dv> {
         projectedParticles: ParticleProps[],
         debug: { previousNumberOfCollisions: number; consecutiveNondecreaseCount: number } = { previousNumberOfCollisions: 0, consecutiveNondecreaseCount: 0 }
     ): ParticleProps[] {
-        console.log('a');
         const { freeParticles, collisions } = this.collisionDetector.detect(projectedParticles);
         if (collisions.length == 0)
             return freeParticles;
