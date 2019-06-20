@@ -19,7 +19,7 @@ const particleGenerator = new ParticleGenerator();
 
 describe('', () => {
     it('a', () => {
-        debugger;
+        // debugger;
         new Container({
             engine,
             particleGenerator,
