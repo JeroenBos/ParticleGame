@@ -14,7 +14,7 @@ export class CollisionDetector implements ICollectionDetector<ParticleProps> {
             for (let qi = 0; qi < pi; qi++) {
                 const q = particles[qi];
                 if (this.collideQ(p, q)) {
-                    collisions.push({ i: pi, j: qi });
+                    collisions.push({ i: qi, j: pi });
                     collided[pi] = true;
                     collided[qi] = true;
                 }
