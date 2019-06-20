@@ -53,7 +53,7 @@ var testConfig = {
     ...sharedConfig,
     // mode: 'development',
     name: 'test',
-    entry: './test/test.ts',
+    entry: './test/index.ts',
     output: { filename: './dist/test.js' },
     // externals: [nodeExternals()]
 };
