@@ -122,4 +122,32 @@ describe('CollisionHandler', () => {
         assert(resultants[0].size == p.size);
         assert(resultants[1].size == q.size);
     });
+
+    it('Non-overlapping particles collision are placed adjacent', () => {
+        // arrange
+        const p: ParticleProps = {
+            x: 10,
+            y: 0,
+            vx: 0,
+            vy: 0,
+            size: 1,
+        };
+        const q: ParticleProps = {
+            x: 0,
+            y: 0,
+            vx: 0,
+            vy: 0,
+            size: 1,
+        };
+
+        // act
+        // debugger;
+        const resultants = collisionDetector.collide(p, q);
+
+        // assert
+        assert(resultants.length == 2);
+
+        assert(resultants[0].x == 4);
+        assert(resultants[1].x == 6);
+    });
 });
