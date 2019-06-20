@@ -12,7 +12,9 @@
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceFolder}/dist/test.js"
+                "${workspaceFolder}/dist/test.js",
+                "--fgrep",
+                "CollisionHandler"
             ],
             "console": "internalConsole",
             "internalConsoleOptions": "neverOpen",
