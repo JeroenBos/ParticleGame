@@ -1,71 +1,61 @@
 import { ICollectionHandler } from "../physics.base";
 import { ParticleProps } from "../particle";
 import { Transformations } from "./transformations";
+import { Q, S, M, QMS, QM } from ".";
 
 export class CollisionHandler implements ICollectionHandler<ParticleProps> {
     collide(p: Readonly<ParticleProps>, q: Readonly<ParticleProps>): ParticleProps[] {
         return this.placeAdjacent(p, q);
     }
 
-    private placeAdjacent(p: Readonly<ParticleProps>, q: Readonly<ParticleProps>): ParticleProps[] {
-        const p_m = 1;
-        const q_m = 1;
+    private placeAdjacent(a: Readonly<ParticleProps>, b: Readonly<ParticleProps>): ParticleProps[] {
+        const a_m = 1;
+        const b_m = 1;
 
-        const p_rm = { r: p, m: p_m, size: p.size };
-        const q_rm = { r: q, m: q_m, size: q.size };
+        const a_qm: QMS = { q: a, m: a_m, size: a.size };
+        const b_qm: QMS = { q: b, m: b_m, size: b.size };
 
-        const com = this.com(p_rm, q_rm);
-        const { D: [xp, xq], inverseTransformation } = Transformations.rotate2(p_rm.r, q_rm.r, com.r);
+        const com = this.com(a_qm, b_qm);
+        const { D: [xp, xq], inverseTransformation } = Transformations.rotate2(a_qm.q, b_qm.q, com.q);
 
-        const xPrime_p = position1D(xp, xq, Math.sign(xq));
-        const xPrime_q = position1D(xq, xp, -Math.sign(xq));
+        const xPrime_a = position1D(xp, xq, Math.sign(xq));
+        const xPrime_b = position1D(xq, xp, -Math.sign(xq));
 
-        function position1D(xp: number, xq: number, sign: number): number {
-            return (p_m * xp + q_m * xq + sign * p_m * p.size + sign * p_m * q.size) / (p_m + q_m);
+        function position1D(xa: number, xb: number, sign: number): number {
+            return (a_m * xa + b_m * xb + sign * a_m * a.size + sign * a_m * b.size) / (a_m + b_m);
         }
 
-        const rNew_p = inverseTransformation(xPrime_p);
-        const rNew_q = inverseTransformation(xPrime_q);
+        const rNew_p = inverseTransformation(xPrime_a);
+        const rNew_q = inverseTransformation(xPrime_b);
 
-        const p_new = { ...p, ...rNew_p };
-        const q_new = { ...q, ...rNew_q };
+        const p_new = { ...a, ...rNew_p };
+        const q_new = { ...b, ...rNew_q };
         return [p_new, q_new];
     }
 
-    private com(p: Readonly<rm>, q: Readonly<rm>): rm {
-        const sum_of_masses = p.m + q.m;
+    private com(a: Readonly<QMS>, b: Readonly<QMS>): QM {
+        const sum_of_masses = a.m + b.m;
 
-        const center_x = (p.r.x * p.m + q.r.x * q.m) / sum_of_masses;
-        const center_y = (p.r.y * p.m + q.r.y * q.m) / sum_of_masses;
+        const center_x = (a.q.x * a.m + b.q.x * b.m) / sum_of_masses;
+        const center_y = (a.q.y * a.m + b.q.y * b.m) / sum_of_masses;
 
-        return { m: sum_of_masses, r: { x: center_x, y: center_y } };
+        return { m: sum_of_masses, q: { x: center_x, y: center_y } };
     }
-    private distance(p: Readonly<vector>, q: Readonly<vector>): vector {
-        return { x: q.x - p.x, y: q.y - p.y };
+
+    private distance(a: Readonly<Q>, b: Readonly<Q>): Q {
+        return { x: b.x - a.x, y: b.y - a.y };
     }
-    private position(p: Readonly<rms>, q: Readonly<rms>, sign: number): vector {
+    private position(a: Readonly<QMS>, b: Readonly<QMS>, sign: number): Q {
         if (sign != 1 && sign != -1)
             throw new Error();
 
         function position1D(xp: number, xq: number): number {
-            return p.m * xp + q.m * xq + sign * p.m * p.size + sign * p.m * q.size;
+            return a.m * xp + b.m * xq + sign * a.m * a.size + sign * a.m * b.size;
         }
 
-        const x = position1D(p.r.x, q.r.x);
-        const y = position1D(p.r.y, q.r.y);
+        const x = position1D(a.q.x, b.q.x);
+        const y = position1D(a.q.y, b.q.y);
 
         return { x, y };
     }
-}
-
-export interface vector {
-    x: number,
-    y: number
-}
-interface rm {
-    r: vector,
-    m: number
-}
-interface rms extends rm {
-    size: number
 }

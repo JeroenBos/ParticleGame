@@ -1,16 +1,16 @@
-import { vector } from "./collisionHandler";
+import { Q } from '.';
 
 export class Transformations {
     /** Rotates the specified vector to a 1D representation with respect to the specified origin (i.e. the line that intersects them). */
-    public static rotate(r: vector, origin?: vector): {
+    public static rotate(r: Q, origin?: Q): {
         D: number,
-        transformation: (arg: vector) => number,
-        inverseTransformation: (x: number) => vector
+        transformation: (arg: Q) => number,
+        inverseTransformation: (x: number) => Q
     } {
-        const O /* O for origin */: vector = origin || { x: 0, y: 0 };
+        const O /* O for origin */: Q = origin || { x: 0, y: 0 };
 
-        function transformation(arg: vector) {
-            const arg0: vector = {
+        function transformation(arg: Q) {
+            const arg0: Q = {
                 x: arg.x - O.x,
                 y: arg.y - O.y
             };
@@ -50,9 +50,9 @@ export class Transformations {
         return { sinTheta, cosTheta, sign };
     }
 
-    public static rotate2(r: vector, s: vector, origin?: vector): {
+    public static rotate2(r: Q, s: Q, origin?: Q): {
         D: [number, number],
-        inverseTransformation: (x: number) => vector
+        inverseTransformation: (x: number) => Q
     } {
         const result = this.rotate(r, origin);
         const secondD = result.transformation(s);
