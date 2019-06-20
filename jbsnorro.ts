@@ -6,3 +6,21 @@ export function assert(expr: boolean, message = 'Assertion failed') {
         throw new Error(message);
     }
 }
+
+export function assertSequenceEquals<T, U>(sequence: T[], expectedSequence: U[], equalityComparer?: (t: T, u: U) => boolean) {
+    if (sequence.length != expectedSequence.length) {
+        debugger;
+        throw new Error('Sequences of unequal length specified');
+    }
+
+    equalityComparer = equalityComparer || ((t, u) => t as any == u);
+
+    for (let i = 0; i < sequence.length; i++) {
+        const element = sequence[i];
+        const expected = expectedSequence[i];
+        if (!equalityComparer(element, expected)) {
+            debugger;
+            throw new Error(`Element at index ${i} are unequal: '${element}', but expected '${expected}'`);
+        }
+    }
+}
