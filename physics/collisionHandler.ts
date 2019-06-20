@@ -17,8 +17,8 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
         const com = this.com(p_rm, q_rm);
         const { D: [xp, xq], inverseTransformation } = Transformations.rotate2(p_rm.r, q_rm.r, com.r);
 
-        const xPrime_p = position1D(xp, xq, 1);
-        const xPrime_q = position1D(xq, xp, -1);
+        const xPrime_p = position1D(xp, xq, Math.sign(xq));
+        const xPrime_q = position1D(xq, xp, -Math.sign(xq));
 
         function position1D(xp: number, xq: number, sign: number): number {
             return (p_m * xp + q_m * xq + sign * p_m * p.size + sign * p_m * q.size) / (p_m + q_m);
