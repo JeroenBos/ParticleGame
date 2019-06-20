@@ -19,5 +19,5 @@ const confiner = new Confiner(width, height);
 const engine = new Engine(collisionDetector, collisionHandler, forceComputer, confiner);
 ReactDOM.render(
     <Container particleGenerator={new ParticleGenerator()} width={width} height={height} engine={engine} />,
-    document.getElementById("example")
+    document.getElementById("root")
 );
