@@ -14,7 +14,7 @@ export class Transformations {
                 x: arg.x - O.x,
                 y: arg.y - O.y
             };
-            const sign = arg0.x < 0 ? -1 : 1; // because the r vector is by definition on the +x side. Case x == y returns sign = 1, so what...
+            const sign = arg0.x == 0 ? arg0.y < 0 ? -1 : 1 : arg0.x < 0 ? -1 : 1; // the part `arg0.y < 0 ? -1 : 1` depends on/defines the direction of the rotation
             return sign * Math.sqrt(arg0.x * arg0.x + arg0.y * arg0.y);
         }
 
