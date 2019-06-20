@@ -16,6 +16,7 @@ describe('CollisionHandler', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
         const q: ParticleProps = {
             x: 1,
@@ -23,6 +24,7 @@ describe('CollisionHandler', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
 
         // act
@@ -54,6 +56,7 @@ describe('CollisionHandler', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
         const q: ParticleProps = {
             x: 0,
@@ -61,6 +64,7 @@ describe('CollisionHandler', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
 
         // act
@@ -93,6 +97,7 @@ describe('CollisionHandler', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
         const q: ParticleProps = {
             x: 0,
@@ -100,6 +105,7 @@ describe('CollisionHandler', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
 
         // act
@@ -131,6 +137,7 @@ describe('CollisionHandler', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
         const q: ParticleProps = {
             x: 0,
@@ -138,6 +145,7 @@ describe('CollisionHandler', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
 
         // act

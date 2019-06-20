@@ -60,7 +60,8 @@ export default class Engine implements IEngine<ParticleProps, Dv> {
             y: particle.y + particle.vy,
             vx: particle.vx + dv.dvx,
             vy: particle.vy + dv.dvy,
-            size: particle.size
+            size: particle.size,
+            m: particle.m
         };
 
         const confinedProjection = this.confiner.confine(projection, particle);

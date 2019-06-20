@@ -106,7 +106,8 @@ export class Confiner implements IConfine<ParticleProps> {
             vx: xResult.v,
             y: yResult.r,
             vy: yResult.v,
-            size: p.size
+            size: p.size,
+            m: p.m
         };
     }
     private isMovingOutOfBox(p: ParticleProps): boolean {

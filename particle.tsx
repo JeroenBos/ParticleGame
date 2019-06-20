@@ -6,6 +6,7 @@ export interface ParticleProps {
     vx: number;
     vy: number;
     size: number;
+    m: number;
 }
 export interface ParticleState {
 }

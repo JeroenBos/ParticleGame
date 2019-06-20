@@ -16,6 +16,7 @@ describe('CollisionDetector', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
 
         // act
@@ -36,6 +37,7 @@ describe('CollisionDetector', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
         const q: ParticleProps = {
             x: 1,
@@ -43,6 +45,7 @@ describe('CollisionDetector', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
 
         // act
@@ -64,6 +67,7 @@ describe('CollisionDetector', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
         const q: ParticleProps = {
             x: 1,
@@ -71,6 +75,7 @@ describe('CollisionDetector', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
 
         // act
@@ -92,6 +97,7 @@ describe('CollisionDetector', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
         const q: ParticleProps = {
             x: 2,
@@ -99,6 +105,7 @@ describe('CollisionDetector', () => {
             vx: 0,
             vy: 0,
             size: 1,
+            m: 1
         };
 
         // act

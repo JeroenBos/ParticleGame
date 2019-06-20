@@ -9,11 +9,8 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
     }
 
     private placeAdjacent(a: Readonly<ParticleProps>, b: Readonly<ParticleProps>): ParticleProps[] {
-        const a_m = 1;
-        const b_m = 1;
-
-        const a_qm: QMS = { q: a, m: a_m, size: a.size };
-        const b_qm: QMS = { q: b, m: b_m, size: b.size };
+        const a_qm: QMS = { q: a, m: a.m, size: a.size };
+        const b_qm: QMS = { q: b, m: b.m, size: b.size };
 
         const com = this.com(a_qm, b_qm);
         const { D: [xp, xq], inverseTransformation } = Transformations.rotate2(a_qm.q, b_qm.q, com.q);
@@ -22,7 +19,7 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
         const xPrime_b = position1D(xq, xp, -Math.sign(xq));
 
         function position1D(xa: number, xb: number, sign: number): number {
-            return (a_m * xa + b_m * xb + sign * a_m * a.size + sign * a_m * b.size) / (a_m + b_m);
+            return (a.m * xa + b.m * xb + sign * a.m * a.size + sign * a.m * b.size) / (a.m + b.m);
         }
 
         const rNew_p = inverseTransformation(xPrime_a);
