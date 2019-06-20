@@ -49,10 +49,10 @@ export class Transformations {
      */
     public static perform2<T, U>(
         operation: (u: U, otherCoordinates: U[]) => U,
-        getTransformations: (input: T[]) => TransformationPair<T, U>,
+        transformations: TransformationPair<T, U>,
         ...input: [T, T]): [T, T] {
 
-        const { transformation, inverseTransformation } = getTransformations(input);
+        const { transformation, inverseTransformation } = transformations;
         return this.perform(operation, transformation, inverseTransformation, ...input) as [T, T];
     }
 

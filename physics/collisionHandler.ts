@@ -13,7 +13,7 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
     private placeAdjacent(a: Readonly<QMS>, b: Readonly<QMS>): ParticleProps[] {
         const com = CollisionHandler.com(a, b);
         const transformations = Transformations.translationAndRotation(com.q, a.q);
-        const [qNew_a, qNew_b] = Transformations.perform2<Q, number>(operation, () => transformations, a.q, b.q);
+        const [qNew_a, qNew_b] = Transformations.perform2(operation, transformations, a.q, b.q);
 
         function operation(coordinate: number, otherCoordinates: number[]): number {
             assert(otherCoordinates.length == 1);
@@ -50,5 +50,8 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
         result.q.y /= result.m;
 
         return result;
+    }
+
+    private static glue(...particles: Readonly<QMS>[]): QM {
     }
 }
