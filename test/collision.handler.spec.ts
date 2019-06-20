@@ -28,7 +28,7 @@ describe('CollisionHandler', () => {
         };
 
         // act
-        // debugger;
+        debugger;
         const resultants = collisionDetector.collide(p, q);
 
         // assert

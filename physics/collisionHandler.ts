@@ -3,17 +3,27 @@ import { ParticleProps } from "../particle";
 import { Transformations } from "./transformations";
 import { Q, S, M, QMS, QM } from ".";
 
+export class Particle implements QMS {
+    public constructor(private readonly p: ParticleProps) {
+    }
+    get q(): Q {
+        return { x: this.p.x, y: this.p.y };
+    };
+    get m(): number {
+        return this.p.m;
+    };
+    get size(): number {
+        return this.p.size;
+    };
+}
 export class CollisionHandler implements ICollectionHandler<ParticleProps> {
-    collide(p: Readonly<ParticleProps>, q: Readonly<ParticleProps>): ParticleProps[] {
-        return this.placeAdjacent(p, q);
+    collide(a: Readonly<ParticleProps>, b: Readonly<ParticleProps>): ParticleProps[] {
+        return this.placeAdjacent(new Particle(a), new Particle(b));
     }
 
-    private placeAdjacent(a: Readonly<ParticleProps>, b: Readonly<ParticleProps>): ParticleProps[] {
-        const a_qm: QMS = { q: a, m: a.m, size: a.size };
-        const b_qm: QMS = { q: b, m: b.m, size: b.size };
-
-        const com = this.com(a_qm, b_qm);
-        const { D: [xp, xq], inverseTransformation } = Transformations.rotate2(a_qm.q, b_qm.q, com.q);
+    private placeAdjacent(a: Readonly<Particle>, b: Readonly<Particle>): ParticleProps[] {
+        const com = this.com(a, b);
+        const { D: [xp, xq], inverseTransformation } = Transformations.rotate2(a.q, b.q, com.q);
 
         const xPrime_a = position1D(xp, xq, Math.sign(xq));
         const xPrime_b = position1D(xq, xp, -Math.sign(xq));
@@ -22,12 +32,20 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
             return (a.m * xa + b.m * xb + sign * a.m * a.size + sign * a.m * b.size) / (a.m + b.m);
         }
 
-        const rNew_p = inverseTransformation(xPrime_a);
-        const rNew_q = inverseTransformation(xPrime_b);
+        const qNew_a = inverseTransformation(xPrime_a);
+        const qNew_b = inverseTransformation(xPrime_b);
 
-        const p_new = { ...a, ...rNew_p };
-        const q_new = { ...b, ...rNew_q };
+        const vx = 0; // TODO: calculate
+        const vy = 0;
+
+        const p_new = toProps(a, qNew_a, vx, vy);
+        const q_new = toProps(b, qNew_b, vx, vy);
+
         return [p_new, q_new];
+
+        function toProps(particle: Readonly<Particle>, q: Q, vx: number, vy: number): ParticleProps {
+            return { m: particle.m, size: particle.size, vx: vx, vy: vy, x: q.x, y: q.y, };
+        }
     }
 
     private com(a: Readonly<QMS>, b: Readonly<QMS>): QM {
