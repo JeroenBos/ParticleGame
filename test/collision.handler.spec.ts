@@ -182,11 +182,100 @@ describe('CollisionHandler', () => {
         const resultants = collisionDetector.collide(p, q);
 
         // assert
-        assert(resultants.length == 2);
-
         assert(resultants[0].vx == 1);
         assert(resultants[0].vy == 0);
         assert(resultants[1].vx == 1);
         assert(resultants[1].vy == 0);
+    });
+
+
+    it('Moving overlapping particles with diagonal velocity move in unison', () => {
+        // arrange
+        const p: ParticleProps = {
+            x: 0,
+            y: 0,
+            vx: 4,
+            vy: 0,
+            size: 1,
+            m: 1
+        };
+        const q: ParticleProps = {
+            x: 0,
+            y: 0,
+            vx: 0,
+            vy: 4,
+            size: 1,
+            m: 1
+        };
+
+        // act
+        // debugger;
+        const resultants = collisionDetector.collide(p, q);
+
+        // assert
+        assert(resultants[0].vx == 2);
+        assert(resultants[0].vy == 2);
+        assert(resultants[1].vx == 2);
+        assert(resultants[1].vy == 2);
+    });
+
+    it('Moving overlapping particles with mirrored diagonal velocity move in unison', () => {
+        // arrange
+        const p: ParticleProps = {
+            x: 0,
+            y: 0,
+            vx: 4,
+            vy: 0,
+            size: 1,
+            m: 1
+        };
+        const q: ParticleProps = {
+            x: 0,
+            y: 0,
+            vx: 0,
+            vy: -4,
+            size: 1,
+            m: 1
+        };
+
+        // act
+        // debugger;
+        const resultants = collisionDetector.collide(p, q);
+
+        // assert
+        assert(resultants[0].vx == 2);
+        assert(resultants[0].vy == -2);
+        assert(resultants[1].vx == 2);
+        assert(resultants[1].vy == -2);
+    });
+
+    it('Moving overlapping different particles with diagonal velocity move in unison awrily', () => {
+        // arrange
+        const p: ParticleProps = {
+            x: 0,
+            y: 0,
+            vx: 4,
+            vy: 0,
+            size: 1,
+            m: 3
+        };
+        const q: ParticleProps = {
+            x: 0,
+            y: 0,
+            vx: 0,
+            vy: -4,
+            size: 1,
+            m: 1
+        };
+
+        // act
+        // debugger;
+        const resultants = collisionDetector.collide(p, q);
+
+        // assert
+        assert(resultants[0].vx == 3);
+        assert(resultants[0].vy == -1);
+        assert(resultants[1].vx == 3);
+        assert(resultants[1].vy == -1);
     });
 });
