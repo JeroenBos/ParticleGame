@@ -15,11 +15,15 @@ export default class Engine implements IEngine<ParticleProps, Dv> {
         this.collisionDetector = Invariants.For(collisionDetector);
     }
 
-    public evolve(particles: ParticleProps[]): ParticleProps[] {
+    public evolve(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[] {
 
-        const projectedParticles: ParticleProps[] = Extensions.removeUndefineds(particles.map((p, i) => this.projectParticle(p, Extensions.exceptAt(particles, i))));
+        const projectedParticles: ParticleProps[] = Extensions.removeUndefineds(particles.map(project.bind(this)));
         const resultantParticles = this.resolveCollisions(projectedParticles);
         return resultantParticles;
+
+        function project(this: Engine, p: ParticleProps, i: number) {
+            return this.projectParticle(p, Extensions.exceptAt(particles, i));
+        }
     }
     public resolveInitialCollisions(initialParticles: ParticleProps[]) {
         const confinedParticles = Extensions.removeUndefineds(initialParticles.map(p => this.confiner.confine(p, undefined)));

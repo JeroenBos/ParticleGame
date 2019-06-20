@@ -24,7 +24,8 @@ describe('', () => {
             engine,
             particleGenerator,
             width,
-            height
+            height,
+            updateInterval: 100
         });
     });
 });

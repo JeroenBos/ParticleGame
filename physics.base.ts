@@ -5,6 +5,7 @@ export interface IEngine<TParticle, TForce> {
     readonly collisionHandler: ICollectionHandler<TParticle>;
     readonly forceComputer: IComputeForce<TParticle, TForce>;
     readonly confiner: IConfine<TParticle>;
+    evolve(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[];
     resolveInitialCollisions(initialParticles: ParticleProps[]): ParticleProps[];
 }
 export interface ICollectionDetector<TParticle> {

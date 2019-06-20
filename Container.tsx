@@ -9,7 +9,8 @@ export interface ContainerProps {
     particleGenerator: ParticleGenerator;
     width: number;
     height: number;
-    engine: IEngine<ParticleProps, Dv>
+    engine: IEngine<ParticleProps, Dv>,
+    updateInterval: number
 }
 
 export interface ContainerState {
@@ -23,6 +24,8 @@ export class Container extends React.Component<ContainerProps, ContainerState> {
         const initialParticles = props.particleGenerator.generate();
         const particles = this.props.engine.resolveInitialCollisions(initialParticles);
         this.state = { particles };
+
+        setInterval(() => this.toTimestep(), props.updateInterval);
     }
     render() {
         const particles = this.state.particles.map((p, i) => <Particle key={i} {...p}></Particle>);
@@ -34,5 +37,12 @@ export class Container extends React.Component<ContainerProps, ContainerState> {
                 </svg>
             </div>
         );
+    }
+
+    toTimestep(): void {
+        this.setState(state => {
+            const particles = this.props.engine.evolve(state.particles);
+            return { particles };
+        });
     }
 }
