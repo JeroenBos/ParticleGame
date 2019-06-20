@@ -6,6 +6,8 @@ export interface P {
     vy: number
 }
 
+export interface V {
+}
 export interface Q {
     x: number,
     y: number
@@ -29,19 +31,26 @@ export interface Qed {
     q: Q
 }
 
+export interface Ped {
+    p: P
+}
+
 export interface M {
     m: number
 }
+export type PQS = Qed & Ped & S & M;
 export type QMS = QM & S;
 export type QM = Qed & M;
 
 
 export class Particle implements QMS {
-    public static create(p: ParticleProps): QMS {
+
+    public static create(p: ParticleProps): QMS & PQS {
         return {
             m: p.m,
             q: { x: p.x, y: p.y },
-            size: p.size
+            size: p.size,
+            p: { m: p.m, vx: p.vx, vy: p.vy }
         };
     }
     private constructor(private readonly p: ParticleProps) {

@@ -88,7 +88,6 @@ describe('CollisionHandler', () => {
         assert(resultants[1].size == q.size);
     });
 
-
     it('Stationary overlapping particles mirrored along y-axis are placed adjacent', () => {
         // arrange
         const p: ParticleProps = {
@@ -157,5 +156,37 @@ describe('CollisionHandler', () => {
 
         assert(resultants[0].x == 4);
         assert(resultants[1].x == 6);
+    });
+
+    it('Moving overlapping particles are moving in unison', () => {
+        // arrange
+        const p: ParticleProps = {
+            x: 0,
+            y: 0,
+            vx: 1,
+            vy: 0,
+            size: 1,
+            m: 1
+        };
+        const q: ParticleProps = {
+            x: 0,
+            y: 1,
+            vx: 1,
+            vy: 0,
+            size: 1,
+            m: 1
+        };
+
+        // act
+        // debugger;
+        const resultants = collisionDetector.collide(p, q);
+
+        // assert
+        assert(resultants.length == 2);
+
+        assert(resultants[0].vx == 1);
+        assert(resultants[0].vy == 0);
+        assert(resultants[1].vx == 1);
+        assert(resultants[1].vy == 0);
     });
 });
