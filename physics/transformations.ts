@@ -1,36 +1,108 @@
 import { Q } from '.';
 
-export class Transformations {
-    /** Rotates the specified vector to a 1D representation with respect to the specified origin (i.e. the line that intersects them). */
-    public static rotate(r: Q, origin?: Q): {
-        D: number,
-        transformation: (arg: Q) => number,
-        inverseTransformation: (x: number) => Q
-    } {
-        const O /* O for origin */: Q = origin || { x: 0, y: 0 };
+export type TransformationPair<T, U> = {
+    transformation: (t: T) => U,
+    inverseTransformation: (u: U) => T
+};
 
-        function transformation(arg: Q) {
-            const arg0: Q = {
-                x: arg.x - O.x,
-                y: arg.y - O.y
-            };
-            const sign = arg0.x == 0 ? arg0.y < 0 ? -1 : 1 : arg0.x < 0 ? -1 : 1; // the part `arg0.y < 0 ? -1 : 1` depends on/defines the direction of the rotation
-            return sign * Math.sqrt(arg0.x * arg0.x + arg0.y * arg0.y);
+export class Transformations {
+
+    /** Performs the specified operation in the transformed space. 
+     * @template T The type representing an element of the space before transformation
+     * @template U The type representing an element of the space after transformation
+     */
+    public static perform<T, U>(
+        operation: (u: U, others: U[]) => U,
+        transformation: (t: T) => U,
+        inverseTransformation: (u: U) => T,
+        ...input: T[]) {
+
+        const transformed = input.map(transformation);
+        const result = transformed.map((u, i) => {
+            const others_u = transformed.slice(0);
+            others_u.splice(i, 1);
+            const result_u = operation(u, others_u);
+            const result_t = inverseTransformation(result_u);
+            return result_t;
+        });
+        return result;
+    }
+    public static combine<T, U, V>(a: TransformationPair<T, U>, b: TransformationPair<U, V>): TransformationPair<T, V> {
+        function transformation(t: T): V {
+            const intermediate = a.transformation(t);
+            const result = b.transformation(intermediate);
+            return result;
         }
 
-        const { sinTheta, cosTheta } = this.computeThetas(r.x - O.x, r.y - O.y);
-        const D = transformation(r);
+        function inverseTransformation(v: V): T {
+            const intermediate = b.inverseTransformation(v);
+            const result = a.inverseTransformation(intermediate);
+            return result;
+        }
 
-        return {
-            D,
-            transformation,
-            inverseTransformation: (arg: number) => {
-                return {
-                    x: arg * cosTheta + O.x,
-                    y: arg * sinTheta + O.y
-                };
-            }
-        };
+        return { transformation, inverseTransformation };
+    }
+
+    /** Performs the specified operation in the transformed space. 
+     * @template T The type representing an element of the space before transformation
+     * @template U The type representing an element of the space after transformation
+     */
+    public static perform2<T, U>(
+        operation: (u: U, otherCoordinates: U[]) => U,
+        getTransformations: (input: T[]) => TransformationPair<T, U>,
+        ...input: [T, T]): [T, T] {
+
+        const { transformation, inverseTransformation } = getTransformations(input);
+        return this.perform(operation, transformation, inverseTransformation, ...input) as [T, T];
+    }
+
+    /** Creates a translation transformation that has the specified location as origin. */
+    public static translation(origin: Q): TransformationPair<Q, Q> {
+        function transformation(arg: Q): Q {
+            const result = {
+                x: arg.x - origin.x,
+                y: arg.y - origin.y
+            };
+            return result;
+        }
+
+        function inverseTransformation(arg: Q): Q {
+            const result = {
+                x: arg.x + origin.x,
+                y: arg.y + origin.y
+            };
+            return result;
+        }
+
+        return { transformation, inverseTransformation };
+    }
+    /** Creates a rotation that translation the origin and rotate the specified coordinate onto the positive x-axis. */
+    public static translationAndRotation(origin: Q, coordinate: Q): TransformationPair<Q, number> {
+        const _translation = this.translation(origin);
+        const translatedCoordinate = _translation.transformation(coordinate);
+        const _rotation = this.rotation(translatedCoordinate);
+        return this.combine(_translation, _rotation);
+    }
+    /** Creates a rotation transformation that maps the specified coordinate onto the positive x-axis. */
+    public static rotation(coordinate: Q): TransformationPair<Q, number> {
+
+        const { sinTheta, cosTheta } = this.computeThetas(coordinate.x, coordinate.y);
+
+        function transformation(arg: Q): number {
+            const sign = arg.x == 0 ? arg.y < 0 ? -1 : 1 : arg.x < 0 ? -1 : 1; // the part `arg0.y < 0 ? -1 : 1` depends on/defines the direction of the rotation
+            const result = sign * Math.sqrt(arg.x * arg.x + arg.y * arg.y);
+            return result;
+        }
+
+        function inverseTransformation(arg: number): Q {
+            const result = {
+                x: arg * cosTheta,
+                y: arg * sinTheta
+            };
+            return result;
+        }
+
+        return { transformation, inverseTransformation };
     }
 
     private static computeThetas(x: number, y: number): {
@@ -48,14 +120,5 @@ export class Transformations {
 
 
         return { sinTheta, cosTheta, sign };
-    }
-
-    public static rotate2(r: Q, s: Q, origin?: Q): {
-        D: [number, number],
-        inverseTransformation: (x: number) => Q
-    } {
-        const result = this.rotate(r, origin);
-        const secondD = result.transformation(s);
-        return { D: [result.D, secondD], inverseTransformation: result.inverseTransformation };
     }
 }

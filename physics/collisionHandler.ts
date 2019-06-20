@@ -1,39 +1,29 @@
 import { ICollectionHandler } from "../physics.base";
 import { ParticleProps } from "../particle";
-import { Transformations } from "./transformations";
-import { Q, S, M, QMS, QM } from ".";
+import { Transformations, TransformationPair } from "./transformations";
+import { Q, S, M, QMS, QM, Particle } from ".";
+import { assert } from "../jbsnorro";
 
-export class Particle implements QMS {
-    public constructor(private readonly p: ParticleProps) {
-    }
-    get q(): Q {
-        return { x: this.p.x, y: this.p.y };
-    };
-    get m(): number {
-        return this.p.m;
-    };
-    get size(): number {
-        return this.p.size;
-    };
-}
 export class CollisionHandler implements ICollectionHandler<ParticleProps> {
     collide(a: Readonly<ParticleProps>, b: Readonly<ParticleProps>): ParticleProps[] {
-        return this.placeAdjacent(new Particle(a), new Particle(b));
+        return this.placeAdjacent(Particle.create(a), Particle.create(b));
     }
 
-    private placeAdjacent(a: Readonly<Particle>, b: Readonly<Particle>): ParticleProps[] {
-        const com = this.com(a, b);
-        const { D: [xp, xq], inverseTransformation } = Transformations.rotate2(a.q, b.q, com.q);
 
-        const xPrime_a = position1D(xp, xq, Math.sign(xq));
-        const xPrime_b = position1D(xq, xp, -Math.sign(xq));
+    private placeAdjacent(a: Readonly<QMS>, b: Readonly<QMS>): ParticleProps[] {
+        const com = CollisionHandler.com(a, b);
+        const transformations = Transformations.translationAndRotation(com.q, a.q);
+        const [qNew_a, qNew_b] = Transformations.perform2<Q, number>(operation, () => transformations, a.q, b.q);
 
-        function position1D(xa: number, xb: number, sign: number): number {
-            return (a.m * xa + b.m * xb + sign * a.m * a.size + sign * a.m * b.size) / (a.m + b.m);
+        function operation(coordinate: number, otherCoordinates: number[]): number {
+            assert(otherCoordinates.length == 1);
+
+            const xa = coordinate;
+            const xb = otherCoordinates[0];
+            const sign = Math.sign(xa);
+            const result = (a.m * xa + b.m * xb + sign * a.m * a.size + sign * a.m * b.size) / (a.m + b.m);
+            return result;
         }
-
-        const qNew_a = inverseTransformation(xPrime_a);
-        const qNew_b = inverseTransformation(xPrime_b);
 
         const vx = 0; // TODO: calculate
         const vy = 0;
@@ -43,12 +33,12 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
 
         return [p_new, q_new];
 
-        function toProps(particle: Readonly<Particle>, q: Q, vx: number, vy: number): ParticleProps {
-            return { m: particle.m, size: particle.size, vx: vx, vy: vy, x: q.x, y: q.y, };
+        function toProps(particle: Readonly<QMS>, q: Q, vx: number, vy: number): ParticleProps {
+            return { x: q.x, y: q.y, m: particle.m, size: particle.size, vx: vx, vy: vy, };
         }
     }
 
-    private com(a: Readonly<QMS>, b: Readonly<QMS>): QM {
+    private static com(a: Readonly<QMS>, b: Readonly<QMS>): QM {
         const sum_of_masses = a.m + b.m;
 
         const center_x = (a.q.x * a.m + b.q.x * b.m) / sum_of_masses;

@@ -34,8 +34,8 @@ describe('CollisionHandler', () => {
         // assert
         assert(resultants.length == 2);
 
-        assert(resultants[0].x == 1.5);
-        assert(resultants[1].x == -0.5);
+        assert(resultants[0].x == -0.5);
+        assert(resultants[1].x == 1.5);
 
         // also test the trivial properties:
         assert(resultants[0].vx == 0);
@@ -74,8 +74,8 @@ describe('CollisionHandler', () => {
         // assert
         assert(resultants.length == 2);
 
-        assert(resultants[0].y == 1.5);
-        assert(resultants[1].y == -0.5);
+        assert(resultants[0].y == -0.5);
+        assert(resultants[1].y == 1.5);
 
         // also test the trivial properties:
         assert(resultants[0].vx == 0);
@@ -115,8 +115,8 @@ describe('CollisionHandler', () => {
         // assert
         assert(resultants.length == 2);
 
-        assert(resultants[0].y == -0.5);
-        assert(resultants[1].y == 1.5);
+        assert(resultants[0].y == 1.5);
+        assert(resultants[1].y == -0.5);
 
         // also test the trivial properties:
         assert(resultants[0].vx == 0);
@@ -132,7 +132,7 @@ describe('CollisionHandler', () => {
     it('Non-overlapping particles collision are placed adjacent', () => {
         // arrange
         const p: ParticleProps = {
-            x: 10,
+            x: 0,
             y: 0,
             vx: 0,
             vy: 0,
@@ -140,7 +140,7 @@ describe('CollisionHandler', () => {
             m: 1
         };
         const q: ParticleProps = {
-            x: 0,
+            x: 10,
             y: 0,
             vx: 0,
             vy: 0,
