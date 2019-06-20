@@ -55,4 +55,60 @@ describe('CollisionDetector', () => {
         assert(collisions[0].i == 0);
         assert(collisions[0].j == 1);
     });
+
+    it(`Two non-overlapping particles don't collide`, () => {
+        // arrange
+        const p: ParticleProps = {
+            x: 0,
+            y: 0,
+            vx: 0,
+            vy: 0,
+            size: 1,
+        };
+        const q: ParticleProps = {
+            x: 1,
+            y: 5,
+            vx: 0,
+            vy: 0,
+            size: 1,
+        };
+
+        // act
+        // debugger;
+        const { collisions, freeParticles } = collisionDetector.detect([p, q]);
+
+        // assert
+        assert(collisions.length == 0);
+        assert(freeParticles.length == 2);
+        assert(freeParticles[0] == p);
+        assert(freeParticles[1] == q);
+    });
+
+    it(`Two touching particles don't collide`, () => {
+        // arrange
+        const p: ParticleProps = {
+            x: 0,
+            y: 0,
+            vx: 0,
+            vy: 0,
+            size: 1,
+        };
+        const q: ParticleProps = {
+            x: 2,
+            y: 0,
+            vx: 0,
+            vy: 0,
+            size: 1,
+        };
+
+        // act
+        // debugger;
+        const { collisions, freeParticles } = collisionDetector.detect([p, q]);
+
+        // assert
+        assert(collisions.length == 0);
+        assert(freeParticles.length == 2);
+        assert(freeParticles[0] == p);
+        assert(freeParticles[1] == q);
+    });
 });
