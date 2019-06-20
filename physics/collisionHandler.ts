@@ -38,29 +38,17 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
         }
     }
 
-    private static com(a: Readonly<QMS>, b: Readonly<QMS>): QM {
-        const sum_of_masses = a.m + b.m;
-
-        const center_x = (a.q.x * a.m + b.q.x * b.m) / sum_of_masses;
-        const center_y = (a.q.y * a.m + b.q.y * b.m) / sum_of_masses;
-
-        return { m: sum_of_masses, q: { x: center_x, y: center_y } };
-    }
-
-    private distance(a: Readonly<Q>, b: Readonly<Q>): Q {
-        return { x: b.x - a.x, y: b.y - a.y };
-    }
-    private position(a: Readonly<QMS>, b: Readonly<QMS>, sign: number): Q {
-        if (sign != 1 && sign != -1)
-            throw new Error();
-
-        function position1D(xp: number, xq: number): number {
-            return a.m * xp + b.m * xq + sign * a.m * a.size + sign * a.m * b.size;
+    private static com(...particles: Readonly<QMS>[]): QM {
+        const result = { m: 0, q: { x: 0, y: 0 } };
+        for (const particle of particles) {
+            result.m += particle.m;
+            result.q.x += particle.q.x * particle.m;
+            result.q.y += particle.q.y * particle.m;
         }
 
-        const x = position1D(a.q.x, b.q.x);
-        const y = position1D(a.q.y, b.q.y);
+        result.q.x /= result.m;
+        result.q.y /= result.m;
 
-        return { x, y };
+        return result;
     }
 }
