@@ -14,7 +14,7 @@
                 "--colors",
                 "${workspaceFolder}/dist/test.js",
                 "--fgrep",
-                "Large ball bounce at end of x-axis"
+                "html"
             ],
             "console": "internalConsole",
             "internalConsoleOptions": "neverOpen",

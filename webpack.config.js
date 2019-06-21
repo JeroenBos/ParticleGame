@@ -42,7 +42,7 @@ var mainConfig = {
     ...sharedConfig,
     // mode: process.env.NODE_ENV || 'development',
     name: 'main',
-    entry: './index.tsx',
+    entry: './app/index.tsx',
     output: { filename: './dist/particlegame.js' },
     externals: {
         "react": "React",

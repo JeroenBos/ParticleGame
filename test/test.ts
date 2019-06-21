@@ -6,26 +6,26 @@ import { CollisionHandler } from "../physics/collisionHandler";
 import { ForceComputer } from "../physics/forceComputer";
 import { Confiner } from "../physics/confinement";
 import 'mocha';
-
-const width = 500;
-const height = 500;
-const collisionDetector = new CollisionDetector();
-const collisionHandler = new CollisionHandler();
-const forceComputer = new ForceComputer();
-const confiner = new Confiner(width, height);
-const engine = new Engine(collisionDetector, collisionHandler, forceComputer, confiner);
-const particleGenerator = new ParticleGenerator();
+import { width, height, engine, particleGenerator } from '../app/config';
+import { assert } from "../jbsnorro";
 
 
-describe('', () => {
-    it('a', () => {
-        // debugger;
-        new Container({
-            engine,
-            particleGenerator,
-            width,
-            height,
-            updateInterval: 100
-        });
+describe('Integration tests', () => {
+    it('The same as diplayed in the html', () => {
+
+        // arrange
+        const stepCount = 100;
+        const generatedParticles = particleGenerator.generate();
+        const initialParticles = engine.resolveInitialCollisions(generatedParticles);
+
+        // act
+        debugger;
+        let particles = initialParticles;
+        for (let i = 0; i < stepCount; i++) {
+            particles = engine.evolve(particles);
+        }
+
+        // assert
+        assert(particles.length == 2);
     });
 });
