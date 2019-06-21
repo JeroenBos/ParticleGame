@@ -1,6 +1,9 @@
 import { IConfine } from "../physics.base";
 import { ParticleProps, Particle } from "../particle";
 import Extensions from "../extensions";
+import { Transformations, State1D, TransformationPair } from "./transformations";
+import { Transform } from "stream";
+import { assert } from "../jbsnorro";
 
 interface t {
     _r: number;
@@ -70,43 +73,75 @@ export class Confiner implements IConfine<ParticleProps> {
         return result;
     }
     private bounce(previousState: ParticleProps, p: ParticleProps): ParticleProps {
-        const bounce1 = function (r: number, r_prev: number, v: number, L: number, size: number): { r: number, v: number } {
+        const bounce1 = function (r: number, r_prev: number, v: number, L: number, size: number): State1D {
+
+            let transformation: TransformationPair<State1D, State1D> | undefined = undefined;
+            let newPrevR = r_prev;
+            let newL = L;
+
             const dr = r - r_prev;
-            let transformation = ({ _r, _dr, _v, _L }: t) => ({ _r: _r - size, _dr: _dr, _v: _v, _L: _L - 2 * size });
-            let inverse = ({ _r, _dr, _v, _L }: t) => ({ _r: _r + size, _dr: _dr, _v: _v, _L: _L + 2 * size });
-
-            if (r < 0 || r + dr < 0) {
-                const _transformation = ({ _r, _dr, _v, _L }: t) => ({ _r: L - _r, _dr: -_dr, _v: -_v, _L: _L });
-                const _inverse = _transformation;
-                transformation = Extensions.compose(transformation, _transformation);
-                inverse = Extensions.compose(_inverse, inverse);
+            if (size != 0) {
+                transformation = Transformations.translation1(size);
+                newPrevR = transformation.transformation({ coordinate: r_prev, velocity: 0 }).coordinate;
+                // 2 because size represents radius and affects length doubly
+                newL = Transformations.translation1(2 * size).transformation({ coordinate: L, velocity: 0 }).coordinate;
             }
-            if (dr < 0) {
-                const _transformation = ({ _r, _dr, _v, _L }: t) => ({ _r: -_r, _dr: -_dr, _v: -_v, _L: _L });
-                const _inverse = _transformation;
-                transformation = Extensions.compose(transformation, _transformation);
-                inverse = Extensions.compose(_inverse, inverse);
+            else if (L < r + dr) {
+                transformation = Transformations.reflection1(L);
+                newPrevR = transformation.transformation({ coordinate: r_prev, velocity: 0 }).coordinate;
+                newL = transformation.transformation({ coordinate: L, velocity: 0 }).coordinate;
             }
 
-            if (L < r + dr) {
-                const distanceTraveledInWall = r + dr - L;
-                const newR = L - distanceTraveledInWall;
-                const newV = -Math.abs(v);
-                const result = inverse({ _r: newR, _dr: dr, _v: newV, _L: L });
-                return { r: result._r, v: result._v };
+            if (transformation !== undefined) {
+                const { coordinate: newR, velocity: newV } = transformation.transformation({ coordinate: r, velocity: v });
+                const inverseResult = bounce1(newR, newPrevR, newV, newL, 0);
+                const result = transformation.inverseTransformation(inverseResult);
+                return result;
             }
 
-            return { r, v };
+            if (r < 0) {
+                // this is an operation rather then a transformation, because it is not reversed
+               return  { coordinate: -r, velocity: -v };
+            }
+            else {
+                return { coordinate: r, velocity: v };
+            }
+
+            // let transformation = ({ _r, _dr, _v, _L }: t) => ({ _r: _r - size, _dr: _dr, _v: _v, _L: _L - 2 * size });
+            // let inverse = ({ _r, _dr, _v, _L }: t) => ({ _r: _r + size, _dr: _dr, _v: _v, _L: _L + 2 * size });
+
+            // if (r < 0 || r + dr < 0) {
+            //     const _transformation = ({ _r, _dr, _v, _L }: t) => ({ _r: L - _r, _dr: -_dr, _v: -_v, _L: _L });
+            //     const _inverse = _transformation;
+            //     transformation = Extensions.compose(transformation, _transformation);
+            //     inverse = Extensions.compose(_inverse, inverse);
+            // }
+            // if (dr < 0) {
+            //     const _transformation = ({ _r, _dr, _v, _L }: t) => ({ _r: -_r, _dr: -_dr, _v: -_v, _L: _L });
+            //     const _inverse = _transformation;
+            //     transformation = Extensions.compose(transformation, _transformation);
+            //     inverse = Extensions.compose(_inverse, inverse);
+            // }
+
+            // if (L < r + dr) {
+            //     const distanceTraveledInWall = r + dr - L;
+            //     const newR = L - distanceTraveledInWall;
+            //     const newV = -Math.abs(v);
+            //     const result = inverse({ _r: newR, _dr: dr, _v: newV, _L: L });
+            //     return { r: result._r, v: result._v };
+            // }
+
+            // return { r, v };
         }
 
         const xResult = bounce1(p.x, previousState.x, p.vx, this.width, p.size);
         const yResult = bounce1(p.y, previousState.y, p.vy, this.height, p.size);
 
         return {
-            x: xResult.r,
-            vx: xResult.v,
-            y: yResult.r,
-            vy: yResult.v,
+            x: xResult.coordinate,
+            vx: xResult.velocity,
+            y: yResult.coordinate,
+            vy: yResult.velocity,
             size: p.size,
             m: p.m
         };

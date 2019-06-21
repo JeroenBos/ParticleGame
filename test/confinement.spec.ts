@@ -27,7 +27,7 @@ describe('Confiner', () => {
         // assert
         if (result == null) throw new Error();
         assert(result.x == 8);
-        assert(result.vx == 8);
+        assert(result.vx == -1);
     });
 });
 

@@ -4,6 +4,10 @@ export type TransformationPair<T, U> = {
     transformation: (t: T) => U,
     inverseTransformation: (u: U) => T
 };
+export interface State1D {
+    coordinate: number,
+    velocity: number
+}
 
 export class Transformations {
 
@@ -76,6 +80,60 @@ export class Transformations {
 
         return { transformation, inverseTransformation };
     }
+
+    public static translation1D(coordinate: number): TransformationPair<number, number> {
+        function transformation(arg: number) {
+            return arg - coordinate;
+        }
+        function inverseTransformation(arg: number) {
+            return arg + coordinate;
+        }
+        return { transformation, inverseTransformation };
+    }
+    public static translation1(coordinate: number): TransformationPair<State1D, State1D> {
+        function transformation(arg: State1D) {
+            return {
+                coordinate: arg.coordinate - coordinate,
+                velocity: arg.velocity
+            };
+        }
+        function inverseTransformation(arg: State1D) {
+            return {
+                coordinate: arg.coordinate + coordinate,
+                velocity: arg.velocity
+            };
+        }
+        return { transformation, inverseTransformation };
+    }
+
+    public static reflection(mirrorCoordinate: number): TransformationPair<number, number> {
+        function transformation(arg: number) {
+            return mirrorCoordinate - arg;
+        }
+        function inverseTransformation(arg: number) {
+            return mirrorCoordinate - arg;
+        }
+        return { transformation, inverseTransformation };
+    }
+    public static reflection1(mirrorCoordinate: number): TransformationPair<State1D, State1D> {
+        function transformation(arg: State1D) {
+            return {
+                coordinate: mirrorCoordinate - arg.coordinate,
+                velocity: -arg.velocity
+            };
+        }
+        return { transformation, inverseTransformation: transformation };
+    }
+
+    public static identity<T>(): TransformationPair<T, T> {
+        function f(arg: T) {
+            return arg;
+        }
+        return { transformation: f, inverseTransformation: f };
+    }
+
+
+
     /** Creates a rotation that translation the origin and rotate the specified coordinate onto the positive x-axis. */
     public static translationAndRotation(origin: Q, coordinate: Q): TransformationPair<Q, number> {
         const _translation = this.translation(origin);
@@ -121,4 +179,5 @@ export class Transformations {
 
         return { sinTheta, cosTheta, sign };
     }
+
 }

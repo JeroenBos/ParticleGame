@@ -61,7 +61,7 @@ export default class Engine implements IEngine<ParticleProps, Dv> {
         if (projection === undefined) {
             return undefined;
         }
-        const confinedProjection = this.confiner.confine(particle, projection);
+        const confinedProjection = this.confiner.confine(projection, particle);
         return confinedProjection;
     }
 }
