@@ -22,7 +22,11 @@ describe('Integration tests', () => {
         debugger;
         let particles = initialParticles;
         for (let i = 0; i < stepCount; i++) {
+            const particlesBefore = particles;
             particles = engine.evolve(particles);
+            if (particles[0].vx == 0) {
+                console.log();
+            }
         }
 
         // assert

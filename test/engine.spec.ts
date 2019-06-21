@@ -21,7 +21,7 @@ describe('Engine', () => {
             vx: 1,
             vy: 0,
             m: 1,
-            size: 1,
+            radius: 1,
         };
         // act
         debugger;
@@ -29,7 +29,7 @@ describe('Engine', () => {
 
         // assert
         assert(t1.m == 1);
-        assert(t1.size == 1);
+        assert(t1.radius == 1);
         assert(t1.x == 1);
         assert(t1.y == 0);
         assert(t1.vx == 1);
@@ -51,7 +51,7 @@ describe('Engine', () => {
             vx: 1,
             vy: 0,
             m: 1,
-            size: 1,
+            radius: 1,
         };
         // act
         debugger;
@@ -76,7 +76,7 @@ describe('Engine', () => {
             vx: 3,
             vy: 0,
             m: 1,
-            size: 4,
+            radius: 4,
         };
         // act
         debugger;

@@ -21,7 +21,7 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
             const xa = coordinate;
             const xb = otherCoordinates[0];
             const sign = Math.sign(xa);
-            const result = (a.m * xa + b.m * xb + sign * a.m * a.size + sign * a.m * b.size) / (a.m + b.m);
+            const result = (a.m * xa + b.m * xb + sign * a.m * a.radius + sign * a.m * b.radius) / (a.m + b.m);
             return result;
         }
 
@@ -33,7 +33,7 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
         return [a_new, b_new];
 
         function toProps(particle: Readonly<QMS>, q: Q, p: P): ParticleProps {
-            return { x: q.x, y: q.y, m: particle.m, size: particle.size, vx: p.vx, vy: p.vy };
+            return { x: q.x, y: q.y, m: particle.m, radius: particle.radius, vx: p.vx, vy: p.vy };
         }
     }
 

@@ -15,7 +15,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
         const q: ParticleProps = {
@@ -23,7 +23,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
 
@@ -44,8 +44,8 @@ describe('CollisionHandler', () => {
         assert(resultants[1].vy == 0);
         assert(resultants[0].y == 0);
         assert(resultants[0].y == 0);
-        assert(resultants[0].size == p.size);
-        assert(resultants[1].size == q.size);
+        assert(resultants[0].radius == p.radius);
+        assert(resultants[1].radius == q.radius);
     });
 
     it('Stationary overlapping particles along y-axis are placed adjacent', () => {
@@ -55,7 +55,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
         const q: ParticleProps = {
@@ -63,7 +63,7 @@ describe('CollisionHandler', () => {
             y: 1,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
 
@@ -84,8 +84,8 @@ describe('CollisionHandler', () => {
         assert(resultants[1].vy == 0);
         assert(resultants[0].x == 0);
         assert(resultants[0].x == 0);
-        assert(resultants[0].size == p.size);
-        assert(resultants[1].size == q.size);
+        assert(resultants[0].radius == p.radius);
+        assert(resultants[1].radius == q.radius);
     });
 
     it('Stationary overlapping particles mirrored along y-axis are placed adjacent', () => {
@@ -95,7 +95,7 @@ describe('CollisionHandler', () => {
             y: 1,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
         const q: ParticleProps = {
@@ -103,7 +103,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
 
@@ -124,8 +124,8 @@ describe('CollisionHandler', () => {
         assert(resultants[1].vy == 0);
         assert(resultants[0].x == 0);
         assert(resultants[0].x == 0);
-        assert(resultants[0].size == p.size);
-        assert(resultants[1].size == q.size);
+        assert(resultants[0].radius == p.radius);
+        assert(resultants[1].radius == q.radius);
     });
 
     it('Non-overlapping particles collision are placed adjacent', () => {
@@ -135,7 +135,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
         const q: ParticleProps = {
@@ -143,7 +143,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
 
@@ -165,7 +165,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 1,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
         const q: ParticleProps = {
@@ -173,7 +173,7 @@ describe('CollisionHandler', () => {
             y: 1,
             vx: 1,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
 
@@ -196,7 +196,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 4,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
         const q: ParticleProps = {
@@ -204,7 +204,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 0,
             vy: 4,
-            size: 1,
+            radius: 1,
             m: 1
         };
 
@@ -226,7 +226,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 4,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
         const q: ParticleProps = {
@@ -234,7 +234,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 0,
             vy: -4,
-            size: 1,
+            radius: 1,
             m: 1
         };
 
@@ -256,7 +256,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 4,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 3
         };
         const q: ParticleProps = {
@@ -264,7 +264,7 @@ describe('CollisionHandler', () => {
             y: 0,
             vx: 0,
             vy: -4,
-            size: 1,
+            radius: 1,
             m: 1
         };
 

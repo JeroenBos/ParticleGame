@@ -17,7 +17,7 @@ export class Confiner implements IConfine<ParticleProps> {
     constructor(public readonly width: number, public readonly height: number) { }
     confine(trivialProjection: ParticleProps, previousState: ParticleProps | undefined): ParticleProps | undefined {
         const projection = trivialProjection;
-        if (projection.size > this.width || projection.size > this.height) {
+        if (projection.radius > this.width || projection.radius > this.height) {
             // particle doesn't fit
             return undefined;
         }
@@ -47,44 +47,44 @@ export class Confiner implements IConfine<ParticleProps> {
     }
 
     private isCompletelyOutside(p: ParticleProps) {
-        return p.x + p.size < 0
-            || p.x - p.size > this.width
-            || p.y + p.size < 0
-            || p.y - p.size > this.height;
+        return p.x + p.radius < 0
+            || p.x - p.radius > this.width
+            || p.y + p.radius < 0
+            || p.y - p.radius > this.height;
     }
     private isPartiallyOutside(p: ParticleProps) {
-        return p.x - p.size < 0
-            || p.x + p.size > this.width
-            || p.y - p.size < 0
-            || p.y + p.size > this.height;
+        return p.x - p.radius < 0
+            || p.x + p.radius > this.width
+            || p.y - p.radius < 0
+            || p.y + p.radius > this.height;
     }
 
     private reverseVelocityInwards(p: Readonly<ParticleProps>): ParticleProps {
         const result = Object.assign<{}, ParticleProps>({}, p);
-        if (p.x - p.size < 0)
+        if (p.x - p.radius < 0)
             result.vx = Math.abs(p.vx);
-        if (p.x + p.size > this.width)
+        if (p.x + p.radius > this.width)
             result.vx = -Math.abs(p.vx);
 
-        if (p.y - p.size < 0)
+        if (p.y - p.radius < 0)
             result.vy = Math.abs(p.vy);
-        if (p.y + p.size > this.height)
+        if (p.y + p.radius > this.height)
             result.vy = -Math.abs(p.vy);
         return result;
     }
     private bounce(previousState: ParticleProps, p: ParticleProps): ParticleProps {
-        const bounce1 = function (r: number, r_prev: number, v: number, L: number, size: number): State1D {
+        const bounce1 = function (r: number, r_prev: number, v: number, L: number, radius: number): State1D {
 
             let transformation: TransformationPair<State1D, State1D> | undefined = undefined;
             let newPrevR = r_prev;
             let newL = L;
 
             const dr = r - r_prev;
-            if (size != 0) {
-                transformation = Transformations.translation1(size);
+            if (radius != 0) {
+                transformation = Transformations.translation1(radius);
                 newPrevR = transformation.transformation({ coordinate: r_prev, velocity: 0 }).coordinate;
-                // 2 because size represents radius and affects length doubly
-                newL = Transformations.translation1(2 * size).transformation({ coordinate: L, velocity: 0 }).coordinate;
+                // 2 radius and affects length twice
+                newL = Transformations.translation1(2 * radius).transformation({ coordinate: L, velocity: 0 }).coordinate;
             }
             else if (L < r + dr) {
                 transformation = Transformations.reflection1(L);
@@ -101,33 +101,33 @@ export class Confiner implements IConfine<ParticleProps> {
 
             if (r < 0) {
                 // this is an operation rather then a transformation, because it is not reversed
-               return  { coordinate: -r, velocity: -v };
+                return { coordinate: -r, velocity: -v };
             }
             else {
                 return { coordinate: r, velocity: v };
             }
         }
 
-        const xResult = bounce1(p.x, previousState.x, p.vx, this.width, p.size);
-        const yResult = bounce1(p.y, previousState.y, p.vy, this.height, p.size);
+        const xResult = bounce1(p.x, previousState.x, p.vx, this.width, p.radius);
+        const yResult = bounce1(p.y, previousState.y, p.vy, this.height, p.radius);
 
         return {
             x: xResult.coordinate,
             vx: xResult.velocity,
             y: yResult.coordinate,
             vy: yResult.velocity,
-            size: p.size,
+            radius: p.radius,
             m: p.m
         };
     }
     private isMovingOutOfBox(p: ParticleProps): boolean {
-        if (p.x - p.size < 0 && p.vx < 0)
+        if (p.x - p.radius < 0 && p.vx < 0)
             return true;
-        if (p.x + p.size > this.width && p.vx > 0)
+        if (p.x + p.radius > this.width && p.vx > 0)
             return true;
-        if (p.y - p.size < 0 && p.vy < 0)
+        if (p.y - p.radius < 0 && p.vy < 0)
             return true;
-        if (p.y + p.size > this.height && p.vy > 0)
+        if (p.y + p.radius > this.height && p.vy > 0)
             return true;
         return false;
     }

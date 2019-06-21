@@ -15,7 +15,7 @@ describe('Confiner', () => {
             vx: 1,
             vy: 0,
             m: 1,
-            size: 1
+            radius: 1
         };
         // trivial means 'disregarding collisions and confinement'
         const trivialProjection: ParticleProps = { ...particle, x: particle.x + particle.vx, y: particle.y + particle.vy };

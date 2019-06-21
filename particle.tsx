@@ -5,7 +5,7 @@ export interface ParticleProps {
     y: number;
     vx: number;
     vy: number;
-    size: number;
+    radius: number;
     m: number;
 }
 export interface ParticleState {
@@ -19,7 +19,7 @@ export class Particle extends React.Component<ParticleProps, ParticleState> {
     }
     render() {
         return (
-            <circle cx={this.props.x} cy={this.props.y} r={this.props.size / 2} stroke="black" strokeWidth="3" fill="red" />
+            <circle cx={this.props.x} cy={this.props.y} r={this.props.radius} stroke="black" strokeWidth="3" fill="red" />
         );
     }
 }

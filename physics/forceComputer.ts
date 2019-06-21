@@ -20,7 +20,7 @@ export class ForceComputer implements IComputeForce<ParticleProps, Dv>{
             y: particle.y + particle.vy,
             vx: particle.vx + dv.dvx,
             vy: particle.vy + dv.dvy,
-            size: particle.size,
+            radius: particle.radius,
             m: particle.m
         };
 

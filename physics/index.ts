@@ -19,13 +19,13 @@ export interface Dv {
 }
 
 export interface IParticle {
-    size: number,
+    radius: number,
     q: Q,
     p: P
 }
 
 export interface S {
-    size: number
+    radius: number
 }
 export interface Qed {
     q: Q
@@ -49,7 +49,7 @@ export class Particle implements QMS {
         return {
             m: p.m,
             q: { x: p.x, y: p.y },
-            size: p.size,
+            radius: p.radius,
             p: { m: p.m, vx: p.vx, vy: p.vy }
         };
     }
@@ -61,7 +61,7 @@ export class Particle implements QMS {
     get m(): number {
         return this.p.m;
     };
-    get size(): number {
-        return this.p.size;
+    get radius(): number {
+        return this.p.radius;
     };
 }

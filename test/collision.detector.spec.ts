@@ -15,7 +15,7 @@ describe('CollisionDetector', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
 
@@ -36,7 +36,7 @@ describe('CollisionDetector', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
         const q: ParticleProps = {
@@ -44,7 +44,7 @@ describe('CollisionDetector', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
 
@@ -66,7 +66,7 @@ describe('CollisionDetector', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
         const q: ParticleProps = {
@@ -74,7 +74,7 @@ describe('CollisionDetector', () => {
             y: 5,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
 
@@ -96,7 +96,7 @@ describe('CollisionDetector', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
         const q: ParticleProps = {
@@ -104,7 +104,7 @@ describe('CollisionDetector', () => {
             y: 0,
             vx: 0,
             vy: 0,
-            size: 1,
+            radius: 1,
             m: 1
         };
 

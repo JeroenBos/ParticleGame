@@ -36,7 +36,7 @@ export class CollisionDetector implements ICollectionDetector<ParticleProps> {
         }
         //2 means squared
         const distance2 = (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y);
-        const minDistance2 = (p.size + q.size) * (p.size + q.size);
+        const minDistance2 = (p.radius + q.radius) * (p.radius + q.radius);
 
         return minDistance2 > distance2;
     }
