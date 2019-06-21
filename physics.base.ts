@@ -9,6 +9,8 @@ export interface IEngine<TParticle, TForce> {
     resolveInitialCollisions(initialParticles: ParticleProps[]): ParticleProps[];
 }
 export interface ICollectionDetector<TParticle> {
+    /** Gets the number of recorded collisions. */
+    readonly count: number;
     detect(particles: TParticle[]): { collisions: Collision[], freeParticles: TParticle[] };
 }
 export interface Collision {

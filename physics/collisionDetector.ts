@@ -2,6 +2,10 @@ import { ICollectionDetector, Collision } from "../physics.base";
 import { ParticleProps } from "../particle";
 
 export class CollisionDetector implements ICollectionDetector<ParticleProps> {
+    private _count = 0;
+    get count() {
+        return this._count;
+    }
     detect(particles: ParticleProps[]): { collisions: Collision[], freeParticles: ParticleProps[] } {
         const collisions: Collision[] = [];
 
@@ -15,6 +19,7 @@ export class CollisionDetector implements ICollectionDetector<ParticleProps> {
                 const q = particles[qi];
                 if (this.collideQ(p, q)) {
                     collisions.push({ i: qi, j: pi });
+                    this._count++;
                     collided[pi] = true;
                     collided[qi] = true;
                 }
