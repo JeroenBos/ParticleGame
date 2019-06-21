@@ -14,7 +14,7 @@
                 "--colors",
                 "${workspaceFolder}/dist/test.js",
                 "--fgrep",
-                "Moving overlapping particles are moving in unison"
+                "Confinement"
             ],
             "console": "internalConsole",
             "internalConsoleOptions": "neverOpen",

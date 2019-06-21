@@ -12,7 +12,8 @@ interface t {
 
 export class Confiner implements IConfine<ParticleProps> {
     constructor(public readonly width: number, public readonly height: number) { }
-    confine(projection: ParticleProps, previousState: ParticleProps | undefined): ParticleProps | undefined {
+    confine(trivialProjection: ParticleProps, previousState: ParticleProps | undefined): ParticleProps | undefined {
+        const projection = trivialProjection;
         if (projection.size > this.width || projection.size > this.height) {
             // particle doesn't fit
             return undefined;

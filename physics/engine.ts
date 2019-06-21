@@ -16,14 +16,10 @@ export default class Engine implements IEngine<ParticleProps, Dv> {
     }
 
     public evolve(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[] {
-
-        const projectedParticles: ParticleProps[] = Extensions.removeUndefineds(particles.map(project.bind(this)));
-        const resultantParticles = this.resolveCollisions(projectedParticles);
+        const projections = this.projectAll(particles);
+        const resultantParticles = this.resolveCollisions(projections);
         return resultantParticles;
 
-        function project(this: Engine, p: ParticleProps, i: number) {
-            return this.projectParticle(p, Extensions.exceptAt(particles, i));
-        }
     }
     public resolveInitialCollisions(initialParticles: ParticleProps[]) {
         const confinedParticles = Extensions.removeUndefineds(initialParticles.map(p => this.confiner.confine(p, undefined)));
@@ -51,24 +47,21 @@ export default class Engine implements IEngine<ParticleProps, Dv> {
         // this function is recursive, because the resulting particles may still be in collision (with a third e.g.)
         return this.resolveCollisions(particles, { previousNumberOfCollisions, consecutiveNondecreaseCount });
     }
-    private projectParticle(particle: Readonly<ParticleProps>, otherParticles: Iterable<Readonly<ParticleProps>>): ParticleProps | undefined {
-        const dv: Dv = { dvx: 0, dvy: 0 };
-        for (const p of otherParticles) {
-            const dv_p = this.forceComputer.computeForceOn(particle, p);
-            dv.dvx += dv_p.dvx;
-            dv.dvy += dv_p.dvy;
+
+    private projectAll(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[] {
+        const projections = particles.map((_, i) => this.project(i, particles));
+        const result = Extensions.removeUndefineds(projections);
+        return result;
+    }
+    private project(i: number, particles: ParticleProps[]): Readonly<ParticleProps> | undefined {
+        const particle = particles[i];
+        const otherParticles = particles.slice(0); otherParticles.splice(i);
+
+        const projection = this.forceComputer.project(particle, otherParticles);
+        if (projection === undefined) {
+            return undefined;
         }
-
-        const projection = {
-            x: particle.x + particle.vx,
-            y: particle.y + particle.vy,
-            vx: particle.vx + dv.dvx,
-            vy: particle.vy + dv.dvy,
-            size: particle.size,
-            m: particle.m
-        };
-
-        const confinedProjection = this.confiner.confine(projection, particle);
+        const confinedProjection = this.confiner.confine(particle, projection);
         return confinedProjection;
     }
 }

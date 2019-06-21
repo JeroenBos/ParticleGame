@@ -21,8 +21,13 @@ export interface ICollectionHandler<TParticle> {
 export interface IComputeForce<TParticle, TForce> {
     /** Computes the force of particle 'actor' on particle 'receiver'. */
     computeForceOn(receiver: TParticle, actor: TParticle): TForce;
+    /** Computes the projected state of the particle after an infinitesimal amount of time, ignoring collisions and confinement. */
+    project(particle: Readonly<TParticle>, otherParticles: Iterable<Readonly<TParticle>>): Readonly<TParticle> | undefined;
 }
 export interface IConfine<TParticle> {
+    /**
+     * @param {ParticleProps} trivialProjection Trivial here means disregarding collisions and confinement.
+     */
     confine(projection: TParticle, previousState: TParticle | undefined): TParticle | undefined;
 }
 
