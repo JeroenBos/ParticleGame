@@ -106,32 +106,6 @@ export class Confiner implements IConfine<ParticleProps> {
             else {
                 return { coordinate: r, velocity: v };
             }
-
-            // let transformation = ({ _r, _dr, _v, _L }: t) => ({ _r: _r - size, _dr: _dr, _v: _v, _L: _L - 2 * size });
-            // let inverse = ({ _r, _dr, _v, _L }: t) => ({ _r: _r + size, _dr: _dr, _v: _v, _L: _L + 2 * size });
-
-            // if (r < 0 || r + dr < 0) {
-            //     const _transformation = ({ _r, _dr, _v, _L }: t) => ({ _r: L - _r, _dr: -_dr, _v: -_v, _L: _L });
-            //     const _inverse = _transformation;
-            //     transformation = Extensions.compose(transformation, _transformation);
-            //     inverse = Extensions.compose(_inverse, inverse);
-            // }
-            // if (dr < 0) {
-            //     const _transformation = ({ _r, _dr, _v, _L }: t) => ({ _r: -_r, _dr: -_dr, _v: -_v, _L: _L });
-            //     const _inverse = _transformation;
-            //     transformation = Extensions.compose(transformation, _transformation);
-            //     inverse = Extensions.compose(_inverse, inverse);
-            // }
-
-            // if (L < r + dr) {
-            //     const distanceTraveledInWall = r + dr - L;
-            //     const newR = L - distanceTraveledInWall;
-            //     const newV = -Math.abs(v);
-            //     const result = inverse({ _r: newR, _dr: dr, _v: newV, _L: L });
-            //     return { r: result._r, v: result._v };
-            // }
-
-            // return { r, v };
         }
 
         const xResult = bounce1(p.x, previousState.x, p.vx, this.width, p.size);
