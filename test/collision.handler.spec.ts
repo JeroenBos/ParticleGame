@@ -5,7 +5,7 @@ import { assert } from "../jbsnorro";
 import { Invariants } from "../invariants/.invariants";
 import { Collision } from '../physics.base';
 
-const collisionDetector = Invariants.For(new CollisionHandler());
+const collisionHandler = Invariants.For(new CollisionHandler());
 
 describe('CollisionHandler', () => {
     it('Stationary overlapping particles are placed adjacent', () => {
@@ -29,7 +29,7 @@ describe('CollisionHandler', () => {
 
         // act
         debugger;
-        const resultants = collisionDetector.collide(p, q);
+        const resultants = collisionHandler.collide(p, q);
 
         // assert
         assert(resultants.length == 2);
@@ -69,7 +69,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionDetector.collide(p, q);
+        const resultants = collisionHandler.collide(p, q);
 
         // assert
         assert(resultants.length == 2);
@@ -109,7 +109,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionDetector.collide(p, q);
+        const resultants = collisionHandler.collide(p, q);
 
         // assert
         assert(resultants.length == 2);
@@ -149,7 +149,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionDetector.collide(p, q);
+        const resultants = collisionHandler.collide(p, q);
 
         // assert
         assert(resultants.length == 2);
@@ -179,7 +179,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionDetector.collide(p, q);
+        const resultants = collisionHandler.collide(p, q);
 
         // assert
         assert(resultants[0].vx == 1);
@@ -210,7 +210,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionDetector.collide(p, q);
+        const resultants = collisionHandler.collide(p, q);
 
         // assert
         assert(resultants[0].vx == 2);
@@ -240,7 +240,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionDetector.collide(p, q);
+        const resultants = collisionHandler.collide(p, q);
 
         // assert
         assert(resultants[0].vx == 2);
@@ -270,7 +270,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionDetector.collide(p, q);
+        const resultants = collisionHandler.collide(p, q);
 
         // assert
         assert(resultants[0].vx == 3);
