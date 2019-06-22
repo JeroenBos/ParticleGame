@@ -12,19 +12,20 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
 
     private placeAdjacent(a: Readonly<PQS>, b: Readonly<PQS>): ParticleProps[] {
         const com = CollisionHandler.com(a, b);
-        const transformations = Transformations.translationAndRotation(com.q, a.q);
-        const [qNew_a, qNew_b] = Transformations.perform2(operation, transformations, a.q, b.q);
+        const physicalTransformations = Transformations.translationAndRotation(com.q, a.q);
+        const transformations = Transformations.Property<QMS, 'q', number>('q', physicalTransformations);
 
-        function operation(coordinate: number, otherCoordinates: number[]): number {
+        const [{ q: qNew_a }, { q: qNew_b }] = Transformations.perform2(operation, transformations, a, b);
+
+        function operation(coordinate: QMS & { ρ: number }, otherCoordinates: (QMS & { ρ: number })[]): QMS & { ρ: number } {
             assert(otherCoordinates.length == 1);
 
-            const xa = coordinate;
-            const xb = otherCoordinates[0];
-            const sign = Math.sign(xa);
-            const result = (a.m * xa + b.m * xb + sign * a.m * a.radius + sign * a.m * b.radius) / (a.m + b.m);
-            return result;
+            const a = coordinate;
+            const b = otherCoordinates[0];
+            const sign = Math.sign(a.ρ);
+            const ρ = (a.m * a.ρ + b.m * b.ρ + sign * a.m * a.radius + sign * a.m * b.radius) / (a.m + b.m);
+            return ({ ...coordinate, ρ });
         }
-
         const [pNew_a, pNew_b] = CollisionHandler.glue2(a.p, b.p);
 
         const a_new = toProps(a, qNew_a, pNew_a);
@@ -36,6 +37,7 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
             return { x: q.x, y: q.y, m: particle.m, radius: particle.radius, vx: p.vx, vy: p.vy };
         }
     }
+
 
     private static com(...particles: Readonly<Qed & M>[]): QM {
         const result = { m: 0, q: { x: 0, y: 0 } };
