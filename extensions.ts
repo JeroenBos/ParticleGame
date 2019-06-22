@@ -18,6 +18,13 @@ export default class Extensions {
         const result = Array.from<T>(this._removeUndefineds(sequence));
         return result;
     }
+    public static notUndefined<T>(sequence: Array<T | undefined>): T[] {
+        for (const element of sequence) {
+            if (element === undefined)
+                throw new Error('undefined encountered');
+        }
+        return sequence as T[];
+    }
 
     public static compose<T>(f: (_: T) => T, g: (_: T) => T): (_: T) => T {
         return (t: T) => g(f(t));

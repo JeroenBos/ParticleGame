@@ -5,28 +5,30 @@ import { assert } from "../jbsnorro";
 import { Invariants } from "../invariants/.invariants";
 import { ForceComputer } from '../physics/forceComputer';
 import { assertTotalConservations } from './testhelper';
+import { Particle, PQR } from '../physics';
+import Extensions from '../extensions';
 
 const collisionHandler = Invariants.For(new CollisionHandler());
 
 describe('CollisionHandler', () => {
     it('Stationary overlapping particles are placed adjacent', () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create({
             x: 0,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
-        const q: ParticleProps = {
+        });
+        const q = Particle.create({
             x: 1,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         debugger;
@@ -51,22 +53,22 @@ describe('CollisionHandler', () => {
 
     it('Stationary overlapping particles along y-axis are placed adjacent', () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create({
             x: 0,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
-        const q: ParticleProps = {
+        });
+        const q = Particle.create({
             x: 0,
             y: 1,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         // debugger;
@@ -91,22 +93,22 @@ describe('CollisionHandler', () => {
 
     it('Stationary overlapping particles mirrored along y-axis are placed adjacent', () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create({
             x: 0,
             y: 1,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
-        const q: ParticleProps = {
+        });
+        const q = Particle.create({
             x: 0,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         // debugger;
@@ -131,22 +133,22 @@ describe('CollisionHandler', () => {
 
     it('Non-overlapping particles collision are placed adjacent', () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create({
             x: 0,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
-        const q: ParticleProps = {
+        });
+        const q = Particle.create({
             x: 10,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         // debugger;
@@ -161,22 +163,22 @@ describe('CollisionHandler', () => {
 
     it('Moving overlapping particles are moving in unison', () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create({
             x: 0,
             y: 0,
             vx: 1,
             vy: 0,
             radius: 1,
             m: 1
-        };
-        const q: ParticleProps = {
+        });
+        const q = Particle.create({
             x: 0,
             y: 1,
             vx: 1,
             vy: 0,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         // debugger;
@@ -192,22 +194,22 @@ describe('CollisionHandler', () => {
 
     it('Moving overlapping particles with diagonal velocity move in unison', () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create({
             x: 0,
             y: 0,
             vx: 4,
             vy: 0,
             radius: 1,
             m: 1
-        };
-        const q: ParticleProps = {
+        });
+        const q = Particle.create({
             x: 0,
             y: 0,
             vx: 0,
             vy: 4,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         // debugger;
@@ -222,22 +224,22 @@ describe('CollisionHandler', () => {
 
     it('Moving overlapping particles with mirrored diagonal velocity move in unison', () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create({
             x: 0,
             y: 0,
             vx: 4,
             vy: 0,
             radius: 1,
             m: 1
-        };
-        const q: ParticleProps = {
+        });
+        const q = Particle.create({
             x: 0,
             y: 0,
             vx: 0,
             vy: -4,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         // debugger;
@@ -252,22 +254,22 @@ describe('CollisionHandler', () => {
 
     it('Moving overlapping different particles with diagonal velocity move in unison awrily', () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create({
             x: 0,
             y: 0,
             vx: 4,
             vy: 0,
             radius: 1,
             m: 3
-        };
-        const q: ParticleProps = {
+        });
+        const q = Particle.create({
             x: 0,
             y: 0,
             vx: 0,
             vy: -4,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         // debugger;
@@ -283,10 +285,10 @@ describe('CollisionHandler', () => {
     it('collision becomes stationary', () => {
         // arrange
         const particles = [
-            { x: 5, y: 10, vx: 2, vy: 0, radius: 0, m: 1 },
-            { x: 6, y: 10, vx: -2, vy: 0, radius: 0, m: 1 }
+            Particle.create({ x: 5, y: 10, vx: 2, vy: 0, radius: 0, m: 1 }),
+            Particle.create({ x: 6, y: 10, vx: -2, vy: 0, radius: 0, m: 1 })
         ]
-        const projectedParticles = new ForceComputer().projectAll(particles) as ParticleProps[];
+        const projectedParticles = Extensions.notUndefined(new ForceComputer().projectAll(particles));
 
         // act
         // debugger;
@@ -304,8 +306,9 @@ describe('CollisionHandler', () => {
         const particles = [
             { x: 5, y: 10, vx: 1, vy: 0, radius: 0, m: 2 },
             { x: 6, y: 10, vx: -1, vy: 0, radius: 0, m: 1 }
-        ]
-        const projectedParticles = new ForceComputer().projectAll(particles) as ParticleProps[];
+        ].map(Particle.create);
+
+        const projectedParticles = Extensions.notUndefined(new ForceComputer().projectAll(particles));
 
         // act
         // debugger;

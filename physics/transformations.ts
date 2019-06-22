@@ -182,18 +182,16 @@ export class Transformations {
     /** Creates a new transformation that performs the specified transformation on a property with the specified name. */
     public static Property<T, K extends string & keyof T, U>(
         k: K,
-        t: TransformationPair<T[K], U>
-    ): TransformationPair<T, T & { ρ: U }> {
-        function transformation(arg: T): T & { ρ: U } {
-            const result = ({ ...(arg as any) });
-            result.ρ = t.transformation(arg[k]);
-            delete result[k];
-            return result;
+        t: TransformationPair<T[K], U>,
+        wither: (t: T, value: T[K]) => T
+    ): TransformationPair<T, { σ: T, ρ: U }> {
+        function transformation(arg: T): { σ: T, ρ: U } {
+            const ρ = t.transformation(arg[k]);
+            return { σ: arg, ρ };
         }
-        function inverseTransformation(arg: T & { ρ: U }): T {
-            const result = ({ ...(arg as any) });
-            result[k] = t.inverseTransformation(arg.ρ);
-            delete result.ρ;
+        function inverseTransformation(arg: { σ: T, ρ: U }): T {
+            const value = t.inverseTransformation(arg.ρ);
+            const result = wither(arg.σ, value);
             return result;
         }
         return { transformation, inverseTransformation };

@@ -1,13 +1,14 @@
 import { IComputeForce } from "../physics.base";
 import { ParticleProps } from "../particle";
 import { Dv } from "./engine";
+import { Particle } from ".";
 
-export class ForceComputer implements IComputeForce<ParticleProps, Dv>{
-    computeForceOn(receiver: ParticleProps, actor: ParticleProps): Dv {
+export class ForceComputer implements IComputeForce<Particle, Dv>{
+    computeForceOn(receiver: Particle, actor: Particle): Dv {
         return { dvx: 0, dvy: 0 };
     }
 
-    project(particle: Readonly<ParticleProps>, otherParticles: Iterable<Readonly<ParticleProps>>): ParticleProps | undefined {
+    project(particle: Particle, otherParticles: Iterable<Particle>): Particle | undefined {
         const dv: Dv = { dvx: 0, dvy: 0 };
         for (const p of otherParticles) {
             const dv_p = this.computeForceOn(particle, p);
@@ -15,18 +16,18 @@ export class ForceComputer implements IComputeForce<ParticleProps, Dv>{
             dv.dvy += dv_p.dvy;
         }
 
-        const projection = {
-            x: particle.x + particle.vx,
-            y: particle.y + particle.vy,
-            vx: particle.vx + dv.dvx,
-            vy: particle.vy + dv.dvy,
+        const projection = Particle.create({
+            x: particle.q.x + particle.p.vx,
+            y: particle.q.y + particle.p.vy,
+            vx: particle.p.vx + dv.dvx,
+            vy: particle.p.vy + dv.dvy,
             radius: particle.radius,
             m: particle.m
-        };
+        });
 
         return projection;
     }
-    projectAll(particles: Readonly<ParticleProps>[]): (Readonly<ParticleProps> | undefined)[] {
+    projectAll(particles: Particle[]): (Particle | undefined)[] {
         return particles.map((_, i) => {
             const particle = particles[i];
             const otherParticles = particles.slice(0); otherParticles.splice(i);

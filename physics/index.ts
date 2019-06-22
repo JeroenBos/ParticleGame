@@ -1,67 +1,85 @@
 import { ParticleProps } from "../particle";
 
 export interface P {
-    m: number,
-    vx: number,
-    vy: number
+    readonly m: number,
+    readonly vx: number,
+    readonly vy: number
 }
 
 export interface V {
 }
 export interface Q {
-    x: number,
-    y: number
+    readonly x: number,
+    readonly y: number
 }
 
 export interface Dv {
-    dvx: number,
-    dvy: number
+    readonly dvx: number,
+    readonly dvy: number
 }
 
 export interface IParticle {
-    radius: number,
-    q: Q,
-    p: P
+    readonly radius: number,
+    readonly q: Q,
+    readonly p: P
 }
 
-export interface S {
-    radius: number
+export interface Red {
+    readonly radius: number
 }
 export interface Qed {
-    q: Q
+    readonly q: Q
 }
 
 export interface Ped {
-    p: P
+    readonly p: P
 }
 
 export interface M {
-    m: number
+    readonly m: number
 }
-export type PQS = Qed & Ped & S & M;
-export type QMS = QM & S;
+export type PQR = Qed & Ped & Red & M;
+export type QMS = QM & Red;
 export type QM = Qed & M;
 
 
-export class Particle implements QMS {
-
-    public static create(p: ParticleProps): QMS & PQS {
-        return {
-            m: p.m,
-            q: { x: p.x, y: p.y },
-            radius: p.radius,
-            p: { m: p.m, vx: p.vx, vy: p.vy }
-        };
+export class Particle implements QMS, PQR, Q, P {
+    public static create(p: ParticleProps): Particle {
+        return new Particle(p);
     }
-    private constructor(private readonly p: ParticleProps) {
+    private constructor(private readonly particle: ParticleProps) {
+    }
+
+    get x(): number {
+        return this.particle.x;
+    }
+    get y(): number {
+        return this.particle.y;
+    }
+    get vx(): number {
+        return this.particle.vx;
+    }
+    get vy(): number {
+        return this.particle.vy;
     }
     get q(): Q {
-        return { x: this.p.x, y: this.p.y };
+        return { x: this.x, y: this.y };
+    };
+    get p(): P {
+        return { vx: this.vx, vy: this.vy, m: this.m };
     };
     get m(): number {
-        return this.p.m;
+        return this.particle.m;
     };
     get radius(): number {
-        return this.p.radius;
+        return this.particle.radius;
     };
+
+    public withQ(q: Q): Particle {
+        return Particle.create({ x: q.x, y: q.y, vx: this.vx, vy: this.vy, m: this.m, radius: this.radius });
+    }
+
+    public withP(p: { vx: number, vy: number }): Particle {
+        return Particle.create({ vx: p.vx, vy: p.vy, x: this.x, y: this.y, m: this.m, radius: this.radius });
+    }
 }

@@ -1,12 +1,13 @@
 import { ICollectionDetector, Collision } from "../physics.base";
 import { ParticleProps } from "../particle";
+import { Particle } from ".";
 
-export class CollisionDetector implements ICollectionDetector<ParticleProps> {
+export class CollisionDetector implements ICollectionDetector<Particle> {
     private _count = 0;
     get count() {
         return this._count;
     }
-    detect(particles: ParticleProps[]): { collisions: Collision[], freeParticles: ParticleProps[] } {
+    detect(particles: Particle[]): { collisions: Collision[], freeParticles: Particle[] } {
         const collisions: Collision[] = [];
 
         const collided = new Array<boolean>(particles.length);
@@ -26,7 +27,7 @@ export class CollisionDetector implements ICollectionDetector<ParticleProps> {
             }
         };
 
-        const freeParticles: ParticleProps[] = [];
+        const freeParticles: Particle[] = [];
         for (let i = 0; i < particles.length; i++) {
             if (!collided[i])
                 freeParticles.push(particles[i]);
@@ -34,7 +35,7 @@ export class CollisionDetector implements ICollectionDetector<ParticleProps> {
         return { collisions, freeParticles };
     }
 
-    private collideQ(p: ParticleProps, q: ParticleProps): boolean {
+    private collideQ(p: Particle, q: Particle): boolean {
         if (q === undefined) {
             if (q === undefined) {
             }

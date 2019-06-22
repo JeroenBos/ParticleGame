@@ -4,20 +4,21 @@ import { ParticleProps } from "../particle";
 import { assert, assertSequenceEquals } from "../jbsnorro";
 import { Invariants } from "../invariants/.invariants";
 import { Collision } from '../physics.base';
+import { Particle } from '../physics';
 
 const collisionDetector = Invariants.For(new CollisionDetector());
 
 describe('CollisionDetector', () => {
     it('Single particle remains free', () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create({
             x: 0,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         // debugger;
@@ -31,22 +32,22 @@ describe('CollisionDetector', () => {
 
     it('Two overlapping particles collide', () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create( {
             x: 0,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
-        const q: ParticleProps = {
+        });
+        const q = Particle.create( {
             x: 1,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         // debugger;
@@ -61,22 +62,22 @@ describe('CollisionDetector', () => {
 
     it(`Two non-overlapping particles don't collide`, () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create({
             x: 0,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
-        const q: ParticleProps = {
+        });
+        const q = Particle.create({
             x: 1,
             y: 5,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         // debugger;
@@ -91,22 +92,22 @@ describe('CollisionDetector', () => {
 
     it(`Two touching particles don't collide`, () => {
         // arrange
-        const p: ParticleProps = {
+        const p = Particle.create( {
             x: 0,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
-        const q: ParticleProps = {
+        });
+        const q = Particle.create({
             x: 2,
             y: 0,
             vx: 0,
             vy: 0,
             radius: 1,
             m: 1
-        };
+        });
 
         // act
         // debugger;

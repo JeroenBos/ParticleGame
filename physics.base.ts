@@ -18,14 +18,14 @@ export interface Collision {
     j: number
 }
 export interface ICollectionHandler<TParticle> {
-    collide(p: Readonly<TParticle>, q: Readonly<TParticle>): Readonly<TParticle[]>;
+    collide(p: TParticle, q: TParticle): TParticle[];
 }
 export interface IComputeForce<TParticle, TForce> {
     /** Computes the force of particle 'actor' on particle 'receiver'. */
     computeForceOn(receiver: TParticle, actor: TParticle): TForce;
     /** Computes the projected state of the particle after an infinitesimal amount of time, ignoring collisions and confinement. */
     project(particle: Readonly<TParticle>, otherParticles: Iterable<Readonly<TParticle>>): Readonly<TParticle> | undefined;
-    projectAll(particle: Readonly<TParticle>[]): (Readonly<TParticle> | undefined)[];
+    projectAll(particle: TParticle[]): (TParticle | undefined)[];
 }
 export interface IConfine<TParticle> {
     /**

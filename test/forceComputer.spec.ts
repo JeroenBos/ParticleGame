@@ -8,6 +8,8 @@ import { CollisionDetector } from '../physics/collisionDetector';
 import { ForceComputer } from '../physics/forceComputer';
 import { Confiner } from '../physics/confinement';
 import { forceComputer } from '../app/config';
+import Extensions from '../extensions';
+import { Particle } from '../physics';
 
 function createEngine(width: number = 100, height: number = 100) {
     return new Engine(new CollisionDetector(), new CollisionHandler(), new ForceComputer(), new Confiner(width, height));
@@ -15,11 +17,11 @@ function createEngine(width: number = 100, height: number = 100) {
 describe('Force', () => {
     it('No force', () => {
         // arrange
-        const particles = [{ x: 50, y: 50, vx: 10, vy: 0, radius: 30, m: 2 }, { x: 60, y: 50, vx: 10, vy: 0, radius: 20, m: 1 }];
+        const particles = [{ x: 50, y: 50, vx: 10, vy: 0, radius: 30, m: 2 }, { x: 60, y: 50, vx: 10, vy: 0, radius: 20, m: 1 }].map(Particle.create);
 
         // act
         debugger;
-        const projections = forceComputer.projectAll(particles) as ParticleProps[];
+        const projections = Extensions.notUndefined(forceComputer.projectAll(particles));
 
         // assert
         assert(projections[0].vx == 10);

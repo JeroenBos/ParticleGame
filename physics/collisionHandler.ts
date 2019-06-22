@@ -1,30 +1,32 @@
 import { ICollectionHandler } from "../physics.base";
-import { ParticleProps } from "../particle";
 import { Transformations, TransformationPair } from "./transformations";
-import { Q, S, M, QMS, QM, Particle, P, PQS, Qed } from ".";
+import { Q, Red, M, QMS, QM, Particle, P, PQR, Qed } from ".";
 import { assert } from "../jbsnorro";
+import { isNumber } from "util";
 
-export class CollisionHandler implements ICollectionHandler<ParticleProps> {
-    collide(a: Readonly<ParticleProps>, b: Readonly<ParticleProps>): ParticleProps[] {
-        return this.placeAdjacent(Particle.create(a), Particle.create(b));
+export class CollisionHandler implements ICollectionHandler<Particle> {
+    collide(a: Particle, b: Particle): Particle[] {
+        return this.placeAdjacent(a, b);
     }
 
 
-    private placeAdjacent(a: Readonly<PQS>, b: Readonly<PQS>): ParticleProps[] {
+    private placeAdjacent(a: Particle, b: Particle): Particle[] {
         const com = CollisionHandler.com(a, b);
         const physicalTransformations = Transformations.translationAndRotation(com.q, a.q);
-        const transformations = Transformations.Property<QMS, 'q', number>('q', physicalTransformations);
+        const transformations = Transformations.Property<Particle, 'q', number>('q', physicalTransformations, (particle, newQ) => particle.withQ(newQ));
 
         const [{ q: qNew_a }, { q: qNew_b }] = Transformations.perform2(operation, transformations, a, b);
 
-        function operation(coordinate: QMS & { ρ: number }, otherCoordinates: (QMS & { ρ: number })[]): QMS & { ρ: number } {
+        function operation(coordinate: { σ: Particle, ρ: number }, otherCoordinates: { σ: Particle, ρ: number }[]): { σ: Particle, ρ: number } {
             assert(otherCoordinates.length == 1);
 
-            const a = coordinate;
-            const b = otherCoordinates[0];
-            const sign = Math.sign(a.ρ);
-            const ρ = (a.m * a.ρ + b.m * b.ρ + sign * a.m * a.radius + sign * a.m * b.radius) / (a.m + b.m);
-            return ({ ...coordinate, ρ });
+            const a = coordinate.σ;
+            const b = otherCoordinates[0].σ;
+            const a_ρ = coordinate.ρ;
+            const b_ρ = otherCoordinates[0].ρ;
+            const sign = Math.sign(a_ρ);
+            const ρ = (a.m * a_ρ + b.m * b_ρ + sign * a.m * a.radius + sign * a.m * b.radius) / (a.m + b.m);
+            return ({ σ: coordinate.σ, ρ });
         }
         const [pNew_a, pNew_b] = CollisionHandler.glue2(a.p, b.p);
 
@@ -33,8 +35,8 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
 
         return [a_new, b_new];
 
-        function toProps(particle: Readonly<QMS>, q: Q, p: P): ParticleProps {
-            return { x: q.x, y: q.y, m: particle.m, radius: particle.radius, vx: p.vx, vy: p.vy };
+        function toProps(particle: Readonly<QMS>, q: Q, p: P) {
+            return Particle.create({ x: q.x, y: q.y, vx: p.vx, vy: p.vy, m: particle.m, radius: particle.radius });
         }
     }
 
