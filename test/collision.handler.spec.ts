@@ -4,6 +4,10 @@ import { ParticleProps } from "../particle";
 import { assert } from "../jbsnorro";
 import { Invariants } from "../invariants/.invariants";
 import { Collision } from '../physics.base';
+import Engine, { TestEngine } from '../physics/engine';
+import { ForceComputer } from '../physics/forceComputer';
+import { Confiner } from '../physics/confinement';
+import { CollisionDetector } from '../physics/collisionDetector';
 
 const collisionHandler = Invariants.For(new CollisionHandler());
 
@@ -277,5 +281,42 @@ describe('CollisionHandler', () => {
         assert(resultants[0].vy == -1);
         assert(resultants[1].vx == 3);
         assert(resultants[1].vy == -1);
+    });
+
+    it('collision becomes stationary', () => {
+        // arrange
+        const particles = [
+            { x: 5, y: 10, vx: 2, vy: 0, radius: 0, m: 1 },
+            { x: 6, y: 10, vx: -2, vy: 0, radius: 0, m: 1 }
+        ]
+        const projectedParticles = (new Engine(new CollisionDetector(), collisionHandler, new ForceComputer(), new Confiner(20, 20)) as any as TestEngine).projectAll(particles);
+
+        // act
+        // debugger;
+        const resultants = collisionHandler.collide(projectedParticles[0], projectedParticles[1]);
+
+        // assert
+        assert(resultants[0].x == resultants[1].x);
+        assert(resultants[0].vx == resultants[1].vx);
+        assert(resultants[0].x == 5.5);
+        assert(resultants[0].vx == 0);
+    });
+
+    it('head on collision moves in unison', () => {
+        // arrange
+        const particles = [
+            { x: 5, y: 10, vx: 1, vy: 0, radius: 0, m: 2 },
+            { x: 6, y: 10, vx: -1, vy: 0, radius: 0, m: 1 }
+        ]
+        const projectedParticles = (new Engine(new CollisionDetector(), collisionHandler, new ForceComputer(), new Confiner(20, 20)) as any as TestEngine).projectAll(particles);
+
+        // act
+        debugger;
+        const resultants = collisionHandler.collide(projectedParticles[0], projectedParticles[1]);
+
+        // assert
+        assert(resultants.length == 2);
+        assert(resultants[0].x == resultants[1].x);
+        assert(resultants[0].vx == resultants[1].vx);
     });
 });

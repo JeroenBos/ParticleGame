@@ -1,18 +1,12 @@
-import { Container } from "../Container";
-import ParticleGenerator from "../particleGenerator";
-import Engine from "../physics/engine";
-import { CollisionDetector } from "../physics/collisionDetector";
-import { CollisionHandler } from "../physics/collisionHandler";
-import { ForceComputer } from "../physics/forceComputer";
-import { Confiner } from "../physics/confinement";
 import 'mocha';
-import { width, height, engine, particleGenerator } from '../app/config';
+import { engine, particleGenerator, collisionHandler, collisionDetector } from '../app/config';
 import { assert } from "../jbsnorro";
+import { ParticleProps } from "../particle";
+import { TestEngine } from '../physics/engine';
 
 
 describe('Integration tests', () => {
     it('The same as diplayed in the html', () => {
-
         // arrange
         const stepCount = 100;
         const generatedParticles = particleGenerator.generate();
@@ -24,12 +18,15 @@ describe('Integration tests', () => {
         for (let i = 0; i < stepCount; i++) {
             const particlesBefore = particles;
             particles = engine.evolve(particles);
-            if (particles[0].vx == 0) {
-                console.log();
+            if (collisionDetector.count > 2) {
+                console.log(JSON.stringify(particlesBefore));
+                debugger;
             }
         }
 
         // assert
         assert(particles.length == 2);
     });
+
+
 });

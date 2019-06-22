@@ -67,6 +67,7 @@ export default class Engine implements IEngine<ParticleProps, Dv> {
 }
 
 
+export type TestEngine = { projectAll(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[] };
 export interface Dv {
     dvx: number,
     dvy: number
