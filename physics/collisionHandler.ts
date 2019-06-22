@@ -39,7 +39,8 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
     }
 
 
-    private static com(...particles: Readonly<Qed & M>[]): QM {
+    /** Computes the location of the center of mass of the specified particles. */
+    public static com(...particles: Readonly<Qed & M>[]): QM {
         const result = { m: 0, q: { x: 0, y: 0 } };
         for (const particle of particles) {
             result.m += particle.m;
@@ -53,7 +54,8 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
         return result;
     }
 
-    private static p_com(...particles: Readonly<P>[]): P {
+    /** Computes the momentum of the center of mass of the specified particles. */
+    public static pom(...particles: Readonly<P>[]): P {
         const result = { m: 0, vx: 0, vy: 0 };
         for (const particle of particles) {
             result.m += particle.m;
@@ -69,7 +71,7 @@ export class CollisionHandler implements ICollectionHandler<ParticleProps> {
         return this.glue(a, b) as [P, P];
     }
     private static glue(...particles: Readonly<P>[]): P[] {
-        const p_com = this.p_com(...particles);
+        const p_com = this.pom(...particles);
 
         const result = particles.map((particle, i) => ({ m: particle.m, vx: p_com.vx, vy: p_com.vy }) as P);
         return result;

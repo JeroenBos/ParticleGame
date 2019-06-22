@@ -4,6 +4,7 @@ import { ParticleProps } from "../particle";
 import { assert } from "../jbsnorro";
 import { Invariants } from "../invariants/.invariants";
 import { ForceComputer } from '../physics/forceComputer';
+import { assertTotalConservations } from './testhelper';
 
 const collisionHandler = Invariants.For(new CollisionHandler());
 
@@ -307,12 +308,13 @@ describe('CollisionHandler', () => {
         const projectedParticles = new ForceComputer().projectAll(particles) as ParticleProps[];
 
         // act
-        debugger;
+        // debugger;
         const resultants = collisionHandler.collide(projectedParticles[0], projectedParticles[1]);
 
         // assert
         assert(resultants.length == 2);
         assert(resultants[0].x == resultants[1].x);
         assert(resultants[0].vx == resultants[1].vx);
+        assertTotalConservations(particles, resultants);
     });
 });
