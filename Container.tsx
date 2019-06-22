@@ -1,5 +1,5 @@
 import * as React from "react";
-import ParticleGenerator from './particleGenerator';
+import ParticleGenerator from './app/particleGenerator';
 import { Particle, ParticleProps } from "./particle";
 import { IEngine } from "./physics.base";
 import { Dv } from "./physics/engine";
