@@ -25,6 +25,7 @@ export interface IComputeForce<TParticle, TForce> {
     computeForceOn(receiver: TParticle, actor: TParticle): TForce;
     /** Computes the projected state of the particle after an infinitesimal amount of time, ignoring collisions and confinement. */
     project(particle: Readonly<TParticle>, otherParticles: Iterable<Readonly<TParticle>>): Readonly<TParticle> | undefined;
+    projectAll(particle: Readonly<TParticle>[]): (Readonly<TParticle> | undefined)[];
 }
 export interface IConfine<TParticle> {
     /**

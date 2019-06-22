@@ -49,25 +49,20 @@ export default class Engine implements IEngine<ParticleProps, Dv> {
     }
 
     private projectAll(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[] {
-        const projections = particles.map((_, i) => this.project(i, particles));
-        const result = Extensions.removeUndefineds(projections);
-        return result;
-    }
-    private project(i: number, particles: ParticleProps[]): Readonly<ParticleProps> | undefined {
-        const particle = particles[i];
-        const otherParticles = particles.slice(0); otherParticles.splice(i);
+        const freeProjections = this.forceComputer.projectAll(particles);
+        const confinedProjections = freeProjections.map((projection, i) => {
+            if (projection == undefined)
+                return undefined;
+            const particle = particles[i];
+            return this.confiner.confine(projection, particle);
+        });
 
-        const projection = this.forceComputer.project(particle, otherParticles);
-        if (projection === undefined) {
-            return undefined;
-        }
-        const confinedProjection = this.confiner.confine(projection, particle);
-        return confinedProjection;
+        const result = Extensions.removeUndefineds(confinedProjections);
+        return result;
     }
 }
 
 
-export type TestEngine = { projectAll(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[] };
 export interface Dv {
     dvx: number,
     dvy: number

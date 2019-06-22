@@ -2,8 +2,9 @@ import 'mocha';
 import { engine, particleGenerator, collisionHandler, collisionDetector } from '../app/config';
 import { assert } from "../jbsnorro";
 import { ParticleProps } from "../particle";
-import { TestEngine } from '../physics/engine';
+import { CollisionHandler } from '../physics/collisionHandler';
 
+type TestEngine = { projectAll(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[] };
 
 describe('Integration tests', () => {
     it('The same as diplayed in the html', () => {

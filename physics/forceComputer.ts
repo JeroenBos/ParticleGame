@@ -26,4 +26,13 @@ export class ForceComputer implements IComputeForce<ParticleProps, Dv>{
 
         return projection;
     }
+    projectAll(particles: Readonly<ParticleProps>[]): (Readonly<ParticleProps> | undefined)[] {
+        return particles.map((_, i) => {
+            const particle = particles[i];
+            const otherParticles = particles.slice(0); otherParticles.splice(i);
+            const freeProjection = this.project(particle, otherParticles);
+            return freeProjection;
+        });
+    }
+
 }
