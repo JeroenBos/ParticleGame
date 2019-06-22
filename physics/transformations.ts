@@ -19,7 +19,7 @@ export class Transformations {
         operation: (u: U, others: U[]) => U,
         transformation: (t: T) => U,
         inverseTransformation: (u: U) => T,
-        ...input: T[]) {
+        ...input: T[]): T[] {
 
         const transformed = input.map(transformation);
         const result = transformed.map((u, i) => {
