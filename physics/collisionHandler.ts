@@ -26,7 +26,8 @@ export class CollisionHandler implements ICollectionHandler<Particle> {
             const b_ρ = otherCoordinates[0].ρ;
             const sign = Math.sign(a_ρ);
             const ρ = (a.m * a_ρ + b.m * b_ρ + sign * a.m * a.radius + sign * a.m * b.radius) / (a.m + b.m);
-            return ({ σ: coordinate.σ, ρ });
+            const result = ({ σ: coordinate.σ, ρ });
+            return result;
         }
         const [pNew_a, pNew_b] = CollisionHandler.glue2(a.p, b.p);
 
@@ -57,16 +58,17 @@ export class CollisionHandler implements ICollectionHandler<Particle> {
     }
 
     /** Computes the momentum of the center of mass of the specified particles. */
-    public static pom(...particles: Readonly<P>[]): P {
-        const result = { m: 0, vx: 0, vy: 0 };
+    public static pom(...particles: Readonly<P>[]): { px: number, py: number } & P {
+        const result = { m: 0, px: 0, py: 0, vx: 0, vy: 0 };
         for (const particle of particles) {
             result.m += particle.m;
-            result.vx += particle.vx * particle.m;
-            result.vy += particle.vy * particle.m;
+            result.px += particle.vx * particle.m;
+            result.py += particle.vy * particle.m;
         }
 
-        result.vx /= result.m;
-        result.vy /= result.m;
+        result.vx = result.px / result.m;
+        result.vy = result.py / result.m;
+
         return result;
     }
     private static glue2(a: P, b: P): [P, P] {
