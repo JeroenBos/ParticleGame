@@ -22,7 +22,7 @@ describe('Confiner', () => {
         const trivialProjection = particle.withQ({ x: particle.x + particle.vx, y: particle.y + particle.vy });
 
         // act
-        debugger;
+        // debugger;
         const result = confiner.confine(trivialProjection, particle);
 
         // assert

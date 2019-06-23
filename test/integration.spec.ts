@@ -1,5 +1,5 @@
 import 'mocha';
-import { engine, particleGenerator, collisionHandler, collisionDetector } from '../app/config';
+import { engine, particleGenerator, collisionHandler, collisionDetector, confiner } from '../app/config';
 import { assert } from "../jbsnorro";
 import { ParticleProps } from "../particle";
 import { CollisionHandler } from '../physics/collisionHandler';
@@ -18,12 +18,7 @@ describe('Integration tests', () => {
         // debugger;
         let particles = initialParticles;
         for (let i = 0; i < stepCount; i++) {
-            const particlesBefore = particles;
             particles = engine.evolve(particles);
-            if (collisionDetector.count > 2) {
-                console.log(JSON.stringify(particlesBefore));
-                debugger;
-            }
         }
 
         // assert
@@ -35,16 +30,18 @@ describe('Integration tests', () => {
         const stepCount = 100;
         const generatedParticles = particleGenerator.generate();
         const initialParticles = engine.resolveInitialCollisions(generatedParticles);
+        confiner.resetImpartedMomentum();
 
         // act
-        debugger;
+        // debugger;
         let particles = initialParticles;
         for (let i = 1; i < stepCount; i++) {
             const particlesBefore = particles;
             particles = engine.evolve(particles);
 
             // assert
-            assertTotalConservations(particlesBefore, particles);
+            assertTotalConservations(particlesBefore, particles, confiner);
+            confiner.resetImpartedMomentum();
         }
     });
 });

@@ -25,7 +25,7 @@ describe('Engine', () => {
             radius: 1,
         });
         // act
-        debugger;
+        // debugger;
         const [t1] = engine.evolve([t0]) as [Particle];
 
         // assert
@@ -55,7 +55,7 @@ describe('Engine', () => {
             radius: 1,
         });
         // act
-        debugger;
+        // debugger;
         const [t1] = engine.evolve([t0]) as [Particle];
 
         // assert
@@ -80,7 +80,7 @@ describe('Engine', () => {
             radius: 4,
         });
         // act
-        debugger;
+        // debugger;
         const [t1] = engine.evolve([t0]) as [Particle];
 
         // assert

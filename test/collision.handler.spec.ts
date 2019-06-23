@@ -31,7 +31,7 @@ describe('CollisionHandler', () => {
         });
 
         // act
-        debugger;
+        // debugger;
         const resultants = collisionHandler.collide(p, q);
 
         // assert
