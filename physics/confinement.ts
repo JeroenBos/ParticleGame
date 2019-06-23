@@ -4,8 +4,13 @@ import Extensions from "../extensions";
 import { Transformations, State1D, TransformationPair } from "./transformations";
 import { Transform } from "stream";
 import { assert } from "../jbsnorro";
-import { Particle } from ".";
+import { Particle, P } from ".";
 
+interface deltaP {
+    m?: number,
+    px: number,
+    py: number
+}
 interface t {
     _r: number;
     _dr: number;
@@ -15,8 +20,32 @@ interface t {
 
 
 export class Confiner implements IConfine<Particle> {
+    private _impartedMomentum = { m: 0, px: 0, py: 0 };
+    /** Is positive when momentum has flowed out of the system. */
+    get impartedMomentum(): deltaP {
+        return this._impartedMomentum;
+    }
+    resetImpartedMomentum(): void {
+        this._impartedMomentum = { m: 0, px: 0, py: 0 };
+    }
+    private addImpartedMomentum(p: deltaP | undefined, factor: number = 1): void {
+        if (p === undefined || p.m == 0 && p.px == 0 && p.py == 0)
+            return;
+        if (p.m !== undefined) {
+            this._impartedMomentum.m += p.m * factor;
+        }
+        this._impartedMomentum.px += p.px * factor;
+        this._impartedMomentum.py += p.py * factor;
+    }
+
     constructor(public readonly width: number, public readonly height: number) { }
     confine(trivialProjection: Particle, previousState: Particle | undefined): Particle | undefined {
+        const result = this._confine(trivialProjection, previousState);
+        const deltaP = this.computeDeltaP(result, previousState);
+        this.addImpartedMomentum(deltaP);
+        return result;
+    }
+    private _confine(trivialProjection: Particle, previousState: Particle | undefined): Particle | undefined {
         const projection = trivialProjection;
         if (projection.radius > this.width || projection.radius > this.height) {
             // particle doesn't fit
@@ -33,8 +62,8 @@ export class Confiner implements IConfine<Particle> {
             }
             else return projection;
         }
-
         // else particle already existed
+
         if (this.isCompletelyOutside(previousState) && this.isCompletelyOutside(projection)) {
             return undefined;
         }
@@ -46,6 +75,19 @@ export class Confiner implements IConfine<Particle> {
 
         return projection;
     }
+    private computeDeltaP(confinedProjection: Particle | undefined, previousState: Particle | undefined): deltaP | undefined {
+        if (confinedProjection !== undefined && previousState !== undefined && confinedProjection.m != previousState.m)
+            throw new Error('mass change not handled');
+        const b = confinedProjection || { m: 0, vx: 0, vy: 0 };
+        const a = previousState || { m: 0, vx: 0, vy: 0 };
+
+        const result = { m: b.m - a.m, px: b.vx * b.m - a.vx * a.m, py: b.vy * b.m - a.vy * a.m };
+        result.m *= -1;
+        result.px *= -1;
+        result.py *= -1;
+        return result;
+    }
+
 
     private isCompletelyOutside(p: ParticleProps) {
         return p.x + p.radius < 0
@@ -61,7 +103,6 @@ export class Confiner implements IConfine<Particle> {
     }
 
     private reverseVelocityInwards(particle: Particle): Particle {
-
         const newP = { vx: particle.p.vx, vy: particle.p.vy };
 
         if (particle.x - particle.radius < 0)
