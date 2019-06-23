@@ -14,7 +14,7 @@
                 "--colors",
                 "${workspaceFolder}/dist/test.js",
                 "--fgrep",
-                "html"
+                "41"
             ],
             "console": "internalConsole",
             "internalConsoleOptions": "neverOpen",

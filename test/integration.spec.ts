@@ -22,7 +22,7 @@ describe('Integration tests', () => {
             if(i == 41){
                 console.log();
             }
-            particles = engine.evolve(particles, 0.1);
+            particles = engine.evolve(particles, 1);
             console.log(`${i}. p1: {${particles[0].x}, ${particles[0].vx}}. p1: {${particles[1].x}, ${particles[1].vy}}, imparted: ${confiner.impartedMomentum.px}, collisions: ${collisionDetector.count}`);
             
             assertTotalConservations(particlesBefore, particles, confiner);

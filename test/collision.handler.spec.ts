@@ -320,4 +320,22 @@ describe('CollisionHandler', () => {
         assert(resultants[0].vx == resultants[1].vx);
         assertTotalConservations(particles, resultants);
     });
+
+
+    it('recreate bug at 41', () => {
+        // arrange
+        const projectedParticles = [
+            { x: 470, y: 50, vx: -10, vy: 0, radius: 20, m: 1 },
+            { x: 440, y: 50, vx: 10, vy: 0, radius: 30, m: 2 }
+        ].map(Particle.create);
+
+
+        // act
+        debugger;
+        const resultants = collisionHandler.collide(projectedParticles[0], projectedParticles[1]);
+
+        // assert
+        assert(resultants.length == 2);
+        assertTotalConservations(projectedParticles, resultants);
+    });
 });
