@@ -21,7 +21,7 @@ describe('Force', () => {
 
         // act
         debugger;
-        const projections = Extensions.notUndefined(forceComputer.projectAll(particles));
+        const projections = Extensions.notUndefined(forceComputer.projectAll(particles, 1));
 
         // assert
         assert(projections[0].vx == 10);

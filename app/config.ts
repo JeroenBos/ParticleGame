@@ -13,7 +13,8 @@ export const collisionHandler = new CollisionHandler();
 export const forceComputer = new ForceComputer();
 export const confiner = new Confiner(width, height);
 export const engine = new Engine(collisionDetector, collisionHandler, forceComputer, confiner);
-export const updateInterval = 100;
+export const updateInterval = 10;
 export const particleGenerator = new ParticleGenerator();
-export const maxTime = 1000;
+export const maxTime = 100;
+export const dt = 0.1;
 

@@ -288,7 +288,7 @@ describe('CollisionHandler', () => {
             Particle.create({ x: 5, y: 10, vx: 2, vy: 0, radius: 0, m: 1 }),
             Particle.create({ x: 6, y: 10, vx: -2, vy: 0, radius: 0, m: 1 })
         ]
-        const projectedParticles = Extensions.notUndefined(new ForceComputer().projectAll(particles));
+        const projectedParticles = Extensions.notUndefined(new ForceComputer().projectAll(particles, 1));
 
         // act
         // debugger;
@@ -308,7 +308,7 @@ describe('CollisionHandler', () => {
             { x: 6, y: 10, vx: -1, vy: 0, radius: 0, m: 1 }
         ].map(Particle.create);
 
-        const projectedParticles = Extensions.notUndefined(new ForceComputer().projectAll(particles));
+        const projectedParticles = Extensions.notUndefined(new ForceComputer().projectAll(particles, 1));
 
         // act
         // debugger;

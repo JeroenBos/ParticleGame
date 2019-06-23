@@ -26,7 +26,7 @@ describe('Engine', () => {
         });
         // act
         // debugger;
-        const [t1] = engine.evolve([t0]) as [Particle];
+        const [t1] = engine.evolve([t0], 1) as [Particle];
 
         // assert
         assert(t1.m == 1);
@@ -37,7 +37,7 @@ describe('Engine', () => {
         assert(t1.vy == 0);
 
 
-        const [t2] = engine.evolve([t1]) as [Particle];
+        const [t2] = engine.evolve([t1], 1) as [Particle];
 
         assert(t2.x == 2);
         assert(t2.vx == 1);
@@ -56,13 +56,13 @@ describe('Engine', () => {
         });
         // act
         // debugger;
-        const [t1] = engine.evolve([t0]) as [Particle];
+        const [t1] = engine.evolve([t0], 1) as [Particle];
 
         // assert
         assert(t1.x == 8);
         assert(t1.vx == -1);
 
-        const [t2] = engine.evolve([t1]) as [Particle];
+        const [t2] = engine.evolve([t1], 1) as [Particle];
 
         assert(t2.x == 7);
         assert(t2.vx == -1);
@@ -81,20 +81,20 @@ describe('Engine', () => {
         });
         // act
         // debugger;
-        const [t1] = engine.evolve([t0]) as [Particle];
+        const [t1] = engine.evolve([t0], 1) as [Particle];
 
         // assert
         assert(t1.x == 4);
         assert(t1.vx == -3);
 
-        const [t2] = engine.evolve([t1]) as [Particle];
+        const [t2] = engine.evolve([t1], 1) as [Particle];
 
         // even though 7 is technically not correct because there's a double bounce, which is because dt is not sufficiently small 
         // it should be 5, because it bounces at 6
         assert(t2.x == 7);
         assert(t2.vx == 3);
 
-        const [t3] = engine.evolve([t2]) as [Particle];
+        const [t3] = engine.evolve([t2], 1) as [Particle];
 
         // again, because of a double bounce this should have been 6. but just checking of the error due to the previous double bounce is correcting
         assert(t3.x == 2);

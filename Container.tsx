@@ -2,17 +2,17 @@ import * as React from "react";
 import ParticleGenerator from './app/particleGenerator';
 import { Particle, ParticleProps } from "./particle";
 import { IEngine } from "./physics.base";
-import { Dv } from "./physics/engine";
 import { Particle as IParticle } from './physics';
-import Extensions from "./extensions";
+import { F } from "./physics/forceComputer";
 
 export interface ContainerProps {
     particleGenerator: ParticleGenerator;
     width: number;
     height: number;
-    engine: IEngine<IParticle, Dv>,
+    engine: IEngine<IParticle, F>,
     updateInterval: number,
     maxTime: number,
+    dt: number
 }
 
 export interface ContainerState {
@@ -48,8 +48,8 @@ export class Container extends React.Component<ContainerProps, ContainerState> {
             try { clearInterval(this.interval); } catch { }
         } else {
             this.setState(state => {
-                const particles = this.props.engine.evolve(state.particles.map(IParticle.create)).map(Container.toProps);
-                return { particles, t: state.t + 1 };
+                const particles = this.props.engine.evolve(state.particles.map(IParticle.create), this.props.dt).map(Container.toProps);
+                return { particles, t: state.t + this.props.dt };
             });
         }
     }

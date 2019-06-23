@@ -3,21 +3,22 @@ import { IEngine, ICollectionDetector, IComputeForce, ICollectionHandler, IConfi
 import Extensions from "../extensions";
 import { Invariants } from '../invariants/.invariants';
 import { Particle } from ".";
+import { F } from "./forceComputer";
 
-export default class Engine implements IEngine<Particle, Dv> {
+export default class Engine implements IEngine<Particle, F> {
     private readonly numberOfAllowedNonDecreasingCollisionCount = 1;
     public readonly collisionDetector: ICollectionDetector<Particle>;
     constructor(
         collisionDetector: ICollectionDetector<Particle>,
         public readonly collisionHandler: ICollectionHandler<Particle>,
-        public readonly forceComputer: IComputeForce<Particle, Dv>,
+        public readonly forceComputer: IComputeForce<Particle, F>,
         public readonly confiner: IConfine<Particle>
     ) {
         this.collisionDetector = Invariants.For(collisionDetector);
     }
 
-    public evolve(particles: Particle[]): Particle[] {
-        const projections = this.projectAll(particles);
+    public evolve(particles: Particle[], dt: number): Particle[] {
+        const projections = this.projectAll(particles, dt);
         const resultantParticles = this.resolveCollisions(projections);
         return resultantParticles;
 
@@ -51,8 +52,8 @@ export default class Engine implements IEngine<Particle, Dv> {
         return this.resolveCollisions(particles, { previousNumberOfCollisions, consecutiveNondecreaseCount });
     }
 
-    private projectAll(particles: Particle[]): Particle[] {
-        const freeProjections = this.forceComputer.projectAll(particles);
+    private projectAll(particles: Particle[], dt: number): Particle[] {
+        const freeProjections = this.forceComputer.projectAll(particles, dt);
         const confinedProjections = freeProjections.map((projection, i) => {
             if (projection == undefined)
                 return undefined;

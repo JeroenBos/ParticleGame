@@ -6,7 +6,7 @@ export interface IEngine<TParticle, TForce> {
     readonly collisionHandler: ICollectionHandler<TParticle>;
     readonly forceComputer: IComputeForce<TParticle, TForce>;
     readonly confiner: IConfine<TParticle>;
-    evolve(particles: TParticle[]): TParticle[];
+    evolve(particles: TParticle[], dt: number): TParticle[];
     resolveInitialCollisions(initialParticles: TParticle[]): TParticle[];
 }
 export interface ICollectionDetector<TParticle> {
@@ -25,8 +25,8 @@ export interface IComputeForce<TParticle, TForce> {
     /** Computes the force of particle 'actor' on particle 'receiver'. */
     computeForceOn(receiver: TParticle, actor: TParticle): TForce;
     /** Computes the projected state of the particle after an infinitesimal amount of time, ignoring collisions and confinement. */
-    project(particle: Readonly<TParticle>, otherParticles: Iterable<Readonly<TParticle>>): Readonly<TParticle> | undefined;
-    projectAll(particle: TParticle[]): (TParticle | undefined)[];
+    project(particle: Readonly<TParticle>, otherParticles: Iterable<Readonly<TParticle>>, dt: number): Readonly<TParticle> | undefined;
+    projectAll(particle: TParticle[], dt: number): (TParticle | undefined)[];
 }
 export interface IConfine<TParticle> {
     /**

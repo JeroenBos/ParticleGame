@@ -3,12 +3,12 @@ import { Transformations, TransformationPair } from "./transformations";
 import { Q, Red, M, QMS, QM, Particle, P, PQR, Qed } from ".";
 import { assert } from "../jbsnorro";
 import { isNumber } from "util";
+import { assertTotalConservations } from "../test/testhelper";
 
 export class CollisionHandler implements ICollectionHandler<Particle> {
     collide(a: Particle, b: Particle): Particle[] {
         return this.placeAdjacent(a, b);
     }
-
 
     private placeAdjacent(a: Particle, b: Particle): Particle[] {
         const com = CollisionHandler.com(a, b);
@@ -74,10 +74,11 @@ export class CollisionHandler implements ICollectionHandler<Particle> {
     private static glue2(a: P, b: P): [P, P] {
         return this.glue(a, b) as [P, P];
     }
-    private static glue(...particles: Readonly<P>[]): P[] {
+    private static glue(...particles: P[]): P[] {
         const p_com = this.pom(...particles);
 
         const result = particles.map((particle, i) => ({ m: particle.m, vx: p_com.vx, vy: p_com.vy }) as P);
+        assertTotalConservations(particles, result);
         return result;
     }
 }

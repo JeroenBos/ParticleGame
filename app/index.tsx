@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { Container } from "../Container";
-import { width, height, engine, updateInterval, particleGenerator,maxTime } from './config';
+import { width, height, engine, updateInterval, particleGenerator, maxTime, dt } from './config';
 
 ReactDOM.render(
     <Container
@@ -11,6 +11,7 @@ ReactDOM.render(
         height={height}
         engine={engine}
         updateInterval={updateInterval}
-        maxTime={maxTime} />,
+        maxTime={maxTime}
+        dt={dt} />,
     document.getElementById("root")
 );
