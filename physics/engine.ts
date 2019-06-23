@@ -24,7 +24,9 @@ export default class Engine implements IEngine<Particle, Dv> {
     }
     public resolveInitialCollisions(initialParticles: Particle[]) {
         const confinedParticles = Extensions.removeUndefineds(initialParticles.map(p => this.confiner.confine(p, undefined)));
-        return this.resolveCollisions(confinedParticles);
+        const result = this.resolveCollisions(confinedParticles);
+        this.confiner.resetImpartedMomentum();
+        return result;
     }
     private resolveCollisions(
         projectedParticles: Particle[],

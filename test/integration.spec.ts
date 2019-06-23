@@ -30,7 +30,6 @@ describe('Integration tests', () => {
         const stepCount = 100;
         const generatedParticles = particleGenerator.generate();
         const initialParticles = engine.resolveInitialCollisions(generatedParticles);
-        confiner.resetImpartedMomentum();
 
         // act
         // debugger;

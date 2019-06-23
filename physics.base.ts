@@ -33,6 +33,7 @@ export interface IConfine<TParticle> {
      * @param {ParticleProps} trivialProjection Trivial here means disregarding collisions and confinement.
      */
     confine(projection: TParticle, previousState: TParticle | undefined): TParticle | undefined;
+    resetImpartedMomentum(): void;
 }
 
 
