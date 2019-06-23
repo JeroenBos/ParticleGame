@@ -25,7 +25,7 @@ export class CollisionHandler implements ICollectionHandler<Particle> {
             const a_ρ = coordinate.ρ;
             const b_ρ = otherCoordinates[0].ρ;
             const sign = Math.sign(a_ρ);
-            const ρ = (a.m * a_ρ + b.m * b_ρ + sign * a.m * a.radius + sign * a.m * b.radius) / (a.m + b.m);
+            const ρ = (a.m * a_ρ + b.m * b_ρ + sign * b.m * b.radius + sign * b.m * a.radius) / (a.m + b.m);
             const result = ({ σ: coordinate.σ, ρ });
             return result;
         }
