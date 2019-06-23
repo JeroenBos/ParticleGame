@@ -15,4 +15,5 @@ export const confiner = new Confiner(width, height);
 export const engine = new Engine(collisionDetector, collisionHandler, forceComputer, confiner);
 export const updateInterval = 100;
 export const particleGenerator = new ParticleGenerator();
+export const maxTime = 1000;
 

@@ -1,12 +1,13 @@
 import { ParticleProps } from "./particle";
+import { Particle } from "./physics";
 
 export interface IEngine<TParticle, TForce> {
     readonly collisionDetector: ICollectionDetector<TParticle>;
     readonly collisionHandler: ICollectionHandler<TParticle>;
     readonly forceComputer: IComputeForce<TParticle, TForce>;
     readonly confiner: IConfine<TParticle>;
-    evolve(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[];
-    resolveInitialCollisions(initialParticles: ParticleProps[]): ParticleProps[];
+    evolve(particles: TParticle[]): TParticle[];
+    resolveInitialCollisions(initialParticles: TParticle[]): TParticle[];
 }
 export interface ICollectionDetector<TParticle> {
     /** Gets the number of recorded collisions. */
