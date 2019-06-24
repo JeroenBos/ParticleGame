@@ -14,6 +14,7 @@ export default class Engine implements IEngine<Particle, F> {
         public readonly forceComputer: IComputeForce<Particle, F>,
         public readonly confiner: IConfine<Particle>
     ) {
+        console.log('engine created');
         this.collisionDetector = Invariants.For(collisionDetector);
     }
 
