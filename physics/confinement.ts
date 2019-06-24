@@ -20,6 +20,7 @@ interface t {
 
 
 export class Confiner implements IConfine<Particle> {
+    bounces: number = 0;
     private _impartedMomentum = { m: 0, px: 0, py: 0 };
     /** Is positive when momentum has flowed out of the system. */
     get impartedMomentum(): deltaP {
@@ -65,10 +66,12 @@ export class Confiner implements IConfine<Particle> {
         // else particle already existed
 
         if (this.isCompletelyOutside(previousState) && this.isCompletelyOutside(projection)) {
+            this.bounces++;
             return undefined;
         }
         else if (this.isPartiallyOutside(projection)) {
             if (this.isMovingOutOfBox(projection)) {
+                this.bounces++;
                 return this.bounce(previousState, projection);
             }
         }

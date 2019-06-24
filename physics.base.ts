@@ -34,6 +34,7 @@ export interface IConfine<TParticle> {
      */
     confine(projection: TParticle, previousState: TParticle | undefined): TParticle | undefined;
     resetImpartedMomentum(): void;
+    readonly bounces: number;
 }
 
 export interface IParticleGenerator<TParticle> {
