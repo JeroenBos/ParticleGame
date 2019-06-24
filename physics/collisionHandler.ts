@@ -29,7 +29,7 @@ abstract class BaseCollisionHandler implements ICollectionHandler<Particle> {
             const result = ({ σ: coordinate.σ, ρ });
             return result;
         }
-        const [pNew_a, pNew_b] = BaseCollisionHandler.glue2(a.p, b.p);
+        const [pNew_a, pNew_b] = this.getMomenta(a.p, b.p);
 
         const a_new = toProps(a, qNew_a, pNew_a);
         const b_new = toProps(b, qNew_b, pNew_b);
