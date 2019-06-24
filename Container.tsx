@@ -11,7 +11,8 @@ export interface ContainerProps {
     engine: IEngine<IParticle, F>,
     updateInterval: number,
     maxTime: number,
-    dt: number
+    dt: number,
+    stepsPerTimeInterval: number
 }
 
 export interface ContainerState {
@@ -45,9 +46,13 @@ export class Container extends React.Component<ContainerProps, ContainerState> {
     doTimestep(): void {
         if (this.props.maxTime <= this.state.t) {
             try { clearInterval(this.interval); } catch { }
+            console.log('maxTime reached');
         } else {
             this.setState(state => {
-                const particles = this.props.engine.evolve(state.particles.map(IParticle.create), this.props.dt).map(Container.toProps);
+                let particles = state.particles;
+                for (let i = 0; i < this.props.stepsPerTimeInterval; i++) {
+                    particles = this.props.engine.evolve(particles.map(IParticle.create), this.props.dt).map(Container.toProps);
+                }
                 return { particles, t: state.t + this.props.dt };
             });
         }

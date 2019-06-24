@@ -12,6 +12,7 @@ ReactDOM.render(
         engine={config.engine}
         updateInterval={config.updateInterval}
         maxTime={config.maxTime}
-        dt={config.dt} />,
+        dt={config.dt}
+        stepsPerTimeInterval={config.stepsPerTimeInterval} />,
     document.getElementById("root")
 );
