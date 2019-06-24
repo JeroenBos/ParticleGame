@@ -1,3 +1,3 @@
-import config from '../scenarios/countToπ';
+import config from '../scenarios/test';
 
 export default config;

@@ -1,4 +1,4 @@
-import 'mocha';import config from '../scenarios/test';
+import 'mocha'; import config from '../scenarios/test';
 import { assert } from "../jbsnorro";
 import { ParticleProps } from "../particle";
 import { assertTotalConservations } from './testhelper';
@@ -58,5 +58,18 @@ describe('Integration tests', () => {
 
         debugger;
         engine.evolve(particles, dt);
+    });
+
+    it('expected only 1 collision in specific case', () => {
+        const originalCount = engine.collisionDetector.count;
+        const particles = [
+            { x: 51.7, y: 50, m: 1, radius: 2, vx: -1, vy: 0 },
+            { x: 48.3, y: 52, m: 1, radius: 2, vx: 1, vy: 0 }
+        ].map(Particle.create);
+
+        debugger;
+        engine.evolve(particles, dt);
+
+        assert(engine.collisionDetector.count == 1 + originalCount);
     });
 });

@@ -6,6 +6,7 @@ import { ForceComputer } from '../physics/forceComputer';
 import { assertTotalConservations } from './testhelper';
 import { Particle } from '../physics';
 import Extensions from '../extensions';
+import { CollisionDetector } from '../physics/collisionDetector';
 
 const collisionHandler = Invariants.For(new CollisionHandler());
 
@@ -355,12 +356,43 @@ describe('CollisionHandler', () => {
         assert(resultants[1].vx < 0);
     });
 
-    it('collision under 45° becomes perfectly transverse', () => {
+    // it('collision under 45° becomes perfectly transverse', () => {
+    //     const elasticCollisionHandler = new ElasticCollisionHandler();
+    //     // arrange
+    //     const projectedParticles = [
+    //         { x: 52.7, y: 50, vx: -1, vy: 0, radius: 2, m: 1 },
+    //         { x: 48.3, y: 52, vx: 1, vy: 0, radius: 2, m: 1 }
+    //     ].map(Particle.create);
+
+
+    //     // act
+    //     debugger;
+    //     const [p0, p1] = elasticCollisionHandler.getMomenta(projectedParticles[0], projectedParticles[1]);
+
+    //     // assert
+    //     assert(p0.vx == 0);
+    //     assert(p1.vx == 0);
+    //     assert(p0.vy == -p1.vy);
+    //     assert(p0.vy < 0);
+
+    //     // redo test wrapped:
+    //     const resultants = elasticCollisionHandler.collide(projectedParticles[0], projectedParticles[1]);
+
+    //     // assert
+    //     assertTotalConservations(projectedParticles, resultants);
+    //     assert(resultants[0].vx == 0);
+    //     assert(resultants[1].vx == 0);
+    //     assert(resultants[0].vy == -resultants[1].vy);
+    //     assert(p0.vy < 0);
+    // });
+
+    it('near miss collision have hardly any delta v', () => {
         const elasticCollisionHandler = new ElasticCollisionHandler();
+        const collisionDetector = new CollisionDetector(0.001);
         // arrange
         const projectedParticles = [
-            { x: 51, y: 50, vx: -1, vy: 0, radius: 2, m: 1 },
-            { x: 49, y: 52, vx: 1, vy: 0, radius: 2, m: 1 }
+            { x: 50, y: 50, vx: -1, vy: 0, radius: 2, m: 1 },
+            { x: 50.1, y: 53.99, vx: 1, vy: 0, radius: 2, m: 1 }
         ].map(Particle.create);
 
 
@@ -369,17 +401,22 @@ describe('CollisionHandler', () => {
         const [p0, p1] = elasticCollisionHandler.getMomenta(projectedParticles[0], projectedParticles[1]);
 
         // assert
-        assert(p0.vx == 0);
-        assert(p1.vx == 0);
-        assert(p0.vy == -p1.vy);
+        assertTotalConservations(projectedParticles, [p0, p1]);
+        assert(-1 < p0.vx && p0.vx < -0.8);
+        assert(0.8 < p1.vx && p1.vx < 1);
+
 
         // redo test wrapped:
         const resultants = elasticCollisionHandler.collide(projectedParticles[0], projectedParticles[1]);
 
         // assert
         assertTotalConservations(projectedParticles, resultants);
-        assert(resultants[0].vx == 0);
-        assert(resultants[1].vx == 0);
-        assert(resultants[0].vy == -resultants[1].vy);
+
+        assert(Math.abs(resultants[0].x - 50.100) < 0.001);
+        assert(Math.abs(resultants[1].x - 49.999) < 0.001);
+        assert(-1 < resultants[0].vx && resultants[0].vx < -0.8);
+        assert(0.8 < resultants[1].vx && resultants[1].vx < 1);
+
+        assert(collisionDetector.detect(resultants).collisions.length == 0)
     });
 });

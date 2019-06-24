@@ -89,7 +89,10 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
         // formula
         function computeAttempt2(a: Particle, other: Particle): P {
             const b = other;
-            const factor = 2 * b.m / (a.m + b.m) * inProduct(diff(toVector(a.p), toVector(b.p)), diff(a.q, b.q)) / inProduct(diff(b.q, a.q), diff(b.q, a.q));
+
+            const upperInnerProduct = inProduct(diff(toVector(a.p), toVector(b.p)), diff(a.q, b.q));
+            const norm = inProduct(diff(b.q, a.q), diff(b.q, a.q));
+            const factor = 2 * b.m / (a.m + b.m) * upperInnerProduct / norm;
 
             const newVx = a.vx - factor * (a.x - b.x);
             const newVy = a.vy - factor * (a.y - b.y);
@@ -97,6 +100,7 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
         }
 
         const result = [computeAttempt2(a, b), computeAttempt2(b, a)] as [P, P];
+        assertTotalConservations([a, b], result);
         return result;
 
         function diff(v: { x: number, y: number }, u: { x: number, y: number }): { x: number, y: number } {

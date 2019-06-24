@@ -6,8 +6,8 @@ import { Confiner } from "../physics/confinement";
 class ParticleGenerator implements IParticleGenerator<Particle> {
     public generate(): Particle[] {
         return [
-            { x: 150, y: 50, vx: -10, vy: 0, radius: 9, m: 1 },
-            { x: 50, y: 58, vx: 10, vy: 0, radius: 9, m: 1 }
+            { x: 55, y: 50, vx: -1, vy: 0, radius: 2, m: 1 },
+            { x: 45, y: 52, vx: 1, vy: 0, radius: 2, m: 1 }
         ].map(Particle.create);
     }
 }
