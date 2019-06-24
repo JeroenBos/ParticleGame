@@ -417,6 +417,9 @@ describe('CollisionHandler', () => {
         assert(-1 < resultants[0].vx && resultants[0].vx < -0.8);
         assert(0.8 < resultants[1].vx && resultants[1].vx < 1);
 
-        assert(collisionDetector.detect(resultants).collisions.length == 0)
+        assert(collisionDetector.detect(resultants).collisions.length == 0);
+
+        const againProjected = Extensions.removeUndefineds(new ForceComputer().projectAll(resultants, 0.1));
+        assert(collisionDetector.detect(againProjected).collisions.length == 0);
     });
 });
