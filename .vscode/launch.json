@@ -14,7 +14,7 @@
                 "--colors",
                 "${workspaceFolder}/dist/test.js",
                 "--fgrep",
-                "html"
+                "momentum is conserved with elastic scattering"
             ],
             "console": "internalConsole",
             "internalConsoleOptions": "neverOpen",

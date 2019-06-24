@@ -337,15 +337,13 @@ describe('CollisionHandler', () => {
         assertTotalConservations(projectedParticles, resultants);
     });
 
-
     it('momentum is conserved with elastic scattering', () => {
         const elasticCollisionHandler = new ElasticCollisionHandler();
         // arrange
         const projectedParticles = [
-            { x: 470, y: 50, vx: -10, vy: 0, radius: 20, m: 1 },
-            { x: 440, y: 50, vx: 10, vy: 0, radius: 30, m: 2 }
+            { x: 370, y: 50, vx: -10, vy: 0, radius: 20, m: 1 },
+            { x: 340, y: 50, vx: 10, vy: 0, radius: 30, m: 2 }
         ].map(Particle.create);
-
 
         // act
         debugger;
@@ -355,5 +353,33 @@ describe('CollisionHandler', () => {
         assertTotalConservations(projectedParticles, resultants);
         assert(resultants[0].vx > 0);
         assert(resultants[1].vx < 0);
+    });
+
+    it('collision under 45° becomes perfectly transverse', () => {
+        const elasticCollisionHandler = new ElasticCollisionHandler();
+        // arrange
+        const projectedParticles = [
+            { x: 51, y: 50, vx: -1, vy: 0, radius: 2, m: 1 },
+            { x: 49, y: 52, vx: 1, vy: 0, radius: 2, m: 1 }
+        ].map(Particle.create);
+
+
+        // act
+        debugger;
+        const [p0, p1] = elasticCollisionHandler.getMomenta(projectedParticles[0], projectedParticles[1]);
+
+        // assert
+        assert(p0.vx == 0);
+        assert(p1.vx == 0);
+        assert(p0.vy == -p1.vy);
+
+        // redo test wrapped:
+        const resultants = elasticCollisionHandler.collide(projectedParticles[0], projectedParticles[1]);
+
+        // assert
+        assertTotalConservations(projectedParticles, resultants);
+        assert(resultants[0].vx == 0);
+        assert(resultants[1].vx == 0);
+        assert(resultants[0].vy == -resultants[1].vy);
     });
 });

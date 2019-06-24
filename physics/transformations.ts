@@ -1,4 +1,6 @@
-import { Q } from '.';
+import { Q, P } from '.';
+import { collisionHandler } from '../app/config';
+import { ElasticCollisionHandler } from './collisionHandler';
 
 export type TransformationPair<T, U> = {
     transformation: (t: T) => U,
@@ -60,7 +62,50 @@ export class Transformations {
         return this.perform(operation, transformation, inverseTransformation, ...input) as [T, T];
     }
 
-    /** Creates a translation transformation that has the specified location as origin. */
+    public static translationPtoQ(): TransformationPair<P, Q & { m: number }> {
+        function transformation(arg: P): Q & { m: number } {
+            const result = {
+                m: arg.m,
+                x: arg.vx,
+                y: arg.vy
+            };
+            return result;
+        }
+
+        function inverseTransformation(arg: Q & { m: number }): P {
+            const result = {
+                m: arg.m,
+                vx: arg.x,
+                vy: arg.y
+            };
+            return result;
+        }
+        return { transformation, inverseTransformation };
+
+    }
+    /** CoP == center of momentum */
+    public static translationToCoP(...particles: P[]): TransformationPair<P, P> {
+        const pom = ElasticCollisionHandler.pom(...particles);
+        function transformation(arg: P): P {
+            const result = {
+                m: arg.m,
+                vx: arg.vx - pom.vx,
+                vy: arg.vy - pom.vy
+            };
+            return result;
+        }
+
+        function inverseTransformation(arg: P): P {
+            const result = {
+                m: arg.m,
+                vx: arg.vx + pom.vx,
+                vy: arg.vy + pom.vy
+            };
+            return result;
+        }
+
+        return { transformation, inverseTransformation };
+    }
     public static translation(origin: Q): TransformationPair<Q, Q> {
         function transformation(arg: Q): Q {
             const result = {

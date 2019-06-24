@@ -4,6 +4,7 @@ import { Q, Red, M, QMS, QM, Particle, P, PQR, Qed } from ".";
 import { assert } from "../jbsnorro";
 import { isNumber } from "util";
 import { assertTotalConservations } from "../test/testhelper";
+import { collisionDetector } from "../app/config";
 
 abstract class BaseCollisionHandler implements ICollectionHandler<Particle> {
     collide(a: Particle, b: Particle): Particle[] {
@@ -29,11 +30,12 @@ abstract class BaseCollisionHandler implements ICollectionHandler<Particle> {
             const result = ({ σ: coordinate.σ, ρ });
             return result;
         }
-        const [pNew_a, pNew_b] = this.getMomenta(a.p, b.p);
+        const [pNew_a, pNew_b] = this.getMomenta(a, b);
+        assert(pNew_a.m == a.m);
+        assertTotalConservations([a, b], [pNew_a, pNew_b]);
 
         const a_new = toProps(a, qNew_a, pNew_a);
         const b_new = toProps(b, qNew_b, pNew_b);
-
         return [a_new, b_new];
 
         function toProps(particle: Readonly<QMS>, q: Q, p: P) {
@@ -58,7 +60,7 @@ abstract class BaseCollisionHandler implements ICollectionHandler<Particle> {
     }
 
     /** Computes the momentum of the center of mass of the specified particles. */
-    public static pom(...particles: Readonly<P>[]): { px: number, py: number } & P {
+    public static pom(...particles: P[]): { px: number, py: number } & P {
         const result = { m: 0, px: 0, py: 0, vx: 0, vy: 0 };
         for (const particle of particles) {
             result.m += particle.m;
@@ -73,7 +75,7 @@ abstract class BaseCollisionHandler implements ICollectionHandler<Particle> {
     }
     public abstract getMomenta(...p: [P, P]): [P, P];
 
-    protected static glue2(a: P, b: P): [P, P] {
+    public static glue2(a: P, b: P): [P, P] {
         return this.glue(a, b) as [P, P];
     }
     protected static glue(...particles: P[]): P[] {
@@ -83,27 +85,44 @@ abstract class BaseCollisionHandler implements ICollectionHandler<Particle> {
         assertTotalConservations(particles, result);
         return result;
     }
-    protected static elastic(a: P, b: P): [P, P] {
-        const newA_p = { m: a.m, vx: compute1D(a.m, b.m, a.vx, b.vx), vy: compute1D(a.m, b.m, a.vy, b.vy) };
-        const newB_p = { m: b.m, vx: compute1D(b.m, a.m, b.vx, a.vx), vy: compute1D(b.m, a.m, b.vy, a.vy) };
+    public static elastic(a: Particle, b: Particle): [P, P] {
 
-        return [newA_p, newB_p];
+        // formula
+        function computeAttempt2(a: Particle, other: Particle): P {
+            const b = other;
+            const factor = 2 * b.m / (a.m + b.m) * inProduct(diff(toVector(a.p), toVector(b.p)), diff(a.q, b.q)) / inProduct(diff(b.q, a.q), diff(b.q, a.q));
 
-        function compute1D(a_m: number, b_m: number, a_v: number, b_v: number) {
-            const M = a_m + b_m;
-            return (a_m - b_m) / M * a_v + 2 * b_m / M * b_v;
+            const newVx = a.vx - factor * (a.x - b.x);
+            const newVy = a.vy - factor * (a.y - b.y);
+            return { m: a.m, vx: newVx, vy: newVy };
+        }
+
+        const result = [computeAttempt2(a, b), computeAttempt2(b, a)] as [P, P];
+        return result;
+
+        function diff(v: { x: number, y: number }, u: { x: number, y: number }): { x: number, y: number } {
+            return {
+                x: v.x - u.x,
+                y: v.y - u.y,
+            };
+        }
+        function inProduct(r: Q, s: Q): number {
+            return r.x * s.x + r.y * s.y;
+        }
+        function toVector(p: P): { x: number, y: number } {
+            return { x: p.vx, y: p.vy };
         }
     }
 }
 
 
 export class GlueCollisionHandler extends BaseCollisionHandler {
-    public getMomenta(...p: [P, P]): [P, P] {
+    public getMomenta(...p: [Particle, Particle]): [P, P] {
         return BaseCollisionHandler.glue2(p[0], p[1])
     }
 }
 export class ElasticCollisionHandler extends BaseCollisionHandler {
-    public getMomenta(...p: [P, P]): [P, P] {
+    public getMomenta(...p: [Particle, Particle]): [P, P] {
         return BaseCollisionHandler.elastic(p[0], p[1])
     }
 }
