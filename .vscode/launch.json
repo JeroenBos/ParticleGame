@@ -14,7 +14,7 @@
                 "--colors",
                 "${workspaceFolder}/dist/test.js",
                 "--fgrep",
-                "delta v"
+                "near miss collided only"
             ],
             "console": "internalConsole",
             "internalConsoleOptions": "neverOpen",

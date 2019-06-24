@@ -67,9 +67,30 @@ describe('Integration tests', () => {
             { x: 48.3, y: 52, m: 1, radius: 2, vx: 1, vy: 0 }
         ].map(Particle.create);
 
-        debugger;
+        // debugger;
         engine.evolve(particles, dt);
 
         assert(engine.collisionDetector.count == 1 + originalCount);
+    });
+
+
+    it('near miss collided only once', () => {
+        // arrange
+        let particles = [
+            { x: 52, y: 50, vx: -1, vy: 0, radius: 2, m: 1 },
+            { x: 50.1, y: 53.99, vx: 1, vy: 0, radius: 2, m: 1 }
+        ].map(Particle.create);
+
+
+        // act
+        debugger;
+        for (let i = 0; i < 10; i++) {
+            particles = engine.evolve(particles, dt);
+        }
+
+        // assert
+        assert(particles[0].x < 52);
+        assert(particles[1].x > 50.1);
+        assert(collisionDetector.count == 1);
     });
 });
