@@ -19,11 +19,8 @@ describe('Integration tests', () => {
         let particles = initialParticles;
         for (let i = 0; i < stepCount; i++) {
             const particlesBefore = particles;
-            if (i == 410) {
-                console.log();
-            }
             particles = engine.evolve(particles, dt);
-            console.log(`${i}. p1: {${particles[0].x}, ${particles[0].vx}}. p1: {${particles[1].x}, ${particles[1].vy}}, imparted: ${confiner.impartedMomentum.px}, collisions: ${collisionDetector.count}`);
+            // console.log(`${i}. p1: {${particles[0].x}, ${particles[0].vx}}. p1: {${particles[1].x}, ${particles[1].vy}}, imparted: ${confiner.impartedMomentum.px}, collisions: ${collisionDetector.count}`);
 
             assertTotalConservations(particlesBefore, particles, confiner);
 
