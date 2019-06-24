@@ -2,7 +2,6 @@ import 'mocha';
 import { engine, particleGenerator, collisionHandler, collisionDetector, confiner, dt } from '../app/config';
 import { assert } from "../jbsnorro";
 import { ParticleProps } from "../particle";
-import { CollisionHandler } from '../physics/collisionHandler';
 import { assertTotalConservations } from './testhelper';
 
 type TestEngine = { projectAll(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[] };

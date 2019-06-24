@@ -5,13 +5,13 @@ import { assert } from "../jbsnorro";
 import { isNumber } from "util";
 import { assertTotalConservations } from "../test/testhelper";
 
-export class CollisionHandler implements ICollectionHandler<Particle> {
+abstract class BaseCollisionHandler implements ICollectionHandler<Particle> {
     collide(a: Particle, b: Particle): Particle[] {
         return this.placeAdjacent(a, b);
     }
 
     private placeAdjacent(a: Particle, b: Particle): Particle[] {
-        const com = CollisionHandler.com(a, b);
+        const com = BaseCollisionHandler.com(a, b);
         const physicalTransformations = Transformations.translationAndRotation(com.q, a.q);
         const transformations = Transformations.Property<Particle, 'q', number>('q', physicalTransformations, (particle, newQ) => particle.withQ(newQ));
 
@@ -29,7 +29,7 @@ export class CollisionHandler implements ICollectionHandler<Particle> {
             const result = ({ σ: coordinate.σ, ρ });
             return result;
         }
-        const [pNew_a, pNew_b] = CollisionHandler.glue2(a.p, b.p);
+        const [pNew_a, pNew_b] = BaseCollisionHandler.glue2(a.p, b.p);
 
         const a_new = toProps(a, qNew_a, pNew_a);
         const b_new = toProps(b, qNew_b, pNew_b);
@@ -71,14 +71,39 @@ export class CollisionHandler implements ICollectionHandler<Particle> {
 
         return result;
     }
-    private static glue2(a: P, b: P): [P, P] {
+    public abstract getMomenta(...p: [P, P]): [P, P];
+
+    protected static glue2(a: P, b: P): [P, P] {
         return this.glue(a, b) as [P, P];
     }
-    private static glue(...particles: P[]): P[] {
+    protected static glue(...particles: P[]): P[] {
         const p_com = this.pom(...particles);
 
         const result = particles.map((particle, i) => ({ m: particle.m, vx: p_com.vx, vy: p_com.vy }) as P);
         assertTotalConservations(particles, result);
         return result;
+    }
+    protected static elastic(a: P, b: P): [P, P] {
+        const newA_p = { m: a.m, vx: compute1D(a.m, b.m, a.vx, b.vx), vy: compute1D(a.m, b.m, a.vy, b.vy) };
+        const newB_p = { m: b.m, vx: compute1D(b.m, a.m, b.vx, a.vx), vy: compute1D(b.m, a.m, b.vy, a.vy) };
+
+        return [newA_p, newB_p];
+
+        function compute1D(a_m: number, b_m: number, a_v: number, b_v: number) {
+            const M = a_m + b_m;
+            return (a_m - b_m) / M * a_v + 2 * b_m / M * b_v;
+        }
+    }
+}
+
+
+export class GlueCollisionHandler extends BaseCollisionHandler {
+    public getMomenta(...p: [P, P]): [P, P] {
+        return BaseCollisionHandler.glue2(p[0], p[1])
+    }
+}
+export class ElasticCollisionHandler extends BaseCollisionHandler {
+    public getMomenta(...p: [P, P]): [P, P] {
+        return BaseCollisionHandler.elastic(p[0], p[1])
     }
 }

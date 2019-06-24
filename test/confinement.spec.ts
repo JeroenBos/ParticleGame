@@ -1,8 +1,5 @@
 import 'mocha';
-import { CollisionHandler } from '../physics/collisionHandler';
-import { ParticleProps } from "../particle";
 import { assert } from "../jbsnorro";
-import { Invariants } from "../invariants/.invariants";
 import { Confiner } from '../physics/confinement';
 import { Particle } from '../physics';
 

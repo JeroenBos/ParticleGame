@@ -1,11 +1,10 @@
 import 'mocha';
-import { CollisionHandler } from '../physics/collisionHandler';
-import { ParticleProps } from "../particle";
+import { GlueCollisionHandler as CollisionHandler } from '../physics/collisionHandler';
 import { assert } from "../jbsnorro";
 import { Invariants } from "../invariants/.invariants";
 import { ForceComputer } from '../physics/forceComputer';
 import { assertTotalConservations } from './testhelper';
-import { Particle, PQR } from '../physics';
+import { Particle } from '../physics';
 import Extensions from '../extensions';
 
 const collisionHandler = Invariants.For(new CollisionHandler());
@@ -321,8 +320,7 @@ describe('CollisionHandler', () => {
         assertTotalConservations(particles, resultants);
     });
 
-
-    it('recreate bug at 41', () => {
+    it('momentum is conserved after bouncing and colliding in one step', () => {
         // arrange
         const projectedParticles = [
             { x: 470, y: 50, vx: -10, vy: 0, radius: 20, m: 1 },
@@ -331,7 +329,7 @@ describe('CollisionHandler', () => {
 
 
         // act
-        debugger;
+        // debugger;
         const resultants = collisionHandler.collide(projectedParticles[0], projectedParticles[1]);
 
         // assert

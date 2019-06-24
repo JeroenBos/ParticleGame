@@ -1,6 +1,5 @@
 import { assert } from "../jbsnorro";
-import { CollisionHandler } from "../physics/collisionHandler";
-import { ParticleProps } from "../particle";
+import { GlueCollisionHandler as CollisionHandler } from "../physics/collisionHandler";
 import { Confiner } from "../physics/confinement";
 import { Particle, P } from "../physics";
 
