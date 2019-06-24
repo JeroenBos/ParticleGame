@@ -2,14 +2,14 @@ import { ParticleProps } from "./particle";
 import { Particle } from "./physics";
 
 export interface IEngine<TParticle, TForce> {
-    readonly collisionDetector: ICollectionDetector<TParticle>;
-    readonly collisionHandler: ICollectionHandler<TParticle>;
+    readonly collisionDetector: ICollisionDetector<TParticle>;
+    readonly collisionHandler: ICollisionHandler<TParticle>;
     readonly forceComputer: IComputeForce<TParticle, TForce>;
     readonly confiner: IConfine<TParticle>;
     evolve(particles: TParticle[], dt: number): TParticle[];
     resolveInitialCollisions(initialParticles: TParticle[]): TParticle[];
 }
-export interface ICollectionDetector<TParticle> {
+export interface ICollisionDetector<TParticle> {
     /** Gets the number of recorded collisions. */
     readonly count: number;
     detect(particles: TParticle[]): { collisions: Collision[], freeParticles: TParticle[] };
@@ -18,7 +18,7 @@ export interface Collision {
     i: number,
     j: number
 }
-export interface ICollectionHandler<TParticle> {
+export interface ICollisionHandler<TParticle> {
     collide(p: TParticle, q: TParticle): TParticle[];
 }
 export interface IComputeForce<TParticle, TForce> {
@@ -36,6 +36,8 @@ export interface IConfine<TParticle> {
     resetImpartedMomentum(): void;
 }
 
-
+export interface IParticleGenerator<TParticle> {
+    generate(): TParticle[];
+}
 
 

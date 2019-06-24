@@ -1,5 +1,5 @@
 import { ParticleProps } from "../particle";
-import { IEngine, ICollectionDetector, IComputeForce, ICollectionHandler, IConfine } from "../physics.base";
+import { IEngine, ICollisionDetector, IComputeForce, ICollisionHandler, IConfine } from "../physics.base";
 import Extensions from "../extensions";
 import { Invariants } from '../invariants/.invariants';
 import { Particle } from ".";
@@ -7,10 +7,10 @@ import { F } from "./forceComputer";
 
 export default class Engine implements IEngine<Particle, F> {
     private readonly numberOfAllowedNonDecreasingCollisionCount = 1;
-    public readonly collisionDetector: ICollectionDetector<Particle>;
+    public readonly collisionDetector: ICollisionDetector<Particle>;
     constructor(
-        collisionDetector: ICollectionDetector<Particle>,
-        public readonly collisionHandler: ICollectionHandler<Particle>,
+        collisionDetector: ICollisionDetector<Particle>,
+        public readonly collisionHandler: ICollisionHandler<Particle>,
         public readonly forceComputer: IComputeForce<Particle, F>,
         public readonly confiner: IConfine<Particle>
     ) {

@@ -1,12 +1,11 @@
-import { ICollectionHandler } from "../physics.base";
+import { ICollisionHandler } from "../physics.base";
 import { Transformations, TransformationPair } from "./transformations";
 import { Q, Red, M, QMS, QM, Particle, P, PQR, Qed } from ".";
 import { assert } from "../jbsnorro";
 import { isNumber } from "util";
 import { assertTotalConservations } from "../test/testhelper";
-import { collisionDetector } from "../app/config";
 
-abstract class BaseCollisionHandler implements ICollectionHandler<Particle> {
+abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
     collide(a: Particle, b: Particle): Particle[] {
         return this.placeAdjacent(a, b);
     }

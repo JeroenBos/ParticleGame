@@ -1,11 +1,11 @@
-import 'mocha';
-import { engine, particleGenerator, collisionHandler, collisionDetector, confiner, dt, maxTime } from '../app/config';
+import 'mocha';import config from '../scenarios/test';
 import { assert } from "../jbsnorro";
 import { ParticleProps } from "../particle";
 import { assertTotalConservations } from './testhelper';
 import { Particle } from '../physics';
 
-type TestEngine = { projectAll(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[] };
+const { engine, collisionHandler, collisionDetector, confiner, dt, maxTime, particleGenerator } = config;
+
 
 describe('Integration tests', () => {
     it('The same as diplayed in the html', () => {

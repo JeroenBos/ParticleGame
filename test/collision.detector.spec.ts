@@ -6,7 +6,7 @@ import { Invariants } from "../invariants/.invariants";
 import { Collision } from '../physics.base';
 import { Particle } from '../physics';
 
-const collisionDetector = Invariants.For(new CollisionDetector());
+const collisionDetector = Invariants.For(new CollisionDetector(0.001));
 
 describe('CollisionDetector', () => {
     it('Single particle remains free', () => {

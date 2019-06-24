@@ -1,19 +1,10 @@
 import 'mocha';
-import { GlueCollisionHandler as  CollisionHandler } from '../physics/collisionHandler';
-import { ParticleProps } from "../particle";
 import { assert } from "../jbsnorro";
-import { Invariants } from "../invariants/.invariants";
-import Engine from '../physics/engine';
-import { CollisionDetector } from '../physics/collisionDetector';
-import { ForceComputer } from '../physics/forceComputer';
-import { Confiner } from '../physics/confinement';
-import { forceComputer } from '../app/config';
+import config from '../scenarios/test';
 import Extensions from '../extensions';
 import { Particle } from '../physics';
 
-function createEngine(width: number = 100, height: number = 100) {
-    return new Engine(new CollisionDetector(), new CollisionHandler(), new ForceComputer(), new Confiner(width, height));
-}
+const { forceComputer } = config;
 describe('Force', () => {
     it('No force', () => {
         // arrange

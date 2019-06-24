@@ -1,5 +1,4 @@
 import { Q, P } from '.';
-import { collisionHandler } from '../app/config';
 import { ElasticCollisionHandler } from './collisionHandler';
 
 export type TransformationPair<T, U> = {

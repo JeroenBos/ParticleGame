@@ -10,7 +10,7 @@ import { Confiner } from '../physics/confinement';
 import { Particle } from '../physics';
 
 function createEngine(width: number = 100, height: number = 100) {
-    return new Engine(new CollisionDetector(), new CollisionHandler(), new ForceComputer(), new Confiner(width, height));
+    return new Engine(new CollisionDetector(0.001), new CollisionHandler(), new ForceComputer(), new Confiner(width, height));
 }
 describe('Engine', () => {
     it('Free propagation along x-axis', () => {

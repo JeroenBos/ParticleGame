@@ -1,10 +1,10 @@
-import { ICollectionDetector, Collision } from "../physics.base";
+import { ICollisionDetector, Collision } from "../physics.base";
 import { ParticleProps } from "../particle";
 import { Particle } from ".";
 
-export class CollisionDetector implements ICollectionDetector<Particle> {
+export class CollisionDetector implements ICollisionDetector<Particle> {
 
-    public constructor(public readonly precision: number = 0.001) {
+    public constructor(public readonly precision: number) {
     }
     private _count = 0;
     get count() {

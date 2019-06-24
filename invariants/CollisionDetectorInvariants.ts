@@ -1,18 +1,18 @@
-import { ICollectionDetector, Collision } from "../physics.base";
+import { ICollisionDetector, Collision } from "../physics.base";
 
 type P = any;
 
 export class CollectionDetectorInvariantsFactory {
-    isForTypeOf(obj: ICollectionDetector<P>): boolean {
+    isForTypeOf(obj: ICollisionDetector<P>): boolean {
         return 'detect' in obj;
     }
-    create(obj: ICollectionDetector<P>): ICollectionDetector<P> {
+    create(obj: ICollisionDetector<P>): ICollisionDetector<P> {
         return new CollectionDetectorInvariants(obj);
     }
 }
-class CollectionDetectorInvariants implements ICollectionDetector<P> {
+class CollectionDetectorInvariants implements ICollisionDetector<P> {
     count = 0;
-    constructor(private readonly obj: ICollectionDetector<P>) { }
+    constructor(private readonly obj: ICollisionDetector<P>) { }
     detect(particles: P[]): {
         collisions: Collision[];
         freeParticles: P[];

@@ -1,12 +1,11 @@
 import * as React from "react";
-import ParticleGenerator from './app/particleGenerator';
 import { Particle, ParticleProps } from "./particle";
-import { IEngine } from "./physics.base";
+import { IEngine, IParticleGenerator } from "./physics.base";
 import { Particle as IParticle } from './physics';
 import { F } from "./physics/forceComputer";
 
 export interface ContainerProps {
-    particleGenerator: ParticleGenerator;
+    particleGenerator: IParticleGenerator<IParticle>;
     width: number;
     height: number;
     engine: IEngine<IParticle, F>,
