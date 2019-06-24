@@ -1,15 +1,16 @@
 import 'mocha';
-import { engine, particleGenerator, collisionHandler, collisionDetector, confiner, dt } from '../app/config';
+import { engine, particleGenerator, collisionHandler, collisionDetector, confiner, dt, maxTime } from '../app/config';
 import { assert } from "../jbsnorro";
 import { ParticleProps } from "../particle";
 import { assertTotalConservations } from './testhelper';
+import { Particle } from '../physics';
 
 type TestEngine = { projectAll(particles: Readonly<ParticleProps>[]): Readonly<ParticleProps>[] };
 
 describe('Integration tests', () => {
     it('The same as diplayed in the html', () => {
         // arrange
-        const stepCount = 100;
+        const stepCount = maxTime / dt;
         const generatedParticles = particleGenerator.generate();
         const initialParticles = engine.resolveInitialCollisions(generatedParticles);
 
@@ -18,12 +19,12 @@ describe('Integration tests', () => {
         let particles = initialParticles;
         for (let i = 0; i < stepCount; i++) {
             const particlesBefore = particles;
-            if(i == 41){
+            if (i == 410) {
                 console.log();
             }
-            particles = engine.evolve(particles, 1);
+            particles = engine.evolve(particles, dt);
             console.log(`${i}. p1: {${particles[0].x}, ${particles[0].vx}}. p1: {${particles[1].x}, ${particles[1].vy}}, imparted: ${confiner.impartedMomentum.px}, collisions: ${collisionDetector.count}`);
-            
+
             assertTotalConservations(particlesBefore, particles, confiner);
 
             confiner.resetImpartedMomentum();
@@ -50,5 +51,15 @@ describe('Integration tests', () => {
             assertTotalConservations(particlesBefore, particles, confiner);
             confiner.resetImpartedMomentum();
         }
+    });
+
+    it('bug fix: collisions resolved but still not by 1e-07', () => {
+        const particles = [
+            { x: 109, y: 50, m: 1, radius: 9, vx: -10, vy: 0 },
+            { x: 91, y: 53, m: 1, radius: 9, vx: 10, vy: 0 }
+        ].map(Particle.create);
+
+        debugger;
+        engine.evolve(particles, dt);
     });
 });

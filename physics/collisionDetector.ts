@@ -3,6 +3,9 @@ import { ParticleProps } from "../particle";
 import { Particle } from ".";
 
 export class CollisionDetector implements ICollectionDetector<Particle> {
+
+    public constructor(public readonly precision: number = 0.001) {
+    }
     private _count = 0;
     get count() {
         return this._count;
@@ -19,6 +22,7 @@ export class CollisionDetector implements ICollectionDetector<Particle> {
             for (let qi = 0; qi < pi; qi++) {
                 const q = particles[qi];
                 if (this.collideQ(p, q)) {
+                    const distance = Math.sqrt(Math.abs(this.distanceSquared(p, q)));
                     collisions.push({ i: qi, j: pi });
                     this._count++;
                     collided[pi] = true;
@@ -36,14 +40,10 @@ export class CollisionDetector implements ICollectionDetector<Particle> {
     }
 
     private collideQ(p: Particle, q: Particle): boolean {
-        if (q === undefined) {
-            if (q === undefined) {
-            }
-        }
-        //2 means squared
-        const distance2 = (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y);
-        const minDistance2 = (p.radius + q.radius) * (p.radius + q.radius);
-
-        return minDistance2 > distance2;
+        const distanceSquared = this.distanceSquared(p, q);
+        return distanceSquared < -this.precision;
+    }
+    private distanceSquared(p: Particle, q: Particle): number {
+        return (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y) - (p.radius + q.radius) * (p.radius + q.radius);
     }
 }

@@ -6,7 +6,7 @@ import { Particle } from '../physics';
 describe('Confiner', () => {
     it('Confinement without far x-axis', () => {
         // arrange
-    const confiner = new Confiner(10, 10);
+        const confiner = new Confiner(10, 10);
         const particle = Particle.create({
             x: 9,
             y: 5,
@@ -28,9 +28,9 @@ describe('Confiner', () => {
         assert(result.vx == -1);
     });
 
-    it('recreate bug', () => {
+    it('resolved bug', () => {
         // arrange
-    const confiner = new Confiner(500, 500);
+        const confiner = new Confiner(500, 500);
         const particle = Particle.create({
             x: 480,
             y: 50,
@@ -43,7 +43,7 @@ describe('Confiner', () => {
         const trivialProjection = particle.withQ({ x: particle.x + particle.vx, y: particle.y + particle.vy });
 
         // act
-        debugger;
+        // debugger;
         const result = confiner.confine(trivialProjection, particle);
 
         // assert
