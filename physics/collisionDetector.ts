@@ -25,7 +25,7 @@ export class CollisionDetector implements ICollisionDetector<Particle> {
             for (let qi = 0; qi < pi; qi++) {
                 const q = particles[qi];
                 if (this.collideQ(p, q)) {
-                    const distance = Math.sqrt(Math.abs(this.distanceSquared(p, q)));
+                    const distance = CollisionDetector.distance(p, q);
                     collisions.push({ i: qi, j: pi });
                     this._count++;
                     collided[pi] = true;
@@ -43,13 +43,16 @@ export class CollisionDetector implements ICollisionDetector<Particle> {
     }
 
     private collideQ(p: Particle, q: Particle): boolean {
-        const distanceSquared = this.distanceSquared(p, q);
+        const distanceSquared = CollisionDetector.distanceSquared(p, q);
         return distanceSquared < -this.precision;
     }
-    private distanceSquared(p: Particle, q: Particle): number {
+    private static distanceSquared(p: Particle, q: Particle): number {
         return (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y) - (p.radius + q.radius) * (p.radius + q.radius);
     }
-
+    public static distance(p: Particle, q: Particle) {
+        const d = this.distanceSquared(p, q);
+        return Math.sign(d) * Math.sqrt(Math.abs(this.distanceSquared(p, q)));
+    }
     getTimeToCollision(p: Particle, q: Particle): number {
 
         // return 0; // Simplification: TODO, implement properly
@@ -62,12 +65,30 @@ export class CollisionDetector implements ICollisionDetector<Particle> {
         const R = p.radius + q.radius;
 
         const D = Math.sqrt(dsdv ** 2 - dv2 * (ds2 - R ** 2));
-        // return the (smallest) positive solution:
         const numbers = [(- dsdv - D) / dv2, (- dsdv + D) / dv2];
-        const solutions = numbers.filter(solution => solution > -this.precision).sort();
+
+        // ok, there are a few cases:
+        // there is no collision: D == NaN. Return NaN
+        // there is one collision in the past and one in the future: we're currently colliding: return 0
+        // there are only collision in the past: return NaN
+        // there are only collisions in the future: one enters the particle, the other one leaves the particle. Returns the first
+        const solutions = numbers.filter(n => !Number.isNaN(n)).sort();
         if (solutions.length == 0)
-            return NaN;
-        return solutions[0];
+            return NaN; // no collision
+        if (solutions.length == 1) {
+            if (solutions[0] > -this.precision)
+                return solutions[0];
+            return NaN; // touching (no collision) was in the past
+        }
+
+
+        if (solutions[0] < 0 && solutions[1] > -this.precision) {
+            return 0; // currently colliding
+        }
+        if (solutions[0] > -this.precision) {
+            return solutions[0]; // return first collision time
+        }
+        return NaN; // both collisions were in the past
 
         // const distance = this.distanceSquared(p, q);
 

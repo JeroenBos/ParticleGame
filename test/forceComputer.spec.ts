@@ -11,7 +11,7 @@ describe('Force', () => {
         const particles = [{ x: 50, y: 50, vx: 10, vy: 0, radius: 30, m: 2 }, { x: 60, y: 50, vx: 10, vy: 0, radius: 20, m: 1 }].map(Particle.create);
 
         // act
-        debugger;
+        // debugger;
         const projections = Extensions.notUndefined(forceComputer.projectAll(particles, 1));
 
         // assert

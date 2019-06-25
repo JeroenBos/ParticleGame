@@ -8,8 +8,8 @@ import { CollisionDetector } from "./collisionDetector";
 
 abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
 
-    public abstract getMomenta(p: [Particle, Particle], dt: number): [P, P];
-    public abstract getCoordinates(p: [Particle, Particle], pNew: [P, P], dt: number): [Q, Q];
+    public abstract getMomenta(projectedParticles: [Particle, Particle], dt: number): [P, P];
+    public abstract getCoordinates(projectedParticles: [Particle, Particle], pNew: [P, P], dt: number): [Q, Q];
 
     public collide(a: Particle, b: Particle, dt: number): Particle[] {
         return this._collide(a, b, dt, this.getCoordinates.bind(this), this.getMomenta.bind(this));
@@ -18,8 +18,8 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
         a: Particle,
         b: Particle,
         dt: number,
-        getNewCoordinates: (particles: [Particle, Particle], pNew: [P, P], dt: number) => [Q, Q],
-        getNewMomenta: (particles: [Particle, Particle], dt: number) => [P, P]
+        getNewCoordinates: (projectedParticles: [Particle, Particle], pNew: [P, P], dt: number) => [Q, Q],
+        getNewMomenta: (projectedParticles: [Particle, Particle], dt: number) => [P, P]
     ) {
         const [pNew_a, pNew_b] = getNewMomenta([a, b], dt);
         const [qNew_a, qNew_b] = getNewCoordinates([a, b], [pNew_a, pNew_b], dt);
@@ -58,17 +58,16 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
         return [qNew_a, qNew_b];
     }
 
-    protected linearBeforeAndAfterCollision(previousState_a: Particle, previousState_b: Particle, pNew_a: P, pNew_b: P, dt?: number): [Q, Q] {
-        if (dt === undefined)
-            throw new Error('dt is required here');
-        const _dt = dt;
+    protected linearBeforeAndAfterCollision(projected_a: Particle, projected_b: Particle, pNew_a: P, pNew_b: P, dt: number): [Q, Q] {
         assert(dt > 0);
 
+        const previousState_a = unproject(projected_a);
+        const previousState_b = unproject(projected_b);
         const t = new CollisionDetector(0).getTimeToCollision(previousState_a, previousState_b);
         assert(-0.01 * dt < t && t < dt * 1.01);
 
         function getNewQ(oldP: Particle, newP: P): Q {
-            const t2 = _dt - t;
+            const t2 = dt - t;
             return {
                 x: oldP.x + oldP.vx * t + newP.vx * t2,
                 y: oldP.y + oldP.vy * t + newP.vy * t2,
@@ -78,6 +77,11 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
         const qNew_b = getNewQ(previousState_b, pNew_b);
 
         return [qNew_a, qNew_b];
+        function unproject(a: Particle) {
+            const x = a.x - dt * a.vx;
+            const y = a.y - dt * a.vy;
+            return Particle.create({ x, y, vy: a.vy, vx: a.vx, m: a.m, radius: a.radius });
+        }
     }
 
     /** Computes the location of the center of mass of the specified particles. */
@@ -157,20 +161,19 @@ export class GlueCollisionHandler extends BaseCollisionHandler {
     public collide(a: Particle, b: Particle) {
         return super.collide(a, b, undefined as any);
     }
-    public getMomenta(p: [Particle, Particle], dt: number): [P, P] {
-        return BaseCollisionHandler.glue2(p[0], p[1])
+    public getMomenta(projectedParticles: [Particle, Particle], dt: number): [P, P] {
+        return BaseCollisionHandler.glue2(...projectedParticles)
     }
-    public getCoordinates(p: [Particle, Particle], pNew: [P, P], dt: number): [Q, Q] {
-        return this.placeAdjacent(p[0], p[1]);
+    public getCoordinates(projectedParticles: [Particle, Particle], pNew: [P, P], dt: number): [Q, Q] {
+        return this.placeAdjacent(...projectedParticles);
     }
 }
 export class ElasticCollisionHandler extends BaseCollisionHandler {
-    public getMomenta(p: [Particle, Particle], dt?: number): [P, P] {
-        return BaseCollisionHandler.elastic(p[0], p[1])
+    public getMomenta(projectedParticles: [Particle, Particle], dt?: number): [P, P] {
+        return BaseCollisionHandler.elastic(...projectedParticles)
     }
 
-
-    public getCoordinates(p: [Particle, Particle], pNew: [P, P], dt: number): [Q, Q] {
-        return this.linearBeforeAndAfterCollision(p[0], p[1], pNew[0], pNew[1], dt);
+    public getCoordinates(projectedParticles: [Particle, Particle], pNew: [P, P], dt: number): [Q, Q] {
+        return this.linearBeforeAndAfterCollision(projectedParticles[0], projectedParticles[1], pNew[0], pNew[1], dt);
     }
 }

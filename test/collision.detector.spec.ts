@@ -170,7 +170,7 @@ describe('Time to collision', () => {
         const b = Particle.create({ radius: 1, x: 0, y: 0, vx: 0, vy: 0, m: 0 });
 
         // act
-        debugger;
+        // debugger;
         const t = collisionDetector.getTimeToCollision(a, b);
 
         assert(0.5 < t && t < 0.7);
