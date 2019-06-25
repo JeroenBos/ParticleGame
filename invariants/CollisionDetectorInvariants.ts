@@ -12,6 +12,7 @@ export class CollectionDetectorInvariantsFactory {
 }
 class CollectionDetectorInvariants implements ICollisionDetector<P> {
     get count() { return this.obj.count; }
+    getTimeToCollision(a: P, b: P) { return this.obj.getTimeToCollision(a, b); }
     constructor(private readonly obj: ICollisionDetector<P>) { }
     detect(particles: P[]): {
         collisions: Collision[];

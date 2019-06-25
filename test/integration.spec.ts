@@ -73,7 +73,6 @@ describe('Integration tests', () => {
         assert(engine.collisionDetector.count == 1 + originalCount);
     });
 
-
     it('near miss collided only once', () => {
         // arrange
         let particles = [
@@ -91,6 +90,28 @@ describe('Integration tests', () => {
         // assert
         assert(particles[0].x < 52);
         assert(particles[1].x > 50.1);
+        assert(collisionDetector.count == 1);
+    });
+
+    it('current test collided only once', () => {
+        // arrange
+        let particles = [
+            { x: 55, y: 50, vx: -1, vy: 0, radius: 2, m: 1 },
+            { x: 45, y: 52, vx: 1, vy: 0, radius: 2, m: 1 }
+        ].map(Particle.create);
+
+
+        // act
+        debugger;
+        for (let i = 0; i < 70; i++) {
+            particles = engine.evolve(particles, 0.1);
+        }
+
+        // assert
+        assert(particles[0].vx < 0);
+        assert(particles[1].vx > 0);
+        assert(particles[0].x < 50);
+        assert(particles[1].x > 50);
         assert(collisionDetector.count == 1);
     });
 });

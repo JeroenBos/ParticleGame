@@ -13,13 +13,14 @@ export interface ICollisionDetector<TParticle> {
     /** Gets the number of recorded collisions. */
     readonly count: number;
     detect(particles: TParticle[]): { collisions: Collision[], freeParticles: TParticle[] };
+    getTimeToCollision(particle1: TParticle, particl2: TParticle): number | undefined;
 }
 export interface Collision {
     i: number,
     j: number
 }
 export interface ICollisionHandler<TParticle> {
-    collide(p: TParticle, q: TParticle): TParticle[];
+    collide(p: TParticle, q: TParticle, dt: number): TParticle[];
 }
 export interface IComputeForce<TParticle, TForce> {
     /** Computes the force of particle 'actor' on particle 'receiver'. */

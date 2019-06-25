@@ -19,18 +19,19 @@ export default class Engine implements IEngine<Particle, F> {
 
     public evolve(particles: Particle[], dt: number): Particle[] {
         const projections = this.projectAll(particles, dt);
-        const resultantParticles = this.resolveCollisions(projections);
+        const resultantParticles = this.resolveCollisions(projections, dt);
         return resultantParticles;
 
     }
     public resolveInitialCollisions(initialParticles: Particle[]) {
         const confinedParticles = Extensions.removeUndefineds(initialParticles.map(p => this.confiner.confine(p, undefined)));
-        const result = this.resolveCollisions(confinedParticles);
+        const result = this.resolveCollisions(confinedParticles, Number.EPSILON);
         this.confiner.resetImpartedMomentum();
         return result;
     }
     private resolveCollisions(
         projectedParticles: Particle[],
+        dt: number,
         debug: { previousNumberOfCollisions: number; consecutiveNondecreaseCount: number } = { previousNumberOfCollisions: 0, consecutiveNondecreaseCount: 0 }
     ): Particle[] {
         const { freeParticles, collisions } = this.collisionDetector.detect(projectedParticles);
@@ -46,10 +47,10 @@ export default class Engine implements IEngine<Particle, F> {
                 throw new Error(`The number of collisions has not decreased after being handled ${consecutiveNondecreaseCount} times by the collision handler`);
         }
 
-        const collidedParticles = collisions.map(collision => this.collisionHandler.collide(projectedParticles[collision.i], projectedParticles[collision.j])).reduce((a, b) => a.concat(b));
+        const collidedParticles = collisions.map(collision => this.collisionHandler.collide(projectedParticles[collision.i], projectedParticles[collision.j], dt)).reduce((a, b) => a.concat(b));
         const particles = freeParticles.concat(collidedParticles);
         // this function is recursive, because the resulting particles may still be in collision (with a third e.g.)
-        return this.resolveCollisions(particles, { previousNumberOfCollisions, consecutiveNondecreaseCount });
+        return this.resolveCollisions(particles, dt, { previousNumberOfCollisions, consecutiveNondecreaseCount });
     }
 
     private projectAll(particles: Particle[], dt: number): Particle[] {

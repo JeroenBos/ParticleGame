@@ -14,7 +14,7 @@
                 "--colors",
                 "${workspaceFolder}/dist/test.js",
                 "--fgrep",
-                "near miss collided only"
+                "Time to collision"
             ],
             "console": "internalConsole",
             "internalConsoleOptions": "neverOpen",

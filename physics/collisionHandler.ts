@@ -4,13 +4,38 @@ import { Q, Red, M, QMS, QM, Particle, P, PQR, Qed } from ".";
 import { assert } from "../jbsnorro";
 import { isNumber } from "util";
 import { assertTotalConservations } from "../test/testhelper";
+import { CollisionDetector } from "./collisionDetector";
 
 abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
-    collide(a: Particle, b: Particle): Particle[] {
-        return this.placeAdjacent(a, b);
+
+    public abstract getMomenta(p: [Particle, Particle], dt: number): [P, P];
+    public abstract getCoordinates(p: [Particle, Particle], pNew: [P, P], dt: number): [Q, Q];
+
+    public collide(a: Particle, b: Particle, dt: number): Particle[] {
+        return this._collide(a, b, dt, this.getCoordinates.bind(this), this.getMomenta.bind(this));
+    }
+    protected _collide(
+        a: Particle,
+        b: Particle,
+        dt: number,
+        getNewCoordinates: (particles: [Particle, Particle], pNew: [P, P], dt: number) => [Q, Q],
+        getNewMomenta: (particles: [Particle, Particle], dt: number) => [P, P]
+    ) {
+        const [pNew_a, pNew_b] = getNewMomenta([a, b], dt);
+        const [qNew_a, qNew_b] = getNewCoordinates([a, b], [pNew_a, pNew_b], dt);
+
+        const a_new = toProps(a, qNew_a, pNew_a);
+        const b_new = toProps(b, qNew_b, pNew_b);
+
+        return [a_new, b_new];
+
+        function toProps(particle: Readonly<QMS>, q: Q, p: P) {
+            return Particle.create({ x: q.x, y: q.y, vx: p.vx, vy: p.vy, m: particle.m, radius: particle.radius });
+        }
     }
 
-    private placeAdjacent(a: Particle, b: Particle): Particle[] {
+
+    protected placeAdjacent(a: Particle, b: Particle): [Q, Q] {
         const com = BaseCollisionHandler.com(a, b);
         const physicalTransformations = Transformations.translationAndRotation(com.q, a.q);
         const transformations = Transformations.Property<Particle, 'q', number>('q', physicalTransformations, (particle, newQ) => particle.withQ(newQ));
@@ -29,19 +54,31 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
             const result = ({ σ: coordinate.σ, ρ });
             return result;
         }
-        const [pNew_a, pNew_b] = this.getMomenta(a, b);
-        assert(pNew_a.m == a.m);
-        assertTotalConservations([a, b], [pNew_a, pNew_b]);
 
-        const a_new = toProps(a, qNew_a, pNew_a);
-        const b_new = toProps(b, qNew_b, pNew_b);
-        return [a_new, b_new];
-
-        function toProps(particle: Readonly<QMS>, q: Q, p: P) {
-            return Particle.create({ x: q.x, y: q.y, vx: p.vx, vy: p.vy, m: particle.m, radius: particle.radius });
-        }
+        return [qNew_a, qNew_b];
     }
 
+    protected linearBeforeAndAfterCollision(previousState_a: Particle, previousState_b: Particle, pNew_a: P, pNew_b: P, dt?: number): [Q, Q] {
+        if (dt === undefined)
+            throw new Error('dt is required here');
+        const _dt = dt;
+        assert(dt > 0);
+
+        const t = new CollisionDetector(0).getTimeToCollision(previousState_a, previousState_b);
+        assert(-0.01 * dt < t && t < dt * 1.01);
+
+        function getNewQ(oldP: Particle, newP: P): Q {
+            const t2 = _dt - t;
+            return {
+                x: oldP.x + oldP.vx * t + newP.vx * t2,
+                y: oldP.y + oldP.vy * t + newP.vy * t2,
+            };
+        }
+        const qNew_a = getNewQ(previousState_a, pNew_a);
+        const qNew_b = getNewQ(previousState_b, pNew_b);
+
+        return [qNew_a, qNew_b];
+    }
 
     /** Computes the location of the center of mass of the specified particles. */
     public static com(...particles: Readonly<Qed & M>[]): QM {
@@ -72,7 +109,6 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
 
         return result;
     }
-    public abstract getMomenta(...p: [P, P]): [P, P];
 
     public static glue2(a: P, b: P): [P, P] {
         return this.glue(a, b) as [P, P];
@@ -102,30 +138,39 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
         const result = [computeAttempt2(a, b), computeAttempt2(b, a)] as [P, P];
         assertTotalConservations([a, b], result);
         return result;
-
-        function diff(v: { x: number, y: number }, u: { x: number, y: number }): { x: number, y: number } {
-            return {
-                x: v.x - u.x,
-                y: v.y - u.y,
-            };
-        }
-        function inProduct(r: Q, s: Q): number {
-            return r.x * s.x + r.y * s.y;
-        }
-        function toVector(p: P): { x: number, y: number } {
-            return { x: p.vx, y: p.vy };
-        }
     }
 }
-
+export function toVector(p: P): { x: number, y: number } {
+    return { x: p.vx, y: p.vy };
+}
+export function diff(v: { x: number, y: number }, u: { x: number, y: number }): { x: number, y: number } {
+    return {
+        x: v.x - u.x,
+        y: v.y - u.y,
+    };
+}
+export function inProduct(r: Q, s: Q): number {
+    return r.x * s.x + r.y * s.y;
+}
 
 export class GlueCollisionHandler extends BaseCollisionHandler {
-    public getMomenta(...p: [Particle, Particle]): [P, P] {
+    public collide(a: Particle, b: Particle) {
+        return super.collide(a, b, undefined as any);
+    }
+    public getMomenta(p: [Particle, Particle], dt: number): [P, P] {
         return BaseCollisionHandler.glue2(p[0], p[1])
+    }
+    public getCoordinates(p: [Particle, Particle], pNew: [P, P], dt: number): [Q, Q] {
+        return this.placeAdjacent(p[0], p[1]);
     }
 }
 export class ElasticCollisionHandler extends BaseCollisionHandler {
-    public getMomenta(...p: [Particle, Particle]): [P, P] {
+    public getMomenta(p: [Particle, Particle], dt?: number): [P, P] {
         return BaseCollisionHandler.elastic(p[0], p[1])
+    }
+
+
+    public getCoordinates(p: [Particle, Particle], pNew: [P, P], dt: number): [Q, Q] {
+        return this.linearBeforeAndAfterCollision(p[0], p[1], pNew[0], pNew[1], dt);
     }
 }

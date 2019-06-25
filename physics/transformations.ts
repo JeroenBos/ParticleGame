@@ -60,8 +60,16 @@ export class Transformations {
         const { transformation, inverseTransformation } = transformations;
         return this.perform(operation, transformation, inverseTransformation, ...input) as [T, T];
     }
+    public static perform1<T, U>(
+        operation: (u: U, otherCoordinates: U[]) => U,
+        transformations: TransformationPair<T, U>,
+        input: T): T {
 
-    public static translationPtoQ(): TransformationPair<P, Q & { m: number }> {
+        const { transformation, inverseTransformation } = transformations;
+        return this.perform<T, U>(operation, transformation, inverseTransformation, input)[0];
+    }
+
+    public static translationPtoQ(): TransformationPair<P, Q> {
         function transformation(arg: P): Q & { m: number } {
             const result = {
                 m: arg.m,
@@ -79,7 +87,8 @@ export class Transformations {
             };
             return result;
         }
-        return { transformation, inverseTransformation };
+        const cast = inverseTransformation as ((arg: Q) => P);
+        return { transformation, inverseTransformation: cast };
 
     }
     /** CoP == center of momentum */
