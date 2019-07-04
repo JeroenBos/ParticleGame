@@ -35,12 +35,12 @@ export class Container extends React.Component<ContainerProps, ContainerState> {
     }
     render() {
         const particles = this.state.particles.map((p, i) => <Particle key={i} {...p}></Particle>);
-        const collisions = this.props.engine.collisionDetector.count;
-        const bounces = this.props.engine.confiner.bounces;
+        const collisionCount = this.props.engine.collisionDetector.count;
+        const bounceCount = this.props.engine.confiner.bounces;
 
         return (
             <div>
-                <div>t: {this.state.t.toFixed(1)}, collisions: {collisions}, +bounces: {collisions + bounces}</div>
+                <div>t: {this.state.t.toFixed(1)}, collisions: {collisionCount}, +bounces: {collisionCount + bounceCount}</div>
                 <svg width={this.props.width} height={this.props.height} >
                     {particles}
                     <rect x="0" y="0" width={this.props.width} height={this.props.height} fill="none" stroke="black"></rect>
