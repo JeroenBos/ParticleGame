@@ -6,7 +6,9 @@ export interface IEngine<TParticle, TForce> {
     readonly collisionHandler: ICollisionHandler<TParticle>;
     readonly forceComputer: IComputeForce<TParticle, TForce>;
     readonly confiner: IConfine<TParticle>;
-    evolve(particles: TParticle[], dt: number): TParticle[];
+    /** `τ` means it regards game-time rather than real-life time, for which we use `t`. */
+    readonly dτ: number;
+    evolve(particles: TParticle[], Δτ: number): TParticle[];
     resolveInitialCollisions(initialParticles: TParticle[]): TParticle[];
 }
 export interface ICollisionDetector<TParticle> {

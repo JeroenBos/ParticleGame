@@ -10,7 +10,7 @@ import { Confiner } from '../physics/confinement';
 import { Particle } from '../physics';
 
 function createEngine(width: number = 100, height: number = 100) {
-    return new Engine(new CollisionDetector(0.001), new CollisionHandler(), new ForceComputer(), new Confiner(width, height));
+    return new Engine(new CollisionDetector(0.001), new CollisionHandler(), new ForceComputer(), new Confiner(width, height), 1/*huge*/);
 }
 describe('Engine', () => {
     it('Free propagation along x-axis', () => {
@@ -25,7 +25,7 @@ describe('Engine', () => {
             radius: 1,
         });
         // act
-        // debugger;
+        debugger;
         const [t1] = engine.evolve([t0], 1) as [Particle];
 
         // assert
@@ -104,7 +104,7 @@ describe('Engine', () => {
     it('bug fix: collisions resolved but still not by 1e-07', () => {
         // arrange
         const engine = createEngine(10);
-        const dt = 0;
+        const dt = 1;
         const particles = [
             { x: 109, y: 50, m: 1, radius: 9, vx: -10, vy: 0 },
             { x: 91, y: 53, m: 1, radius: 9, vx: 10, vy: 0 }

@@ -4,6 +4,7 @@ import Extensions from "../extensions";
 import { Invariants } from '../invariants/.invariants';
 import { Particle } from ".";
 import { F } from "./forceComputer";
+import { assert } from "../jbsnorro";
 
 export default class Engine implements IEngine<Particle, F> {
     private readonly numberOfAllowedNonDecreasingCollisionCount = 1;
@@ -12,16 +13,23 @@ export default class Engine implements IEngine<Particle, F> {
         collisionDetector: ICollisionDetector<Particle>,
         public readonly collisionHandler: ICollisionHandler<Particle>,
         public readonly forceComputer: IComputeForce<Particle, F>,
-        public readonly confiner: IConfine<Particle>
+        public readonly confiner: IConfine<Particle>,
+        public readonly dτ: number
     ) {
+        assert(dτ !== undefined);
+        assert(dτ > 0);
         this.collisionDetector = Invariants.For(collisionDetector);
     }
 
-    public evolve(particles: Particle[], dt_s: number): Particle[] {
-        const projections = this.projectAll(particles, dt_s);
-        const resultantParticles = this.resolveCollisions(projections, dt_s);
-        return resultantParticles;
+    public evolve(particles: Particle[], Δτ: number): Particle[] {
+        assert(Δτ >= this.dτ, 'Δτ < dτ');
 
+        let result = particles;
+        for (let simulatedτ = 0; simulatedτ < Δτ; simulatedτ += this.dτ) {
+            const projections = this.projectAll(result, this.dτ);
+            result = this.resolveCollisions(projections, this.dτ);
+        }
+        return result;
     }
     public resolveInitialCollisions(initialParticles: Particle[]) {
         const confinedParticles = Extensions.removeUndefineds(initialParticles.map(p => this.confiner.confine(p, undefined)));
@@ -34,7 +42,7 @@ export default class Engine implements IEngine<Particle, F> {
         dt: number,
         debug: { previousNumberOfCollisions: number; consecutiveNondecreaseCount: number } = { previousNumberOfCollisions: 0, consecutiveNondecreaseCount: 0 }
     ): Particle[] {
-        const { freeParticles, collisions } = this.collisionDetector.detect(projections/*.map(p => p.projection)*/);
+        const { freeParticles, collisions } = this.collisionDetector.detect(projections);
         if (collisions.length == 0)
             return freeParticles;
 
@@ -49,7 +57,8 @@ export default class Engine implements IEngine<Particle, F> {
 
         const collidedParticles = collisions.map(collision => this.collisionHandler.collide(projections[collision.i], projections[collision.j], dt)).reduce((a, b) => a.concat(b));
         // this function is recursive, because the resulting particles may still be in collision (with a third e.g.)
-        return this.resolveCollisions(freeParticles.concat(collidedParticles), dt, { previousNumberOfCollisions, consecutiveNondecreaseCount });
+        const concatenatedParticles = freeParticles.concat(collidedParticles);
+        return this.resolveCollisions(concatenatedParticles, dt, { previousNumberOfCollisions, consecutiveNondecreaseCount });
     }
 
     private projectAll(particles: Particle[], dt: number): Particle[] {

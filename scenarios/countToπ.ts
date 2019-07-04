@@ -13,7 +13,6 @@ class ParticleGenerator implements IParticleGenerator<Particle> {
     }
 }
 
-const tradeoff = -3; // the higher the more precise, but takes more computation power
 class Config extends DefaultConfig {
     constructor(private readonly mass: number) {
         super()
@@ -26,26 +25,27 @@ class Config extends DefaultConfig {
         return new Confiner(Infinity, this.height);
     }
 
-    get dt_ms() {
-        return this.updateInterval_ms / this.stepsPerTimeInterval;
-    }
+    // get dt_ms() {
+    //     return this.updateInterval_ms / this.stepsPerTimeInterval;
+    // }
 
-    get updateInterval_ms() {
-        return 10;
-    }
-    get stepsPerTimeInterval() {
-        return Math.max(1, this.mass * 10 ** tradeoff);
-    }
+    // get updateInterval_ms() {
+    //     return 10;
+    // }
+    // get stepsPerTimeInterval() {
+    //     return Math.max(1, this.mass * 10 ** tradeoff);
+    // }
 }
 
 export default {
-    precision0: new Config(10 ** 0),
-    precision1: new Config(10 ** 1),
-    precision2: new Config(10 ** 2),
-    precision3: new Config(10 ** 3),
-    precision4: new Config(10 ** 4),
-    precision5: new Config(10 ** 5),
-    precision6: new Config(10 ** 6),
-    precision7: new Config(10 ** 7),
-    precision_m16: new Config(16)
+    precision0: () => new Config(10 ** 0),
+    precision1: () => new Config(10 ** 1),
+    precision2: () => new Config(10 ** 2),
+    precision3: () => new Config(10 ** 3),
+    precision4: () => new Config(10 ** 4),
+    precision5: () => new Config(10 ** 5),
+    precision6: () => new Config(10 ** 6),
+    precision7: () => new Config(10 ** 7),
+    precision_m16: () => new Config(16),
+    precision_m64: () => new Config(64)
 };

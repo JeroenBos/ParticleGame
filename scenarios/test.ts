@@ -15,6 +15,7 @@ class config extends DefaultConfig {
     createGenerator() {
         return new ParticleGenerator();
     }
+    dτ = 0.1;
 }
 const result = new config() as config & {
     readonly confiner: Confiner;

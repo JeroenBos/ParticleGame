@@ -5,25 +5,52 @@ import { Particle } from '../physics';
 import configs from '../scenarios/countToπ';
 import { DefaultConfig } from '../scenarios/_base';
 
-function simulate(config: DefaultConfig) {
-    let particles = config.particleGenerator.generate();
-    for (let t = 0; t < config.maxTime_ms; t += config.dt_ms)
-        particles = config.engine.evolve(particles, config.dt_ms / config.precision);
-    return particles;
-}
 describe('countToπ', () => {
     it('m=16', () => {
         // arrange
-        const config = configs.precision_m16;
-        config.maxTime_ms = 10000;
+        const config = configs.precision_m16();
+        config.dτ = 0.1;
+        config.τ_max = 100;
+        const originalParticles = config.particleGenerator.generate();
 
         // act
         debugger;
-        simulate(config);
+        config.engine.evolve(originalParticles, config.τ_max);
 
         // assert
         const count = config.collisionDetector.count + config.confiner.bounces;
         assert(count == 12);
     });
+    it('m=64', () => {
+        // arrange
+        const config = configs.precision_m64();
+        config.dτ = 0.01;
+        config.τ_max = 600;
+        const originalParticles = config.particleGenerator.generate();
+
+        // act
+        debugger;
+        config.engine.evolve(originalParticles, config.τ_max);
+
+        // assert
+        const count = config.collisionDetector.count + config.confiner.bounces;
+        assert(count == 25);
+    });
+    it('m=1', () => {
+        // arrange
+        const config = configs.precision0();
+        config.dτ = 0.1;
+        config.τ_max = 200;
+        const originalParticles = config.particleGenerator.generate();
+
+        // act
+        debugger;
+        config.engine.evolve(originalParticles, config.τ_max);
+
+        // assert
+        const count = config.collisionDetector.count + config.confiner.bounces;
+        assert(count == 3);
+    });
+
 });
 

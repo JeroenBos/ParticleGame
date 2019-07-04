@@ -10,12 +10,13 @@ import { Invariants } from "../invariants/.invariants";
 export abstract class BaseConfig<TParticle, F> {
     public get width(): number { return 500; }
     public get height(): number { return 500; }
+    /** The number of ms between renders. */
     public get updateInterval_ms(): number { return 10; }
-    public maxTime_ms = Infinity;
-    public get dt_ms(): number { return 0.1; }
+    /** The maximum simulation time. */
+    public τ_max = Infinity;
+    /** The smallest time step in which computations are performed. */
+    public dτ = 0.01;
     public get collisionPrecision(): number { return 0.001; }
-    public get stepsPerTimeInterval(): number { return 1; }
-    public get precision(): number { return 1000; }
 
     private _collisionDetector: ICollisionDetector<TParticle> | undefined;
     private _collisionHandler: ICollisionHandler<TParticle> | undefined;
@@ -88,6 +89,6 @@ export abstract class DefaultConfig extends BaseConfig<Particle, F> {
         return new Confiner(this.width, this.height) as IConfine<Particle>;
     }
     protected createEngine(): IEngine<Particle, F> {
-        return new Engine(this.collisionDetector, this.collisionHandler, this.forceComputer, this.confiner);
+        return new Engine(this.collisionDetector, this.collisionHandler, this.forceComputer, this.confiner, this.dτ);
     }
 }

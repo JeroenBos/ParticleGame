@@ -1,16 +1,17 @@
-import 'mocha'; 
+import 'mocha';
 import config from '../app/config';
 import { assert } from "../jbsnorro";
 import { ParticleProps } from "../app/particle";
 import { assertTotalConservations } from './testhelper';
 import { Particle } from '../physics';
 
-const { engine, collisionHandler, collisionDetector, confiner, dt_ms, maxTime_ms, particleGenerator } = config;
+const { engine, collisionHandler, collisionDetector, confiner, particleGenerator } = config;
+const τ_max = Math.min(config.τ_max, 100000 * engine.dτ);
 
 describe('HTML', () => {
     it('The same as diplayed in the html', () => {
         // arrange
-        const stepCount = maxTime_ms / dt_ms;
+        const stepCount = τ_max / engine.dτ;
         const generatedParticles = particleGenerator.generate();
         const initialParticles = engine.resolveInitialCollisions(generatedParticles);
 
@@ -19,7 +20,7 @@ describe('HTML', () => {
         let particles = initialParticles;
         for (let i = 0; i < stepCount; i++) {
             const particlesBefore = particles;
-            particles = engine.evolve(particles, dt_ms);
+            particles = engine.evolve(particles, engine.dτ);
             // console.log(`${i}. p1: {${particles[0].x}, ${particles[0].vx}}. p1: {${particles[1].x}, ${particles[1].vy}}, imparted: ${confiner.impartedMomentum.px}, collisions: ${collisionDetector.count}`);
 
             assertTotalConservations(particlesBefore, particles, confiner);
@@ -42,7 +43,7 @@ describe('HTML', () => {
         let particles = initialParticles;
         for (let i = 1; i < stepCount; i++) {
             const particlesBefore = particles;
-            particles = engine.evolve(particles, dt_ms);
+            particles = engine.evolve(particles, engine.dτ);
 
             // assert
             assertTotalConservations(particlesBefore, particles, confiner);
