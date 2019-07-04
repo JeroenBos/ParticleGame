@@ -16,12 +16,49 @@ export abstract class BaseConfig<TParticle, F> {
     public get collisionPrecision(): number { return 0.001; }
     public get stepsPerTimeInterval(): number { return 1; }
 
-    public readonly collisionDetector: ICollisionDetector<TParticle>;
-    public readonly collisionHandler: ICollisionHandler<TParticle>;
-    public readonly forceComputer: IComputeForce<TParticle, F>;
-    public readonly confiner: IConfine<TParticle>;
-    public readonly engine: IEngine<TParticle, F>;
-    public readonly particleGenerator: IParticleGenerator<TParticle>;
+    private _collisionDetector: ICollisionDetector<TParticle> | undefined;
+    private _collisionHandler: ICollisionHandler<TParticle> | undefined;
+    private _forceComputer: IComputeForce<TParticle, F> | undefined;
+    private _confiner: IConfine<TParticle> | undefined;
+    private _engine: IEngine<TParticle, F> | undefined;
+    private _particleGenerator: IParticleGenerator<TParticle> | undefined;
+
+    public get collisionDetector(): ICollisionDetector<TParticle> {
+        if (this._collisionDetector === undefined) {
+            this._collisionDetector = this.createCollisionDetector();
+        }
+        return this._collisionDetector;
+    }
+    public get collisionHandler(): ICollisionHandler<TParticle> {
+        if (this._collisionHandler === undefined) {
+            this._collisionHandler = this.createCollisionHandler();
+        }
+        return this._collisionHandler;
+    }
+    public get forceComputer(): IComputeForce<TParticle, F> {
+        if (this._forceComputer === undefined) {
+            this._forceComputer = this.createForceComputer();
+        }
+        return this._forceComputer;
+    }
+    public get confiner(): IConfine<TParticle> {
+        if (this._confiner === undefined) {
+            this._confiner = this.createConfinement();
+        }
+        return this._confiner;
+    }
+    public get engine(): IEngine<TParticle, F> {
+        if (this._engine === undefined) {
+            this._engine = this.createEngine();
+        }
+        return this._engine;
+    }
+    public get particleGenerator(): IParticleGenerator<TParticle> {
+        if (this._particleGenerator === undefined) {
+            this._particleGenerator = this.createGenerator();
+        }
+        return this._particleGenerator;
+    }
 
     protected abstract createCollisionDetector(): ICollisionDetector<TParticle>;
     protected abstract createCollisionHandler(): ICollisionHandler<TParticle>;
@@ -30,13 +67,9 @@ export abstract class BaseConfig<TParticle, F> {
     protected abstract createEngine(): IEngine<TParticle, F>;
     protected abstract createGenerator(): IParticleGenerator<TParticle>;
 
-    constructor() {
-        this.collisionDetector = this.createCollisionDetector();
-        this.collisionHandler = this.createCollisionHandler();
-        this.forceComputer = this.createForceComputer();
-        this.confiner = this.createConfinement();
-        this.engine = this.createEngine();
-        this.particleGenerator = Invariants.For(this.createGenerator());
+    initialize() {
+        // triggers all getters:
+        const _getAll = [this.collisionDetector, this.collisionHandler, this.forceComputer, this.confiner, this.engine, this.particleGenerator];
     }
 }
 
