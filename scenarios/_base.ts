@@ -44,7 +44,7 @@ export abstract class DefaultConfig extends BaseConfig<Particle, F> {
         return new CollisionDetector(this.collisionPrecision);
     }
     protected createCollisionHandler(): ICollisionHandler<Particle> {
-        return new ElasticCollisionHandler();
+        return new ElasticCollisionHandler(this.collisionDetector);
     }
     protected createForceComputer(): IComputeForce<Particle, F> {
         return new ForceComputer();

@@ -13,8 +13,8 @@
                 "999999",
                 "--colors",
                 "${workspaceFolder}/dist/test.js",
-                // "--fgrep",
-                // "ests near miss collided only once"
+                "--fgrep",
+                "near miss collided only once"
             ],
             "console": "internalConsole",
             "internalConsoleOptions": "neverOpen",

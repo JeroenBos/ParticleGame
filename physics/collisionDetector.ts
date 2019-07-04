@@ -13,7 +13,7 @@ export class CollisionDetector implements ICollisionDetector<Particle> {
     get count() {
         return this._count;
     }
-    detect(particles: Particle[]): { collisions: Collision[], freeParticles: Particle[] } {
+    detect(particles: Particle[], real: boolean = true): { collisions: Collision[], freeParticles: Particle[] } {
         const collisions: Collision[] = [];
 
         const collided = new Array<boolean>(particles.length);
@@ -27,7 +27,9 @@ export class CollisionDetector implements ICollisionDetector<Particle> {
                 if (this.collideQ(p, q)) {
                     const distance = CollisionDetector.distance(p, q);
                     collisions.push({ i: qi, j: pi });
-                    this._count++;
+                    if (real) {
+                        this._count++;
+                    }
                     collided[pi] = true;
                     collided[qi] = true;
                 }
@@ -72,7 +74,8 @@ export class CollisionDetector implements ICollisionDetector<Particle> {
         // there is one collision in the past and one in the future: we're currently colliding: return 0
         // there are only collision in the past: return NaN
         // there are only collisions in the future: one enters the particle, the other one leaves the particle. Returns the first
-        const solutions = numbers.filter(n => !Number.isNaN(n)).sort();
+        const solutions = numbers.filter(n => !Number.isNaN(n)).map(n => 0 < n && n < 10e-10 ? 0 : n).sort();
+        // whhhaaat, it appears that assert(4.5474735088646414e-14 < 0.4) throws (if you choose the small number precisely enough)
         if (solutions.length == 0)
             return NaN; // no collision
         if (solutions.length == 1) {

@@ -1,10 +1,10 @@
 import { assert } from "../jbsnorro";
 import { GlueCollisionHandler as CollisionHandler } from "../physics/collisionHandler";
-import { Confiner } from "../physics/confinement";
 import { Particle, P } from "../physics";
+import { IConfine } from "../physics.base";
 
 const δ = 0.001;
-export function assertTotalConservations(before: P[], after: P[], confiner?: Confiner) {
+export function assertTotalConservations(before: P[], after: P[], confiner?: IConfine<any>) {
 
     const impartedMomentum = confiner === undefined ? { m: 1, vx: 0, vy: 0 } : { m: 1, vx: confiner.impartedMomentum.px, vy: confiner.impartedMomentum.py };
     const pomBefore = CollisionHandler.pom(...before.map(p => ({ vx: p.vx, vy: p.vy, m: p.m })));

@@ -1,11 +1,11 @@
-import 'mocha'; import config from '../scenarios/test';
+import 'mocha'; 
+import config from '../app/config';
 import { assert } from "../jbsnorro";
 import { ParticleProps } from "../particle";
 import { assertTotalConservations } from './testhelper';
 import { Particle } from '../physics';
 
 const { engine, collisionHandler, collisionDetector, confiner, dt, maxTime, particleGenerator } = config;
-
 
 describe('Integration tests', () => {
     it('The same as diplayed in the html', () => {
@@ -15,7 +15,7 @@ describe('Integration tests', () => {
         const initialParticles = engine.resolveInitialCollisions(generatedParticles);
 
         // act
-        // debugger;
+        debugger;
         let particles = initialParticles;
         for (let i = 0; i < stepCount; i++) {
             const particlesBefore = particles;
@@ -67,7 +67,7 @@ describe('Integration tests', () => {
             { x: 48.3, y: 52, m: 1, radius: 2, vx: 1, vy: 0 }
         ].map(Particle.create);
 
-        // debugger;
+        debugger;
         engine.evolve(particles, dt);
 
         assert(engine.collisionDetector.count == 1 + originalCount);
@@ -83,7 +83,7 @@ describe('Integration tests', () => {
 
 
         // act
-        // debugger;
+        debugger;
         for (let i = 0; i < 10; i++) {
             particles = engine.evolve(particles, dt);
         }

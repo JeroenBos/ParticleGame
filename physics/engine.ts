@@ -30,11 +30,11 @@ export default class Engine implements IEngine<Particle, F> {
         return result;
     }
     private resolveCollisions(
-        projectedParticles: Particle[],
+        projections: Particle[],
         dt: number,
         debug: { previousNumberOfCollisions: number; consecutiveNondecreaseCount: number } = { previousNumberOfCollisions: 0, consecutiveNondecreaseCount: 0 }
     ): Particle[] {
-        const { freeParticles, collisions } = this.collisionDetector.detect(projectedParticles);
+        const { freeParticles, collisions } = this.collisionDetector.detect(projections/*.map(p => p.projection)*/);
         if (collisions.length == 0)
             return freeParticles;
 
@@ -47,10 +47,9 @@ export default class Engine implements IEngine<Particle, F> {
                 throw new Error(`The number of collisions has not decreased after being handled ${consecutiveNondecreaseCount} times by the collision handler`);
         }
 
-        const collidedParticles = collisions.map(collision => this.collisionHandler.collide(projectedParticles[collision.i], projectedParticles[collision.j], dt)).reduce((a, b) => a.concat(b));
-        const particles = freeParticles.concat(collidedParticles);
+        const collidedParticles = collisions.map(collision => this.collisionHandler.collide(projections[collision.i], projections[collision.j], dt)).reduce((a, b) => a.concat(b));
         // this function is recursive, because the resulting particles may still be in collision (with a third e.g.)
-        return this.resolveCollisions(particles, dt, { previousNumberOfCollisions, consecutiveNondecreaseCount });
+        return this.resolveCollisions(freeParticles.concat(collidedParticles), dt, { previousNumberOfCollisions, consecutiveNondecreaseCount });
     }
 
     private projectAll(particles: Particle[], dt: number): Particle[] {

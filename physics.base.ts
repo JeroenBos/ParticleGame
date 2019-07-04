@@ -1,5 +1,6 @@
 import { ParticleProps } from "./particle";
 import { Particle } from "./physics";
+import { deltaP } from "./physics/confinement";
 
 export interface IEngine<TParticle, TForce> {
     readonly collisionDetector: ICollisionDetector<TParticle>;
@@ -12,7 +13,11 @@ export interface IEngine<TParticle, TForce> {
 export interface ICollisionDetector<TParticle> {
     /** Gets the number of recorded collisions. */
     readonly count: number;
+    /**
+     * @param {boolean} [real] Indicates whether the counter property is updated upon detection of a collision. Default is true. 
+     */
     detect(particles: TParticle[]): { collisions: Collision[], freeParticles: TParticle[] };
+    detect(particles: TParticle[], real: false): { collisions: Collision[], freeParticles: TParticle[] };
     getTimeToCollision(particle1: TParticle, particl2: TParticle): number | undefined;
 }
 export interface Collision {
@@ -20,7 +25,7 @@ export interface Collision {
     j: number
 }
 export interface ICollisionHandler<TParticle> {
-    collide(p: TParticle, q: TParticle, dt: number): TParticle[];
+    collide(projection1: TParticle, projection2: TParticle, dt: number): TParticle[];
 }
 export interface IComputeForce<TParticle, TForce> {
     /** Computes the force of particle 'actor' on particle 'receiver'. */
@@ -36,6 +41,7 @@ export interface IConfine<TParticle> {
     confine(projection: TParticle, previousState: TParticle | undefined): TParticle | undefined;
     resetImpartedMomentum(): void;
     readonly bounces: number;
+    readonly impartedMomentum: deltaP;
 }
 
 export interface IParticleGenerator<TParticle> {

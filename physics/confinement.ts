@@ -6,7 +6,7 @@ import { Transform } from "stream";
 import { assert } from "../jbsnorro";
 import { Particle, P } from ".";
 
-interface deltaP {
+export interface deltaP {
     m?: number,
     px: number,
     py: number

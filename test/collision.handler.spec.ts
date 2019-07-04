@@ -1,5 +1,5 @@
 import 'mocha';
-import { GlueCollisionHandler as CollisionHandler, ElasticCollisionHandler } from '../physics/collisionHandler';
+import { GlueCollisionHandler, ElasticCollisionHandler } from '../physics/collisionHandler';
 import { assert } from "../jbsnorro";
 import { Invariants } from "../invariants/.invariants";
 import { ForceComputer } from '../physics/forceComputer';
@@ -8,7 +8,10 @@ import { Particle } from '../physics';
 import Extensions from '../extensions';
 import { CollisionDetector } from '../physics/collisionDetector';
 
-const collisionHandler = Invariants.For(new CollisionHandler());
+const glueCollisionHandler = Invariants.For(new GlueCollisionHandler());
+const collisionDetector = new CollisionDetector(0.001);
+const elasticCollisionHandler = Invariants.For(new ElasticCollisionHandler(collisionDetector));
+
 
 describe('CollisionHandler', () => {
     it('Stationary overlapping particles are placed adjacent', () => {
@@ -32,7 +35,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionHandler.collide(p, q);
+        const resultants = glueCollisionHandler.collide(p, q);
 
         // assert
         assert(resultants.length == 2);
@@ -72,7 +75,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionHandler.collide(p, q);
+        const resultants = glueCollisionHandler.collide(p, q);
 
         // assert
         assert(resultants.length == 2);
@@ -112,7 +115,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionHandler.collide(p, q);
+        const resultants = glueCollisionHandler.collide(p, q);
 
         // assert
         assert(resultants.length == 2);
@@ -152,7 +155,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionHandler.collide(p, q);
+        const resultants = glueCollisionHandler.collide(p, q);
 
         // assert
         assert(resultants.length == 2);
@@ -182,7 +185,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionHandler.collide(p, q);
+        const resultants = glueCollisionHandler.collide(p, q);
 
         // assert
         assert(resultants[0].vx == 1);
@@ -213,7 +216,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionHandler.collide(p, q);
+        const resultants = glueCollisionHandler.collide(p, q);
 
         // assert
         assert(resultants[0].vx == 2);
@@ -243,7 +246,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionHandler.collide(p, q);
+        const resultants = glueCollisionHandler.collide(p, q);
 
         // assert
         assert(resultants[0].vx == 2);
@@ -273,7 +276,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionHandler.collide(p, q);
+        const resultants = glueCollisionHandler.collide(p, q);
 
         // assert
         assert(resultants[0].vx == 3);
@@ -292,7 +295,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionHandler.collide(projectedParticles[0], projectedParticles[1]);
+        const resultants = glueCollisionHandler.collide(projectedParticles[0], projectedParticles[1]);
 
         // assert
         assert(resultants[0].x == resultants[1].x);
@@ -312,7 +315,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionHandler.collide(projectedParticles[0], projectedParticles[1]);
+        const resultants = glueCollisionHandler.collide(projectedParticles[0], projectedParticles[1]);
 
         // assert
         assert(resultants.length == 2);
@@ -331,7 +334,7 @@ describe('CollisionHandler', () => {
 
         // act
         // debugger;
-        const resultants = collisionHandler.collide(projectedParticles[0], projectedParticles[1]);
+        const resultants = glueCollisionHandler.collide(projectedParticles[0], projectedParticles[1]);
 
         // assert
         assert(resultants.length == 2);
@@ -340,7 +343,6 @@ describe('CollisionHandler', () => {
 
     it('momentum is conserved with elastic scattering', () => {
         const dt = 0.1;
-        const elasticCollisionHandler = new ElasticCollisionHandler();
         // arrange
         const projectedParticles = [
             { x: 370, y: 50, vx: -10, vy: 0, radius: 20, m: 1 },
@@ -360,8 +362,6 @@ describe('CollisionHandler', () => {
     it('near miss collision have hardly any delta v', () => {
         // arrange
         const dt = 0.1;
-        const elasticCollisionHandler = new ElasticCollisionHandler();
-        const collisionDetector = new CollisionDetector(0.001);
         const projectedParticles = [
             { x: 50, y: 50, vx: 1, vy: 0, radius: 2, m: 1 },
             { x: 50.1, y: 53.99, vx: -1, vy: 0, radius: 2, m: 1 }

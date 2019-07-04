@@ -3,7 +3,7 @@ import { Particle } from "../physics";
 import { DefaultConfig } from "./_base";
 import { Confiner } from "../physics/confinement";
 
-const precision: number = 6;
+const precision: number =3;
 class ParticleGenerator implements IParticleGenerator<Particle> {
     public generate(): Particle[] {
         return [

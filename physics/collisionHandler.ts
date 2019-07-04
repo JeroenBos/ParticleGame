@@ -1,4 +1,4 @@
-import { ICollisionHandler } from "../physics.base";
+import { ICollisionHandler, ICollisionDetector } from "../physics.base";
 import { Transformations, TransformationPair } from "./transformations";
 import { Q, Red, M, QMS, QM, Particle, P, PQR, Qed } from ".";
 import { assert } from "../jbsnorro";
@@ -8,11 +8,12 @@ import { CollisionDetector } from "./collisionDetector";
 
 abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
 
+    constructor(private readonly collisionDetector: ICollisionDetector<Particle>) { }
     public abstract getMomenta(projectedParticles: [Particle, Particle], dt: number): [P, P];
     public abstract getCoordinates(projectedParticles: [Particle, Particle], pNew: [P, P], dt: number): [Q, Q];
 
-    public collide(a: Particle, b: Particle, dt: number): Particle[] {
-        return this._collide(a, b, dt, this.getCoordinates.bind(this), this.getMomenta.bind(this));
+    public collide(projection1: Particle, projection2: Particle, dt: number): Particle[] {
+        return this._collide(projection1, projection2, dt, this.getCoordinates.bind(this), this.getMomenta.bind(this));
     }
     protected _collide(
         a: Particle,
@@ -63,10 +64,14 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
 
         const previousState_a = unproject(projected_a);
         const previousState_b = unproject(projected_b);
-        const t = new CollisionDetector(0).getTimeToCollision(previousState_a, previousState_b);
+        assert(this.collisionDetector.detect([projected_a, projected_b], false).collisions.length != 0);
+
+        const t = this.collisionDetector.getTimeToCollision(previousState_a, previousState_b);
+        if (t === undefined) throw new Error('miss');
         assert(-0.01 * dt < t && t < dt * 1.01);
 
         function getNewQ(oldP: Particle, newP: P): Q {
+            if (t === undefined) throw new Error('miss');
             const t2 = dt - t;
             return {
                 x: oldP.x + oldP.vx * t + newP.vx * t2,
@@ -158,6 +163,9 @@ export function inProduct(r: Q, s: Q): number {
 }
 
 export class GlueCollisionHandler extends BaseCollisionHandler {
+    constructor() {
+        super(undefined as any);
+    }
     public collide(a: Particle, b: Particle) {
         return super.collide(a, b, undefined as any);
     }
