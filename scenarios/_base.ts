@@ -10,11 +10,12 @@ import { Invariants } from "../invariants/.invariants";
 export abstract class BaseConfig<TParticle, F> {
     public get width(): number { return 500; }
     public get height(): number { return 500; }
-    public get updateInterval(): number { return 10; }
-    public get maxTime(): number { return 100; }
-    public get dt(): number { return 0.1; }
+    public get updateInterval_ms(): number { return 10; }
+    public maxTime_ms = Infinity;
+    public get dt_ms(): number { return 0.1; }
     public get collisionPrecision(): number { return 0.001; }
     public get stepsPerTimeInterval(): number { return 1; }
+    public get precision(): number { return 1000; }
 
     private _collisionDetector: ICollisionDetector<TParticle> | undefined;
     private _collisionHandler: ICollisionHandler<TParticle> | undefined;

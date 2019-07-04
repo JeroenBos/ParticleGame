@@ -5,7 +5,7 @@ import { ParticleProps } from "../app/particle";
 import { assertTotalConservations } from './testhelper';
 import { Particle } from '../physics';
 
-const { engine, collisionHandler, collisionDetector, confiner, dt, maxTime, particleGenerator } = config;
+const { engine, collisionHandler, collisionDetector, confiner, dt_ms, maxTime_ms, particleGenerator } = config;
 
 describe('Integration tests', () => {
     it('expected only 1 collision in specific case', () => {
@@ -16,7 +16,7 @@ describe('Integration tests', () => {
         ].map(Particle.create);
 
         debugger;
-        engine.evolve(particles, dt);
+        engine.evolve(particles, dt_ms);
 
         assert(engine.collisionDetector.count == 1 + originalCount);
     });
@@ -33,7 +33,7 @@ describe('Integration tests', () => {
         // act
         debugger;
         for (let i = 0; i < 10; i++) {
-            particles = engine.evolve(particles, dt);
+            particles = engine.evolve(particles, dt_ms);
         }
 
         // assert

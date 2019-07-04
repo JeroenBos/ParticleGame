@@ -17,9 +17,9 @@ export default class Engine implements IEngine<Particle, F> {
         this.collisionDetector = Invariants.For(collisionDetector);
     }
 
-    public evolve(particles: Particle[], dt: number): Particle[] {
-        const projections = this.projectAll(particles, dt);
-        const resultantParticles = this.resolveCollisions(projections, dt);
+    public evolve(particles: Particle[], dt_s: number): Particle[] {
+        const projections = this.projectAll(particles, dt_s);
+        const resultantParticles = this.resolveCollisions(projections, dt_s);
         return resultantParticles;
 
     }

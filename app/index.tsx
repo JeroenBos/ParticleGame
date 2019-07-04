@@ -10,9 +10,10 @@ ReactDOM.render(
         width={config.width}
         height={config.height}
         engine={config.engine}
-        updateInterval={config.updateInterval}
-        maxTime={config.maxTime}
-        dt={config.dt}
-        stepsPerTimeInterval={config.stepsPerTimeInterval} />,
+        updateInterval_ms={config.updateInterval_ms}
+        maxTime_ms={config.maxTime_ms}
+        stepsPerInterval={config.stepsPerTimeInterval}
+        precision={config.precision}
+        initialTimeFactor={1} />,
     document.getElementById("root")
 );

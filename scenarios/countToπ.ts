@@ -4,45 +4,48 @@ import { DefaultConfig } from "./_base";
 import { Confiner } from "../physics/confinement";
 
 class ParticleGenerator implements IParticleGenerator<Particle> {
-    constructor(private readonly precision: number) { }
+    constructor(private readonly mass: number) { }
     public generate(): Particle[] {
         return [
             { x: 100, y: 50, vx: 0, vy: 0, radius: 10, m: 1 },
-            { x: 200, y: 50, vx: -100, vy: 0, radius: 10, m: 10 ** this.precision }
+            { x: 200, y: 50, vx: -100, vy: 0, radius: 10, m: this.mass }
         ].map(Particle.create);
     }
 }
 
-const tradeoff = 0; // the higher the more precise, but takes more computation power
+const tradeoff = -3; // the higher the more precise, but takes more computation power
 class Config extends DefaultConfig {
-    constructor(private readonly precision: number) {
+    constructor(private readonly mass: number) {
         super()
     }
     createGenerator() {
-        return new ParticleGenerator(this.precision);
+        const m = this.mass;
+        return new ParticleGenerator(m);
     }
     createConfinement() {
         return new Confiner(Infinity, this.height);
     }
 
-    get dt() {
-        return 10 ** (-tradeoff - this.precision);
+    get dt_ms() {
+        return this.updateInterval_ms / this.stepsPerTimeInterval;
     }
 
-    get updateInterval() {
+    get updateInterval_ms() {
         return 10;
     }
     get stepsPerTimeInterval() {
-        return Math.max(1, 10 ** (this.precision - 2 + tradeoff));
+        return Math.max(1, this.mass * 10 ** tradeoff);
     }
 }
 
 export default {
-    precision1: new Config(1),
-    precision2: new Config(2),
-    precision3: new Config(3),
-    precision4: new Config(4),
-    precision5: new Config(5),
-    precision6: new Config(6),
-    precision7: new Config(7),
+    precision0: new Config(10 ** 0),
+    precision1: new Config(10 ** 1),
+    precision2: new Config(10 ** 2),
+    precision3: new Config(10 ** 3),
+    precision4: new Config(10 ** 4),
+    precision5: new Config(10 ** 5),
+    precision6: new Config(10 ** 6),
+    precision7: new Config(10 ** 7),
+    precision_m16: new Config(16)
 };
