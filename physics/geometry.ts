@@ -4,7 +4,7 @@ import Extensions from "../extensions";
 import { Transformations, State1D, TransformationPair } from "./transformations";
 import { Transform } from "stream";
 import { assert } from "../jbsnorro";
-import { Particle, P } from ".";
+import { Particle, P, Q } from ".";
 
 export interface deltaP {
     m?: number,
@@ -178,5 +178,9 @@ export class BoxGeometry implements IGeometry<Particle> {
         if (p.y + p.radius > this.height && p.vy > 0)
             return true;
         return false;
+    }
+
+    public * distance(a: Q, b: Q): Iterable<number> {
+        yield Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
     }
 }

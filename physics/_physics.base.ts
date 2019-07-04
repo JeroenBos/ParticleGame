@@ -1,4 +1,5 @@
 import { deltaP } from "./geometry";
+import { Q } from ".";
 
 export interface IEngine<TParticle, TForce> {
     readonly collisionDetector: ICollisionDetector<TParticle>;
@@ -42,6 +43,7 @@ export interface IGeometry<TParticle> {
     resetImpartedMomentum(): void;
     readonly bounces: number;
     readonly impartedMomentum: deltaP;
+    distance(x1: Q, x2: Q): Iterable<number>;
 }
 
 export interface IParticleGenerator<TParticle> {
