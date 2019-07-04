@@ -68,7 +68,7 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
 
         const t = this.collisionDetector.getTimeToCollision(previousState_a, previousState_b);
         if (t === undefined) throw new Error('miss');
-        assert(-0.01 * dt < t && t < dt * 1.01);
+        // assert(-0.01 * dt < t && t < dt * 1.01);
 
         function getNewQ(oldP: Particle, newP: P): Q {
             if (t === undefined) throw new Error('miss');

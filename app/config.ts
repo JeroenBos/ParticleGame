@@ -1,3 +1,3 @@
-import config from '../scenarios/test';
+import config from '../scenarios/countToπ';
 
-export default config;
+export default config.precision1;

@@ -100,5 +100,21 @@ describe('Engine', () => {
         assert(t3.x == 2);
         assert(t3.vx == -3);
     });
+
+    it('bug fix: collisions resolved but still not by 1e-07', () => {
+        // arrange
+        const engine = createEngine(10);
+        const dt = 0;
+        const particles = [
+            { x: 109, y: 50, m: 1, radius: 9, vx: -10, vy: 0 },
+            { x: 91, y: 53, m: 1, radius: 9, vx: 10, vy: 0 }
+        ].map(Particle.create);
+
+        // act
+        // debugger;
+        engine.evolve(particles, dt);
+
+        // assert??
+    });
 });
 
