@@ -1,5 +1,5 @@
-import { ParticleProps } from "../particle";
-import { IEngine, ICollisionDetector, IComputeForce, ICollisionHandler, IConfine } from "../physics.base";
+import { ParticleProps } from "../app/particle";
+import { IEngine, ICollisionDetector, IComputeForce, ICollisionHandler, IConfine } from "./_physics.base";
 import Extensions from "../extensions";
 import { Invariants } from '../invariants/.invariants';
 import { Particle } from ".";

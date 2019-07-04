@@ -1,5 +1,5 @@
-import { ICollisionDetector, Collision } from "../physics.base";
-import { ParticleProps } from "../particle";
+import { ICollisionDetector, Collision } from "./_physics.base";
+import { ParticleProps } from "../app/particle";
 import { Particle, Q, P } from ".";
 import { Transformations, TransformationPair } from "./transformations";
 import { assert } from "../jbsnorro";

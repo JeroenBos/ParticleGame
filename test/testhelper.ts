@@ -1,7 +1,7 @@
 import { assert } from "../jbsnorro";
 import { GlueCollisionHandler as CollisionHandler } from "../physics/collisionHandler";
 import { Particle, P } from "../physics";
-import { IConfine } from "../physics.base";
+import { IConfine } from "../physics/_physics.base";
 
 const δ = 0.001;
 export function assertTotalConservations(before: P[], after: P[], confiner?: IConfine<any>) {

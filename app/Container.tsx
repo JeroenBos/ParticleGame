@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Particle, ParticleProps } from "./particle";
-import { IEngine, IParticleGenerator } from "./physics.base";
-import { Particle as IParticle } from './physics';
-import { F } from "./physics/forceComputer";
-import { assert } from "./jbsnorro";
+import { IEngine, IParticleGenerator } from "../physics/_physics.base";
+import { Particle as IParticle } from '../physics';
+import { F } from "../physics/forceComputer";
+import { assert } from "../jbsnorro";
 
 export interface ContainerProps {
     particleGenerator: IParticleGenerator<IParticle>;

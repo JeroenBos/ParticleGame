@@ -1,4 +1,4 @@
-import { ICollisionDetector, Collision } from "../physics.base";
+import { ICollisionDetector, Collision } from "../physics/_physics.base";
 
 type P = any;
 

@@ -1,4 +1,4 @@
-import { ICollisionHandler, ICollisionDetector } from "../physics.base";
+import { ICollisionHandler, ICollisionDetector } from "./_physics.base";
 import { Transformations, TransformationPair } from "./transformations";
 import { Q, Red, M, QMS, QM, Particle, P, PQR, Qed } from ".";
 import { assert } from "../jbsnorro";

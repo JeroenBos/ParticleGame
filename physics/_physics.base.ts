@@ -1,6 +1,5 @@
-import { ParticleProps } from "./particle";
-import { Particle } from "./physics";
-import { deltaP } from "./physics/confinement";
+import { Particle } from ".";
+import { deltaP } from "./confinement";
 
 export interface IEngine<TParticle, TForce> {
     readonly collisionDetector: ICollisionDetector<TParticle>;

@@ -3,7 +3,7 @@ import { CollisionDetector } from "../physics/collisionDetector";
 import { GlueCollisionHandler, ElasticCollisionHandler } from "../physics/collisionHandler";
 import { ForceComputer, F as _F, F } from "../physics/forceComputer";
 import { Confiner } from "../physics/confinement";
-import { IComputeForce, ICollisionDetector, ICollisionHandler, IConfine, IParticleGenerator, IEngine } from '../physics.base';
+import { IComputeForce, ICollisionDetector, ICollisionHandler, IConfine, IParticleGenerator, IEngine } from '../physics/_physics.base';
 import { Particle } from "../physics";
 
 export abstract class BaseConfig<TParticle, F> {

@@ -1,6 +1,6 @@
 import 'mocha';
 import { GlueCollisionHandler as CollisionHandler } from '../physics/collisionHandler';
-import { ParticleProps } from "../particle";
+import { ParticleProps } from "../app/particle";
 import { assert } from "../jbsnorro";
 import { Invariants } from "../invariants/.invariants";
 import Engine from '../physics/engine';

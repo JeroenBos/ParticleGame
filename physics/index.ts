@@ -1,4 +1,4 @@
-import { ParticleProps } from "../particle";
+import { ParticleProps } from "../app/particle";
 
 export interface P {
     readonly m: number,

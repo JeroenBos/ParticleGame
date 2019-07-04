@@ -1,7 +1,7 @@
 import 'mocha'; 
 import config from '../app/config';
 import { assert } from "../jbsnorro";
-import { ParticleProps } from "../particle";
+import { ParticleProps } from "../app/particle";
 import { assertTotalConservations } from './testhelper';
 import { Particle } from '../physics';
 

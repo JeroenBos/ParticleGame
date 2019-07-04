@@ -1,5 +1,5 @@
-import { IComputeForce } from "../physics.base";
-import { ParticleProps } from "../particle";
+import { IComputeForce } from "./_physics.base";
+import { ParticleProps } from "../app/particle";
 import { Dv } from "./engine";
 import { Particle } from ".";
 

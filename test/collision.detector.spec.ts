@@ -1,9 +1,9 @@
 import 'mocha';
 import { CollisionDetector } from "../physics/collisionDetector";
-import { ParticleProps } from "../particle";
+import { ParticleProps } from "../app/particle";
 import { assert, assertSequenceEquals } from "../jbsnorro";
 import { Invariants } from "../invariants/.invariants";
-import { Collision } from '../physics.base';
+import { Collision } from '../physics/_physics.base';
 import { Particle } from '../physics';
 
 const collisionDetector = Invariants.For(new CollisionDetector(0.001));

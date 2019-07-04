@@ -1,5 +1,5 @@
-import { IConfine } from "../physics.base";
-import { ParticleProps } from "../particle";
+import { IConfine } from "./_physics.base";
+import { ParticleProps } from "../app/particle";
 import Extensions from "../extensions";
 import { Transformations, State1D, TransformationPair } from "./transformations";
 import { Transform } from "stream";

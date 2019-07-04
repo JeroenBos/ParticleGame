@@ -1,4 +1,4 @@
-import { IParticleGenerator } from "../physics.base";
+import { IParticleGenerator } from "../physics/_physics.base";
 import { Particle } from "../physics";
 import { DefaultConfig } from "./_base";
 import { Confiner } from "../physics/confinement";
