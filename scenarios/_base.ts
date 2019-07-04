@@ -5,6 +5,7 @@ import { ForceComputer, F as _F, F } from "../physics/forceComputer";
 import { Confiner } from "../physics/confinement";
 import { IComputeForce, ICollisionDetector, ICollisionHandler, IConfine, IParticleGenerator, IEngine } from '../physics/_physics.base';
 import { Particle } from "../physics";
+import { Invariants } from "../invariants/.invariants";
 
 export abstract class BaseConfig<TParticle, F> {
     public get width(): number { return 500; }
@@ -35,7 +36,7 @@ export abstract class BaseConfig<TParticle, F> {
         this.forceComputer = this.createForceComputer();
         this.confiner = this.createConfinement();
         this.engine = this.createEngine();
-        this.particleGenerator = this.createGenerator();
+        this.particleGenerator = Invariants.For(this.createGenerator());
     }
 }
 
