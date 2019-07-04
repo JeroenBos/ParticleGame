@@ -1,6 +1,6 @@
 import 'mocha';
 import { assert } from "../jbsnorro";
-import { Confiner } from '../physics/confinement';
+import { BoxGeometry } from '../physics/geometry';
 import { Particle } from '../physics';
 import configs from '../scenarios/countToπ';
 import { DefaultConfig } from '../scenarios/_base';
@@ -18,7 +18,7 @@ describe('countToπ', () => {
         config.engine.evolve(originalParticles, config.τ_max);
 
         // assert
-        const count = config.collisionDetector.count + config.confiner.bounces;
+        const count = config.collisionDetector.count + config.geometry.bounces;
         assert(count == 12);
     });
     it('m=64', () => {
@@ -33,7 +33,7 @@ describe('countToπ', () => {
         config.engine.evolve(originalParticles, config.τ_max);
 
         // assert
-        const count = config.collisionDetector.count + config.confiner.bounces;
+        const count = config.collisionDetector.count + config.geometry.bounces;
         assert(count == 25);
     });
     it('m=1', () => {
@@ -48,7 +48,7 @@ describe('countToπ', () => {
         config.engine.evolve(originalParticles, config.τ_max);
 
         // assert
-        const count = config.collisionDetector.count + config.confiner.bounces;
+        const count = config.collisionDetector.count + config.geometry.bounces;
         assert(count == 3);
     });
 

@@ -5,7 +5,7 @@ import { ParticleProps } from "../app/particle";
 import { assertTotalConservations } from './testhelper';
 import { Particle } from '../physics';
 
-const { engine, collisionHandler, collisionDetector, confiner, particleGenerator } = config;
+const { engine, collisionHandler, collisionDetector, geometry, particleGenerator } = config;
 const τ_max = Math.min(config.τ_max, 100000 * engine.dτ);
 
 describe('HTML', () => {
@@ -21,11 +21,11 @@ describe('HTML', () => {
         for (let i = 0; i < stepCount; i++) {
             const particlesBefore = particles;
             particles = engine.evolve(particles, engine.dτ);
-            // console.log(`${i}. p1: {${particles[0].x}, ${particles[0].vx}}. p1: {${particles[1].x}, ${particles[1].vy}}, imparted: ${confiner.impartedMomentum.px}, collisions: ${collisionDetector.count}`);
+            // console.log(`${i}. p1: {${particles[0].x}, ${particles[0].vx}}. p1: {${particles[1].x}, ${particles[1].vy}}, imparted: ${geometry.impartedMomentum.px}, collisions: ${collisionDetector.count}`);
 
-            assertTotalConservations(particlesBefore, particles, confiner);
+            assertTotalConservations(particlesBefore, particles, geometry);
 
-            confiner.resetImpartedMomentum();
+            geometry.resetImpartedMomentum();
         }
 
         // assert
@@ -46,8 +46,8 @@ describe('HTML', () => {
             particles = engine.evolve(particles, engine.dτ);
 
             // assert
-            assertTotalConservations(particlesBefore, particles, confiner);
-            confiner.resetImpartedMomentum();
+            assertTotalConservations(particlesBefore, particles, geometry);
+            geometry.resetImpartedMomentum();
         }
     });
 });

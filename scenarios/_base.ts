@@ -2,8 +2,8 @@ import Engine from "../physics/engine";
 import { CollisionDetector } from "../physics/collisionDetector";
 import { GlueCollisionHandler, ElasticCollisionHandler } from "../physics/collisionHandler";
 import { ForceComputer, F as _F, F } from "../physics/forceComputer";
-import { Confiner } from "../physics/confinement";
-import { IComputeForce, ICollisionDetector, ICollisionHandler, IConfine, IParticleGenerator, IEngine } from '../physics/_physics.base';
+import { BoxGeometry } from "../physics/geometry";
+import { IComputeForce, ICollisionDetector, ICollisionHandler, IGeometry, IParticleGenerator, IEngine } from '../physics/_physics.base';
 import { Particle } from "../physics";
 import { Invariants } from "../invariants/.invariants";
 
@@ -21,7 +21,7 @@ export abstract class BaseConfig<TParticle, F> {
     private _collisionDetector: ICollisionDetector<TParticle> | undefined;
     private _collisionHandler: ICollisionHandler<TParticle> | undefined;
     private _forceComputer: IComputeForce<TParticle, F> | undefined;
-    private _confiner: IConfine<TParticle> | undefined;
+    private _geometry: IGeometry<TParticle> | undefined;
     private _engine: IEngine<TParticle, F> | undefined;
     private _particleGenerator: IParticleGenerator<TParticle> | undefined;
 
@@ -43,11 +43,11 @@ export abstract class BaseConfig<TParticle, F> {
         }
         return this._forceComputer;
     }
-    public get confiner(): IConfine<TParticle> {
-        if (this._confiner === undefined) {
-            this._confiner = this.createConfinement();
+    public get geometry(): IGeometry<TParticle> {
+        if (this._geometry === undefined) {
+            this._geometry = this.createGeometry();
         }
-        return this._confiner;
+        return this._geometry;
     }
     public get engine(): IEngine<TParticle, F> {
         if (this._engine === undefined) {
@@ -65,13 +65,13 @@ export abstract class BaseConfig<TParticle, F> {
     protected abstract createCollisionDetector(): ICollisionDetector<TParticle>;
     protected abstract createCollisionHandler(): ICollisionHandler<TParticle>;
     protected abstract createForceComputer(): IComputeForce<TParticle, F>;
-    protected abstract createConfinement(): IConfine<TParticle>;
+    protected abstract createGeometry(): IGeometry<TParticle>;
     protected abstract createEngine(): IEngine<TParticle, F>;
     protected abstract createGenerator(): IParticleGenerator<TParticle>;
 
     initialize() {
         // triggers all getters:
-        const _getAll = [this.collisionDetector, this.collisionHandler, this.forceComputer, this.confiner, this.engine, this.particleGenerator];
+        const _getAll = [this.collisionDetector, this.collisionHandler, this.forceComputer, this.geometry, this.engine, this.particleGenerator];
     }
 }
 
@@ -85,10 +85,10 @@ export abstract class DefaultConfig extends BaseConfig<Particle, F> {
     protected createForceComputer(): IComputeForce<Particle, F> {
         return new ForceComputer();
     }
-    protected createConfinement(): IConfine<Particle> {
-        return new Confiner(this.width, this.height) as IConfine<Particle>;
+    protected createGeometry(): IGeometry<Particle> {
+        return new BoxGeometry(this.width, this.height) as IGeometry<Particle>;
     }
     protected createEngine(): IEngine<Particle, F> {
-        return new Engine(this.collisionDetector, this.collisionHandler, this.forceComputer, this.confiner, this.dτ);
+        return new Engine(this.collisionDetector, this.collisionHandler, this.forceComputer, this.geometry, this.dτ);
     }
 }

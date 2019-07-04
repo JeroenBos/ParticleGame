@@ -1,11 +1,10 @@
-import { Particle } from ".";
-import { deltaP } from "./confinement";
+import { deltaP } from "./geometry";
 
 export interface IEngine<TParticle, TForce> {
     readonly collisionDetector: ICollisionDetector<TParticle>;
     readonly collisionHandler: ICollisionHandler<TParticle>;
     readonly forceComputer: IComputeForce<TParticle, TForce>;
-    readonly confiner: IConfine<TParticle>;
+    readonly geometry: IGeometry<TParticle>;
     /** `τ` means it regards game-time rather than real-life time, for which we use `t`. */
     readonly dτ: number;
     evolve(particles: TParticle[], Δτ: number): TParticle[];
@@ -35,7 +34,7 @@ export interface IComputeForce<TParticle, TForce> {
     project(particle: Readonly<TParticle>, otherParticles: Iterable<Readonly<TParticle>>, dt: number): Readonly<TParticle> | undefined;
     projectAll(particle: TParticle[], dt: number): (TParticle | undefined)[];
 }
-export interface IConfine<TParticle> {
+export interface IGeometry<TParticle> {
     /**
      * @param {ParticleProps} trivialProjection Trivial here means disregarding collisions and confinement.
      */

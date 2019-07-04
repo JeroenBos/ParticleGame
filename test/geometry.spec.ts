@@ -1,12 +1,12 @@
 import 'mocha';
 import { assert } from "../jbsnorro";
-import { Confiner } from '../physics/confinement';
+import { BoxGeometry } from '../physics/geometry';
 import { Particle } from '../physics';
 
-describe('Confiner', () => {
+describe('Geometry', () => {
     it('Confinement without far x-axis', () => {
         // arrange
-        const confiner = new Confiner(10, 10);
+        const geometry = new BoxGeometry(10, 10);
         const particle = Particle.create({
             x: 9,
             y: 5,
@@ -20,7 +20,7 @@ describe('Confiner', () => {
 
         // act
         // debugger;
-        const result = confiner.confine(trivialProjection, particle);
+        const result = geometry.confine(trivialProjection, particle);
 
         // assert
         if (result == null) throw new Error();
@@ -30,7 +30,7 @@ describe('Confiner', () => {
 
     it('resolved bug', () => {
         // arrange
-        const confiner = new Confiner(500, 500);
+        const geometry = new BoxGeometry(500, 500);
         const particle = Particle.create({
             x: 480,
             y: 50,
@@ -44,7 +44,7 @@ describe('Confiner', () => {
 
         // act
         // debugger;
-        const result = confiner.confine(trivialProjection, particle);
+        const result = geometry.confine(trivialProjection, particle);
 
         // assert
         if (result == null) throw new Error();

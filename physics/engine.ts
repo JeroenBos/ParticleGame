@@ -1,5 +1,5 @@
 import { ParticleProps } from "../app/particle";
-import { IEngine, ICollisionDetector, IComputeForce, ICollisionHandler, IConfine } from "./_physics.base";
+import { IEngine, ICollisionDetector, IComputeForce, ICollisionHandler, IGeometry } from "./_physics.base";
 import Extensions from "../extensions";
 import { Invariants } from '../invariants/.invariants';
 import { Particle } from ".";
@@ -13,7 +13,7 @@ export default class Engine implements IEngine<Particle, F> {
         collisionDetector: ICollisionDetector<Particle>,
         public readonly collisionHandler: ICollisionHandler<Particle>,
         public readonly forceComputer: IComputeForce<Particle, F>,
-        public readonly confiner: IConfine<Particle>,
+        public readonly geometry: IGeometry<Particle>,
         public readonly dτ: number
     ) {
         assert(dτ !== undefined);
@@ -32,9 +32,9 @@ export default class Engine implements IEngine<Particle, F> {
         return result;
     }
     public resolveInitialCollisions(initialParticles: Particle[]) {
-        const confinedParticles = Extensions.removeUndefineds(initialParticles.map(p => this.confiner.confine(p, undefined)));
+        const confinedParticles = Extensions.removeUndefineds(initialParticles.map(p => this.geometry.confine(p, undefined)));
         const result = this.resolveCollisions(confinedParticles, Number.EPSILON);
-        this.confiner.resetImpartedMomentum();
+        this.geometry.resetImpartedMomentum();
         return result;
     }
     private resolveCollisions(
@@ -67,7 +67,7 @@ export default class Engine implements IEngine<Particle, F> {
             if (projection == undefined)
                 return undefined;
             const particle = particles[i];
-            return this.confiner.confine(projection, particle);
+            return this.geometry.confine(projection, particle);
         });
 
         const result = Extensions.removeUndefineds(confinedProjections);

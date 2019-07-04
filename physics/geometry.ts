@@ -1,4 +1,4 @@
-import { IConfine } from "./_physics.base";
+import { IGeometry } from "./_physics.base";
 import { ParticleProps } from "../app/particle";
 import Extensions from "../extensions";
 import { Transformations, State1D, TransformationPair } from "./transformations";
@@ -19,7 +19,7 @@ interface t {
 }
 
 
-export class Confiner implements IConfine<Particle> {
+export class BoxGeometry implements IGeometry<Particle> {
     bounces: number = 0;
     private _impartedMomentum = { m: 0, px: 0, py: 0 };
     /** Is positive when momentum has flowed out of the system. */

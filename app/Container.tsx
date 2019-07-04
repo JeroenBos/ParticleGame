@@ -39,7 +39,7 @@ export class Container extends React.Component<ContainerProps, ContainerState> {
     render() {
         const particles = this.state.particles.map((p, i) => <Particle key={i} {...p}></Particle>);
         const collisionCount = this.props.engine.collisionDetector.count;
-        const bounceCount = this.props.engine.confiner.bounces;
+        const bounceCount = this.props.engine.geometry.bounces;
 
         return (
             <div>

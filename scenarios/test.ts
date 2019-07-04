@@ -1,7 +1,7 @@
 import { IParticleGenerator } from "../physics/_physics.base";
 import { Particle } from "../physics";
 import { DefaultConfig } from "./_base";
-import { Confiner } from "../physics/confinement";
+import { BoxGeometry } from "../physics/geometry";
 
 class ParticleGenerator implements IParticleGenerator<Particle> {
     public generate(): Particle[] {
@@ -18,6 +18,6 @@ class config extends DefaultConfig {
     dτ = 0.1;
 }
 const result = new config() as config & {
-    readonly confiner: Confiner;
+    readonly geometry: BoxGeometry;
 };
 export default result;

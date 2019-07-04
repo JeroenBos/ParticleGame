@@ -6,11 +6,11 @@ import { Invariants } from "../invariants/.invariants";
 import Engine from '../physics/engine';
 import { CollisionDetector } from '../physics/collisionDetector';
 import { ForceComputer } from '../physics/forceComputer';
-import { Confiner } from '../physics/confinement';
+import { BoxGeometry } from '../physics/geometry';
 import { Particle } from '../physics';
 
 function createEngine(width: number = 100, height: number = 100) {
-    return new Engine(new CollisionDetector(0.001), new CollisionHandler(), new ForceComputer(), new Confiner(width, height), 1/*huge*/);
+    return new Engine(new CollisionDetector(0.001), new CollisionHandler(), new ForceComputer(), new BoxGeometry(width, height), 1/*huge*/);
 }
 describe('Engine', () => {
     it('Free propagation along x-axis', () => {

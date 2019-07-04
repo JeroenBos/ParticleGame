@@ -1,7 +1,7 @@
 import { IParticleGenerator } from "../physics/_physics.base";
 import { Particle } from "../physics";
 import { DefaultConfig } from "./_base";
-import { Confiner } from "../physics/confinement";
+import { BoxGeometry } from "../physics/geometry";
 
 class ParticleGenerator implements IParticleGenerator<Particle> {
     constructor(private readonly mass: number) { }
@@ -21,8 +21,8 @@ class Config extends DefaultConfig {
         const m = this.mass;
         return new ParticleGenerator(m);
     }
-    createConfinement() {
-        return new Confiner(Infinity, this.height);
+    createGeometry() {
+        return new BoxGeometry(Infinity, this.height);
     }
 
     // get dt_ms() {

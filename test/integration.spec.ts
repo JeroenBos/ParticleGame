@@ -5,7 +5,7 @@ import { ParticleProps } from "../app/particle";
 import { assertTotalConservations } from './testhelper';
 import { Particle } from '../physics';
 
-const { engine, collisionHandler, collisionDetector, confiner, τ_max, particleGenerator } = config;
+const { engine, collisionHandler, collisionDetector, geometry, τ_max, particleGenerator } = config;
 
 describe('Integration tests', () => {
     it('expected only 1 collision in specific case', () => {
