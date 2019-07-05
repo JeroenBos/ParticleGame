@@ -7,10 +7,8 @@ export interface F {
     fx: number,
     fy: number
 }
-export class ForceComputer implements IComputeForce<Particle, F>{
-    computeForceOn(receiver: Particle, actor: Particle): F {
-        return { fx: 0, fy: 0 };
-    }
+export abstract class ForceComputer implements IComputeForce<Particle, F>{
+    abstract computeForceOn(receiver: Particle, actor: Particle): F;
 
     project(particle: Particle, otherParticles: Iterable<Particle>, dt: number): Particle | undefined {
         const dv: Dv = { dvx: 0, dvy: 0 };
@@ -39,5 +37,10 @@ export class ForceComputer implements IComputeForce<Particle, F>{
             return freeProjection;
         });
     }
+}
 
+export class ZeroForce extends ForceComputer {
+    computeForceOn(receiver: Particle, actor: Particle): F {
+        return { fx: 0, fy: 0 };
+    }
 }

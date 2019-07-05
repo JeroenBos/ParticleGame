@@ -4,6 +4,9 @@ import { assert } from "../jbsnorro";
 import { ParticleProps } from "../app/particle";
 import { assertTotalConservations } from './testhelper';
 import { Particle } from '../physics';
+import { prototype } from 'stream';
+import { TorusGeometry } from '../physics/torus.geometry';
+import { ZeroForce } from '../physics/forceComputer';
 
 const { engine, collisionHandler, collisionDetector, geometry, particleGenerator } = config;
 const τ_max = Math.min(config.τ_max, 100000 * engine.dτ);
@@ -23,7 +26,9 @@ describe('HTML', () => {
             particles = engine.evolve(particles, engine.dτ);
             // console.log(`${i}. p1: {${particles[0].x}, ${particles[0].vx}}. p1: {${particles[1].x}, ${particles[1].vy}}, imparted: ${geometry.impartedMomentum.px}, collisions: ${collisionDetector.count}`);
 
-            assertTotalConservations(particlesBefore, particles, geometry);
+            if (config.forceComputer instanceof ZeroForce) {
+                assertTotalConservations(particlesBefore, particles, geometry);
+            }
 
             geometry.resetImpartedMomentum();
         }
@@ -33,6 +38,9 @@ describe('HTML', () => {
     });
 
     it('Center of mass is conserved', () => {
+        if (config.geometry instanceof TorusGeometry) {
+            return; // center of mass is not conserverd in this geometry
+        }
         // arrange
         const stepCount = 100;
         const generatedParticles = particleGenerator.generate();

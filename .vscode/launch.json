@@ -14,7 +14,7 @@
                 "--colors",
                 "${workspaceFolder}/dist/test.js",
                 "--fgrep",
-                "ests near miss collided only onc"
+                "html"
             ],
             "console": "internalConsole",
             "internalConsoleOptions": "neverOpen",

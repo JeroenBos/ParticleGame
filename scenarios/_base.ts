@@ -1,7 +1,7 @@
 import Engine from "../physics/engine";
 import { CollisionDetector } from "../physics/collisionDetector";
 import { GlueCollisionHandler, ElasticCollisionHandler } from "../physics/collisionHandler";
-import { ForceComputer, F as _F, F } from "../physics/forceComputer";
+import { F as _F, F, ZeroForce } from "../physics/forceComputer";
 import { BoxGeometry } from "../physics/geometry";
 import { IComputeForce, ICollisionDetector, ICollisionHandler, IGeometry, IParticleGenerator, IEngine } from '../physics/_physics.base';
 import { Particle } from "../physics";
@@ -83,7 +83,7 @@ export abstract class DefaultConfig extends BaseConfig<Particle, F> {
         return new ElasticCollisionHandler(this.collisionDetector);
     }
     protected createForceComputer(): IComputeForce<Particle, F> {
-        return new ForceComputer();
+        return new ZeroForce();
     }
     protected createGeometry(): IGeometry<Particle> {
         return new BoxGeometry(this.width, this.height) as IGeometry<Particle>;

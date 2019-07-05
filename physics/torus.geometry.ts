@@ -5,6 +5,7 @@ import { Transformations, State1D, TransformationPair } from "./transformations"
 import { Transform } from "stream";
 import { assert } from "../jbsnorro";
 import { Particle, P, Q } from ".";
+import { deltaQ } from "./geometry";
 
 
 export interface deltaP {
@@ -32,12 +33,14 @@ export class TorusGeometry implements IGeometry<Particle> {
         return result
     }
 
-    public * distance(a: Q, b: Q): Iterable<number> {
-        for (const gridCoordinate of Extensions.spiral(0, 0)) {
+    public * distance(a: Q, b: Q): Iterable<deltaQ> {
+        for (const gridCoordinate of Extensions.spiral(3, 3)) {
             const b_x = b.x + gridCoordinate.x * this.width;
             const b_y = b.y + gridCoordinate.y * this.height;
 
-            yield Math.sqrt((a.x - b_x) ** 2 + (a.y - b_y) ** 2);
+            const dx = b_x - a.x;
+            const dy = b_y - a.y;
+            yield { dx, dy, L: Math.sqrt(dx ** 2 + dy ** 2) };
         }
     }
 }

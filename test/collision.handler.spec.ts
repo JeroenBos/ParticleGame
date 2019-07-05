@@ -2,7 +2,7 @@ import 'mocha';
 import { GlueCollisionHandler, ElasticCollisionHandler } from '../physics/collisionHandler';
 import { assert } from "../jbsnorro";
 import { Invariants } from "../invariants/.invariants";
-import { ForceComputer } from '../physics/forceComputer';
+import { ZeroForce } from '../physics/forceComputer';
 import { assertTotalConservations } from './testhelper';
 import { Particle } from '../physics';
 import Extensions from '../extensions';
@@ -291,7 +291,7 @@ describe('CollisionHandler', () => {
             Particle.create({ x: 5, y: 10, vx: 2, vy: 0, radius: 0, m: 1 }),
             Particle.create({ x: 6, y: 10, vx: -2, vy: 0, radius: 0, m: 1 })
         ]
-        const projectedParticles = Extensions.notUndefined(new ForceComputer().projectAll(particles, 1));
+        const projectedParticles = Extensions.notUndefined(new ZeroForce().projectAll(particles, 1));
 
         // act
         // debugger;
@@ -311,7 +311,7 @@ describe('CollisionHandler', () => {
             { x: 6, y: 10, vx: -1, vy: 0, radius: 0, m: 1 }
         ].map(Particle.create);
 
-        const projectedParticles = Extensions.notUndefined(new ForceComputer().projectAll(particles, 1));
+        const projectedParticles = Extensions.notUndefined(new ZeroForce().projectAll(particles, 1));
 
         // act
         // debugger;
@@ -388,7 +388,7 @@ describe('CollisionHandler', () => {
 
         assert(collisionDetector.detect(resultants).collisions.length == 0);
 
-        const againProjected = Extensions.removeUndefineds(new ForceComputer().projectAll(resultants, 0.1)) as [Particle, Particle];
+        const againProjected = Extensions.removeUndefineds(new ZeroForce().projectAll(resultants, 0.1)) as [Particle, Particle];
         const distance = CollisionDetector.distance(...againProjected);
         assert(collisionDetector.detect(againProjected).collisions.length == 0);
     });

@@ -11,6 +11,11 @@ export interface deltaP {
     px: number,
     py: number
 }
+export interface deltaQ {
+    dx: number,
+    dy: number,
+    L: number
+}
 
 export class BoxGeometry implements IGeometry<Particle> {
     bounces: number = 0;
@@ -173,7 +178,9 @@ export class BoxGeometry implements IGeometry<Particle> {
         return false;
     }
 
-    public * distance(a: Q, b: Q): Iterable<number> {
-        yield Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+    public * distance(a: Q, b: Q): Iterable<deltaQ> {
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        yield { dx, dy, L: Math.sqrt(dx ** 2 + dy ** 2) };
     }
 }
