@@ -1,3 +1,4 @@
+import { Q } from "./physics";
 
 export default class Extensions {
     public static * exceptAt<T>(sequence: Iterable<T>, index: number): Iterable<T> {
@@ -28,5 +29,27 @@ export default class Extensions {
 
     public static compose<T>(f: (_: T) => T, g: (_: T) => T): (_: T) => T {
         return (t: T) => g(f(t));
+    }
+
+    // see https://stackoverflow.com/a/1555236/308451
+    public static * spiral(X: number, Y: number): Iterable<Q> {
+        let x = 0;
+        let y = 0;
+        let dx = 0;
+        let dy = -1;
+        let t = Math.max(X, Y);
+        let maxI = t * t;
+        for (let i = 0; i < maxI; i++) {
+            if ((-X / 2 <= x) && (x <= X / 2) && (-Y / 2 <= y) && (y <= Y / 2)) {
+                yield { x, y };
+            }
+            if ((x == y) || ((x < 0) && (x == -y)) || ((x > 0) && (x == 1 - y))) {
+                t = dx;
+                dx = -dy;
+                dy = t;
+            }
+            x += dx;
+            y += dy;
+        }
     }
 }

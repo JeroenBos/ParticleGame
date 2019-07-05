@@ -11,13 +11,6 @@ export interface deltaP {
     px: number,
     py: number
 }
-interface t {
-    _r: number;
-    _dr: number;
-    _v: number;
-    _L: number;
-}
-
 
 export class BoxGeometry implements IGeometry<Particle> {
     bounces: number = 0;
