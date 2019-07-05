@@ -1,4 +1,4 @@
-import { ParticleProps, getParticleProperties } from "../app/particle";
+import { ParticleProps, getParticleProperties, ParticleTypes } from "../app/particle";
 import { assert } from "../jbsnorro";
 
 export interface P {
@@ -48,21 +48,25 @@ export class Particle implements QMS, PQR, Q, P {
         return new Particle(p);
     }
 
-    public static createFromType(p: Pick<ParticleProps, 'x' | 'y' | 'vx' | 'vy' | 'type'>): Particle {
-        let copy: ParticleProps;
-        if ('type' in p) {
-            if (p.type === undefined) { throw new Error(); }
-            copy = { ...p, ...getParticleProperties(p.type) } as any;
+    public static createFromType(p: Required<Pick<ParticleProps, 'x' | 'y' | 'vx' | 'vy' | 'type'>>): Particle {
+        function select(): { m: number, radius: number } {
+            if ('type' in p && !(p.type === undefined)) {
+                return getParticleProperties(p.type);
+            }
+            else if ('m' in p && 'radius' in p) {
+                return p;
+            }
+            else {
+                throw new Error('argument error');
+            }
         }
-        else {
-            copy = { ...p } as any;
-        }
-        assert('m' in copy);
-        assert('radius' in copy);
-        assert('vx' in copy);
-        return new Particle(copy);
+        const props = select();
+        assert('m' in props);
+        assert('radius' in props);
+
+        return new Particle({ x: p.x, y: p.y, vx: p.vx, vy: p.vy, radius: props.radius, m: props.m, type: p.type });
     }
-    private constructor(private readonly particle: ParticleProps) {
+    private constructor(private readonly particle: ParticleProps & { type?: ParticleTypes}) {
     }
 
     get x(): number {
@@ -90,11 +94,15 @@ export class Particle implements QMS, PQR, Q, P {
         return this.particle.radius;
     };
 
+    get type(): ParticleTypes | undefined {
+        return this.particle.type;
+    }
+
     public withQ(q: Q): Particle {
-        return Particle.create({ x: q.x, y: q.y, vx: this.vx, vy: this.vy, m: this.m, radius: this.radius });
+        return Particle.create({ x: q.x, y: q.y, vx: this.vx, vy: this.vy, m: this.m, radius: this.radius, type: this.type });
     }
 
     public withP(p: { vx: number, vy: number }): Particle {
-        return Particle.create({ vx: p.vx, vy: p.vy, x: this.x, y: this.y, m: this.m, radius: this.radius });
+        return Particle.create({ vx: p.vx, vy: p.vy, x: this.x, y: this.y, m: this.m, radius: this.radius, type: this.type });
     }
 }

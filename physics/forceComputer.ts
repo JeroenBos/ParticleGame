@@ -24,7 +24,8 @@ export abstract class ForceComputer implements IComputeForce<Particle, F>{
             vx: particle.p.vx + dv.dvx,
             vy: particle.p.vy + dv.dvy,
             radius: particle.radius,
-            m: particle.m
+            m: particle.m,
+            type: particle.type
         });
 
         return projection;

@@ -67,7 +67,8 @@ export default class Engine implements IEngine<Particle, F> {
             if (projection == undefined)
                 return undefined;
             const particle = particles[i];
-            return this.geometry.confine(projection, particle);
+            const result = this.geometry.confine(projection, particle);
+            return result;
         });
 
         const result = Extensions.removeUndefineds(confinedProjections);

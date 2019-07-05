@@ -31,7 +31,7 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
         return [a_new, b_new];
 
         function toProps(particle: Readonly<QMS>, q: Q, p: P) {
-            return Particle.create({ x: q.x, y: q.y, vx: p.vx, vy: p.vy, m: particle.m, radius: particle.radius });
+            return Particle.create({ x: q.x, y: q.y, vx: p.vx, vy: p.vy, m: particle.m, radius: particle.radius, type: (particle as any).type });
         }
     }
 

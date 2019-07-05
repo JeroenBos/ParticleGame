@@ -85,7 +85,8 @@ export class Container extends React.Component<ContainerProps, ContainerState> {
             vx: particle.vx,
             vy: particle.vy,
             x: particle.x,
-            y: particle.y
+            y: particle.y,
+            type: particle.type
         };
     }
 }

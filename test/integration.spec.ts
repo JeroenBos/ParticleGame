@@ -1,9 +1,8 @@
 import 'mocha'; 
 import config from '../scenarios/test';
 import { assert } from "../jbsnorro";
-import { ParticleProps } from "../app/particle";
-import { assertTotalConservations } from './testhelper';
 import { Particle } from '../physics';
+import stardustConfig from '../scenarios/stardust';
 
 const { engine, collisionHandler, collisionDetector, geometry, τ_max, particleGenerator } = config;
 
@@ -40,5 +39,18 @@ describe('Integration tests', () => {
         assert(particles[0].x < 52);
         assert(particles[1].x > 50.1);
         assert(collisionDetector.count == 1 + originalCount);
+    });
+
+    it('color remains', () => {
+        // arrange
+        const initialParticles = stardustConfig.particleGenerator.generate();
+
+        // act
+        debugger;
+        const particles = stardustConfig.engine.evolve(initialParticles, stardustConfig.dτ);
+
+        // assert
+        assert(initialParticles[0].type == 'black');
+        assert(particles[0].type == 'black');
     });
 });

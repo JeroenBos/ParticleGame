@@ -163,7 +163,8 @@ export class BoxGeometry implements IGeometry<Particle> {
             y: yResult.coordinate,
             vy: yResult.velocity,
             radius: p.radius,
-            m: p.m
+            m: p.m,
+            type: previousState.type || p.type
         });
     }
     private isMovingOutOfBox(p: ParticleProps): boolean {

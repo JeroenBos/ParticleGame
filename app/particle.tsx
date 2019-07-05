@@ -19,7 +19,7 @@ export interface ParticleState {
 function _getParticleProperties(type: ParticleTypes): properties | undefined {
     switch (type) {
         case 'black':
-            return { color: 'black', m: 1, radius: 1 };
+            return { color: 'black', m: 1, radius: 3 };
         default:
             return undefined;
     }
