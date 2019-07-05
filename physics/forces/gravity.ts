@@ -2,6 +2,7 @@ import { IGeometry } from "../_physics.base";
 import { Particle } from "..";
 import { F, ForceComputer } from "../forceComputer";
 import { deltaQ } from "../geometry";
+import { take } from "../../jbsnorro";
 
 export class Gravity extends ForceComputer {
     constructor(private readonly geometry: IGeometry<Particle>, private readonly takeDistancesCount: number) {
@@ -23,15 +24,4 @@ export class Gravity extends ForceComputer {
             return { fx: total.fx + next.fx, fy: total.fy + next.fy };
         }
     }
-}
-
-function take<T>(sequence: Iterable<T>, n: number): T[] {
-    let i = 0;
-    const result = [];
-    for (const element of sequence) {
-        result.push(element);
-        if (++i >= n)
-            break;
-    }
-    return result;
 }

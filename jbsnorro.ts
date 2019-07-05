@@ -24,3 +24,15 @@ export function assertSequenceEquals<T, U>(sequence: T[], expectedSequence: U[],
         }
     }
 }
+
+
+export function take<T>(sequence: Iterable<T>, n: number): T[] {
+    let i = 0;
+    const result = [];
+    for (const element of sequence) {
+        result.push(element);
+        if (++i >= n)
+            break;
+    }
+    return result;
+}
