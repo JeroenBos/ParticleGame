@@ -1,4 +1,5 @@
-import { ParticleProps } from "../app/particle";
+import { ParticleProps, getParticleProperties } from "../app/particle";
+import { assert } from "../jbsnorro";
 
 export interface P {
     readonly m: number,
@@ -42,10 +43,24 @@ export type PQR = Qed & Ped & Red & M;
 export type QMS = QM & Red;
 export type QM = Qed & M;
 
-
 export class Particle implements QMS, PQR, Q, P {
     public static create(p: ParticleProps): Particle {
         return new Particle(p);
+    }
+
+    public static createFromType(p: Pick<ParticleProps, 'x' | 'y' | 'vx' | 'vy' | 'type'>): Particle {
+        let copy: ParticleProps;
+        if ('type' in p) {
+            if (p.type === undefined) { throw new Error(); }
+            copy = { ...p, ...getParticleProperties(p.type) } as any;
+        }
+        else {
+            copy = { ...p } as any;
+        }
+        assert('m' in copy);
+        assert('radius' in copy);
+        assert('vx' in copy);
+        return new Particle(copy);
     }
     private constructor(private readonly particle: ParticleProps) {
     }
