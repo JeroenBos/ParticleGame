@@ -13,9 +13,20 @@ class ParticleGenerator implements IParticleGenerator<Particle> {
         ].map(Particle.create);
     }
 }
-class config extends DefaultConfig {
+class AttractionOverBottomParticleGenerator implements IParticleGenerator<Particle> {
+    public generate(): Particle[] {
+        return [
+            { x: 45, y: 30, vx: 0, vy: 0, radius: 2, m: 1 },
+            { x: 55, y: 490, vx: 0, vy: 0, radius: 2, m: 1 }
+        ].map(Particle.create);
+    }
+}
+class Config extends DefaultConfig {
+    constructor(private readonly createParticleGenerator: () => IParticleGenerator<Particle>) {
+        super();
+    }
     createGenerator() {
-        return new ParticleGenerator();
+        return this.createParticleGenerator();
     }
     createGeometry() {
         return new TorusGeometry(this.width, this.height);
@@ -24,4 +35,6 @@ class config extends DefaultConfig {
         return new Gravity(this.geometry, 1);
     }
 }
-export default new config();
+const config = new Config(() => new ParticleGenerator());
+const configOverBottom = new Config(() => new AttractionOverBottomParticleGenerator());
+export default { config, configOverBottom }; 
