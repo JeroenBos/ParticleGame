@@ -21,7 +21,7 @@ class config extends DefaultConfig {
         return new TorusGeometry(this.width, this.height);
     }
     createForceComputer() {
-        return new Gravity(this.geometry, 9);
+        return new Gravity(this.geometry, 1);
     }
 }
 export default new config();
