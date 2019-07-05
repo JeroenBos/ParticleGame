@@ -35,7 +35,7 @@ export class TorusGeometry implements IGeometry<Particle> {
 
     public distance(a: Q, b: Q): Iterable<deltaQ> {
         const result = [];
-        for (const gridCoordinate of Extensions.spiral(2, 2)) {
+        for (const gridCoordinate of Extensions.spiral(3, 3)) {
             const b_x = b.x + gridCoordinate.x * this.width;
             const b_y = b.y + gridCoordinate.y * this.height;
 
