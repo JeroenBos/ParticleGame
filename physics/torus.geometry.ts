@@ -33,14 +33,17 @@ export class TorusGeometry implements IGeometry<Particle> {
         return result
     }
 
-    public * distance(a: Q, b: Q): Iterable<deltaQ> {
-        for (const gridCoordinate of Extensions.spiral(3, 3)) {
+    public distance(a: Q, b: Q): Iterable<deltaQ> {
+        const result = [];
+        for (const gridCoordinate of Extensions.spiral(2, 2)) {
             const b_x = b.x + gridCoordinate.x * this.width;
             const b_y = b.y + gridCoordinate.y * this.height;
 
             const dx = b_x - a.x;
             const dy = b_y - a.y;
-            yield { dx, dy, L: Math.sqrt(dx ** 2 + dy ** 2) };
+            result.push({ dx, dy, L: Math.sqrt(dx ** 2 + dy ** 2) });
         }
+        result.sort((a, b) => a.L - b.L);
+        return result;
     }
 }
