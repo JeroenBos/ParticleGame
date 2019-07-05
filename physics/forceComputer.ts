@@ -32,7 +32,7 @@ export abstract class ForceComputer implements IComputeForce<Particle, F>{
     projectAll(particles: Particle[], dt: number): (Particle | undefined)[] {
         return particles.map((_, i) => {
             const particle = particles[i];
-            const otherParticles = particles.slice(0); otherParticles.splice(i);
+            const otherParticles = particles.slice(0); otherParticles.splice(i, 1);
             const freeProjection = this.project(particle, otherParticles, dt);
             return freeProjection;
         });
