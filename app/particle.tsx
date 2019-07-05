@@ -19,7 +19,7 @@ export class Particle extends React.Component<ParticleProps, ParticleState> {
     }
     render() {
         return (
-            <circle cx={this.props.x} cy={this.props.y} r={this.props.radius} stroke="black" strokeWidth="3" fill="red" />
+            <circle cx={this.props.x} cy={this.props.y} r={this.props.radius} stroke="black" strokeWidth="1" fill="red" />
         );
     }
 }
