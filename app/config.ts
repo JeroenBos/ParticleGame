@@ -1,3 +1,4 @@
-import config from '../scenarios/countToπ';
+import config from '../scenarios/torus';
 
-export default config.precision0();
+export const initial_τ_per_s = 10;
+export default config;
