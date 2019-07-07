@@ -1,6 +1,7 @@
 import { CollectionDetectorInvariantsFactory } from './CollisionDetectorInvariants';
 import { ParticleGeneratorInvariantsFactory } from './ParticleGeneratorInvariants';
 import { CollectionHandlerInvariantsFactory } from './CollisionHandlerInvariants';
+import { ForceComputerInvariantsFactory } from './ForceInvariants';
 
 export class Invariants {
     public static isDevelopment: boolean = true;
@@ -8,6 +9,7 @@ export class Invariants {
         new CollectionDetectorInvariantsFactory(),
         new ParticleGeneratorInvariantsFactory(),
         new CollectionHandlerInvariantsFactory(),
+        new ForceComputerInvariantsFactory(),
     ];
     public static For<T>(obj: T): T {
         if (!this.isDevelopment)
