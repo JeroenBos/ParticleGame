@@ -8,9 +8,9 @@ import { Particle } from '../physics';
 import Extensions from '../extensions';
 import { CollisionDetector } from '../physics/collisionDetector';
 
-const glueCollisionHandler = Invariants.For(new GlueCollisionHandler());
+const glueCollisionHandler = Invariants.For(new GlueCollisionHandler(false));
 const collisionDetector = new CollisionDetector(0.001);
-const elasticCollisionHandler = Invariants.For(new ElasticCollisionHandler(collisionDetector));
+const elasticCollisionHandler = Invariants.For(new ElasticCollisionHandler(collisionDetector, false));
 
 
 describe('CollisionHandler', () => {

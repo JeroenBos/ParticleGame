@@ -13,7 +13,8 @@ export default class Engine implements IEngine<Particle, F> {
         public readonly collisionHandler: ICollisionHandler<Particle>,
         public readonly forceComputer: IComputeForce<Particle, F>,
         public readonly geometry: IGeometry<Particle>,
-        public readonly dτ: number
+        public readonly dτ: number,
+        public readonly onErrorResumeNext: boolean
     ) {
         assert(dτ !== undefined);
         assert(dτ > 0);
@@ -46,16 +47,23 @@ export default class Engine implements IEngine<Particle, F> {
 
         let consecutiveNondecreaseCount = 0;
         let previousNumberOfCollisions = Infinity;
+        let returnAnyway = false;
         if (collisions.length >= debug.previousNumberOfCollisions) {
             consecutiveNondecreaseCount = debug.consecutiveNondecreaseCount + 1;
             previousNumberOfCollisions = debug.previousNumberOfCollisions;
-            if (consecutiveNondecreaseCount > this.numberOfAllowedNonDecreasingCollisionCount)
-                throw new Error(`The number of collisions has not decreased after being handled ${consecutiveNondecreaseCount} times by the collision handler`);
+            if (consecutiveNondecreaseCount > this.numberOfAllowedNonDecreasingCollisionCount) {
+                if (this.onErrorResumeNext)
+                    returnAnyway = true;
+                else
+                    throw new Error(`The number of collisions has not decreased after being handled ${consecutiveNondecreaseCount} times by the collision handler`);
+            }
         }
 
         const collidedParticles = collisions.map(collision => this.collisionHandler.collide(projections[collision.i], projections[collision.j], dt)).reduce((a, b) => a.concat(b));
         // this function is recursive, because the resulting particles may still be in collision (with a third e.g.)
         const concatenatedParticles = freeParticles.concat(collidedParticles);
+        if (returnAnyway)
+            return concatenatedParticles;
         return this.resolveCollisions(concatenatedParticles, dt, { previousNumberOfCollisions, consecutiveNondecreaseCount });
     }
 

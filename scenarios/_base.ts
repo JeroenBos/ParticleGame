@@ -80,7 +80,7 @@ export abstract class DefaultConfig extends BaseConfig<Particle, F> {
         return new CollisionDetector(this.collisionPrecision);
     }
     protected createCollisionHandler(): ICollisionHandler<Particle> {
-        return new ElasticCollisionHandler(this.collisionDetector);
+        return new ElasticCollisionHandler(this.collisionDetector, this.onErrorResumeNext);
     }
     protected createForceComputer(): IComputeForce<Particle, F> {
         return new ZeroForce();
@@ -89,6 +89,6 @@ export abstract class DefaultConfig extends BaseConfig<Particle, F> {
         return new BoxGeometry(this.width, this.height) as IGeometry<Particle>;
     }
     protected createEngine(): IEngine<Particle, F> {
-        return new Engine(this.collisionDetector, this.collisionHandler, this.forceComputer, this.geometry, this.dτ);
+        return new Engine(this.collisionDetector, this.collisionHandler, this.forceComputer, this.geometry, this.dτ, this.onErrorResumeNext);
     }
 }

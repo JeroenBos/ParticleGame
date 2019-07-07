@@ -7,7 +7,9 @@ import { assertTotalConservations } from "../test/testhelper";
 
 abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
 
-    constructor(private readonly collisionDetector: ICollisionDetector<Particle>) { }
+    constructor(
+        private readonly collisionDetector: ICollisionDetector<Particle>,
+        private readonly onErrorResumeNext: boolean) { }
     public abstract getMomenta(projectedParticles: [Particle, Particle], dt: number): [P, P];
     public abstract getCoordinates(projectedParticles: [Particle, Particle], pNew: [P, P], dt: number): [Q, Q];
 
@@ -144,7 +146,7 @@ abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
         }
 
         const result = [computeAttempt2(a, b), computeAttempt2(b, a)] as [P, P];
-        assertTotalConservations([a, b], result);
+        // assertTotalConservations([a, b], result);
         return result;
     }
 }
@@ -162,8 +164,8 @@ export function inProduct(r: Q, s: Q): number {
 }
 
 export class GlueCollisionHandler extends BaseCollisionHandler {
-    constructor() {
-        super(undefined as any);
+    constructor(onErrorResumeNext: boolean) {
+        super(undefined as any, onErrorResumeNext);
     }
     public collide(a: Particle, b: Particle) {
         return super.collide(a, b, undefined as any);
