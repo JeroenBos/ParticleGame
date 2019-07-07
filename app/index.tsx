@@ -1,5 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { Invariants } from "../invariants/.invariants";
+
+Invariants.isDevelopment = false;
 
 import { Container } from "./Container";
 import config, { initial_τ_per_s } from './config';

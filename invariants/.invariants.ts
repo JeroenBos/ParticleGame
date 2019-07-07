@@ -2,12 +2,15 @@ import { CollectionDetectorInvariantsFactory } from './CollisionDetectorInvarian
 import { ParticleGeneratorInvariantsFactory } from './ParticleGeneratorInvariants';
 
 export class Invariants {
+    public static isDevelopment: boolean = true;
     private static invariants: InvariantsFor<any>[] = [
         new CollectionDetectorInvariantsFactory(),
         new ParticleGeneratorInvariantsFactory()
     ];
     public static For<T>(obj: T): T {
-        // TODO: if (!development) return obj;
+        if (!this.isDevelopment)
+            return obj;
+
         for (const i of this.invariants) {
             if (i.isForTypeOf(obj)) {
                 return i.create(obj);
