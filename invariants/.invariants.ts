@@ -1,11 +1,13 @@
 import { CollectionDetectorInvariantsFactory } from './CollisionDetectorInvariants';
 import { ParticleGeneratorInvariantsFactory } from './ParticleGeneratorInvariants';
+import { CollectionHandlerInvariantsFactory } from './CollisionHandlerInvariants';
 
 export class Invariants {
     public static isDevelopment: boolean = true;
     private static invariants: InvariantsFor<any>[] = [
         new CollectionDetectorInvariantsFactory(),
-        new ParticleGeneratorInvariantsFactory()
+        new ParticleGeneratorInvariantsFactory(),
+        new CollectionHandlerInvariantsFactory(),
     ];
     public static For<T>(obj: T): T {
         if (!this.isDevelopment)
