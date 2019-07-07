@@ -20,8 +20,17 @@ export class Gravity extends ForceComputer {
         const m = receiver.m;
         const M = actor.m;
 
-        const contributions = distances.map(dr => ({ fx: -G * M * m * dr.dx / (dr.L ** 3), fy: -G * M * m * dr.dy / (dr.L ** 3) }));
-        const result = contributions.reduce(reducer);
+        for (const d of distances) {
+            if (d.L == 0) {
+                if (receiver === actor) {
+                    console.error(`receiver === actor`);
+                }
+                console.log(`distance of 0 encountered`);
+            }
+        }
+
+        const contributions = distances.filter(dr => dr.L != 0).map(dr => ({ fx: -G * M * m * dr.dx / (dr.L ** 3), fy: -G * M * m * dr.dy / (dr.L ** 3) }));
+        const result = contributions.reduce(reducer, { fx: 0, fy: 0 });
         return result;
         function reducer(total: F, next: F) {
             return { fx: total.fx + next.fx, fy: total.fy + next.fy };
