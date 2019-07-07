@@ -8,9 +8,8 @@ import { assert } from "../jbsnorro";
 
 export default class Engine implements IEngine<Particle, F> {
     private readonly numberOfAllowedNonDecreasingCollisionCount = 1;
-    public readonly collisionDetector: ICollisionDetector<Particle>;
     constructor(
-        collisionDetector: ICollisionDetector<Particle>,
+        public readonly collisionDetector: ICollisionDetector<Particle>,
         public readonly collisionHandler: ICollisionHandler<Particle>,
         public readonly forceComputer: IComputeForce<Particle, F>,
         public readonly geometry: IGeometry<Particle>,
@@ -18,7 +17,6 @@ export default class Engine implements IEngine<Particle, F> {
     ) {
         assert(dτ !== undefined);
         assert(dτ > 0);
-        this.collisionDetector = Invariants.For(collisionDetector);
     }
 
     public evolve(particles: Particle[], Δτ: number): Particle[] {

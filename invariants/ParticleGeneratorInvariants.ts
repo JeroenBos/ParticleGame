@@ -28,7 +28,5 @@ class ParticleGeneratorInvariants implements IParticleGenerator<TParticle> {
         return result;
     }
     constructor(private readonly obj: IParticleGenerator<TParticle>) { }
-
-
 }
 

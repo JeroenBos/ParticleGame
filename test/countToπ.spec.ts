@@ -50,7 +50,7 @@ describe('countToπ', () => {
         const count = config.collisionDetector.count + config.geometry.bounces;
         assert(count == 3);
     });
-    
+
     it('m=10', () => {
         // arrange
         const config = configs.precision1();
@@ -82,7 +82,7 @@ describe('countToπ', () => {
         assert(count == 31);
     });
 
-    
+
     it('m=10000', () => {
         // arrange
         const config = configs.precision4();

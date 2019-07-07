@@ -27,37 +27,37 @@ export abstract class BaseConfig<TParticle, F> {
 
     public get collisionDetector(): ICollisionDetector<TParticle> {
         if (this._collisionDetector === undefined) {
-            this._collisionDetector = this.createCollisionDetector();
+            this._collisionDetector = Invariants.For(this.createCollisionDetector());
         }
         return this._collisionDetector;
     }
     public get collisionHandler(): ICollisionHandler<TParticle> {
         if (this._collisionHandler === undefined) {
-            this._collisionHandler = this.createCollisionHandler();
+            this._collisionHandler = Invariants.For(this.createCollisionHandler());
         }
         return this._collisionHandler;
     }
     public get forceComputer(): IComputeForce<TParticle, F> {
         if (this._forceComputer === undefined) {
-            this._forceComputer = this.createForceComputer();
+            this._forceComputer = Invariants.For(this.createForceComputer());
         }
         return this._forceComputer;
     }
     public get geometry(): IGeometry<TParticle> {
         if (this._geometry === undefined) {
-            this._geometry = this.createGeometry();
+            this._geometry = Invariants.For(this.createGeometry());
         }
         return this._geometry;
     }
     public get engine(): IEngine<TParticle, F> {
         if (this._engine === undefined) {
-            this._engine = this.createEngine();
+            this._engine = Invariants.For(this.createEngine());
         }
         return this._engine;
     }
     public get particleGenerator(): IParticleGenerator<TParticle> {
         if (this._particleGenerator === undefined) {
-            this._particleGenerator = this.createGenerator();
+            this._particleGenerator = Invariants.For(this.createGenerator());
         }
         return this._particleGenerator;
     }
