@@ -6,6 +6,8 @@ import { BoxGeometry } from "../physics/geometry";
 import { IComputeForce, ICollisionDetector, ICollisionHandler, IGeometry, IParticleGenerator, IEngine } from '../physics/_physics.base';
 import { Particle } from "../physics";
 import { Invariants } from "../invariants/.invariants";
+import * as seedrandom from "seedrandom";
+import { prng } from "seedrandom";
 
 export abstract class BaseConfig<TParticle, F> {
     public get width(): number { return 500; }
@@ -17,7 +19,10 @@ export abstract class BaseConfig<TParticle, F> {
     /** The smallest time step in which computations are performed. */
     public dτ = 0.01;
     public get collisionPrecision(): number { return 0.001; }
+    public onErrorResumeNext = false;
+    public seed = 'seed';
 
+    private _rng: prng | undefined;
     private _collisionDetector: ICollisionDetector<TParticle> | undefined;
     private _collisionHandler: ICollisionHandler<TParticle> | undefined;
     private _forceComputer: IComputeForce<TParticle, F> | undefined;
@@ -25,6 +30,12 @@ export abstract class BaseConfig<TParticle, F> {
     private _engine: IEngine<TParticle, F> | undefined;
     private _particleGenerator: IParticleGenerator<TParticle> | undefined;
 
+    public get rng(): prng {
+        if (this._rng === undefined) {
+            this._rng = seedrandom(this.seed);
+        }
+        return this._rng;
+    }
     public get collisionDetector(): ICollisionDetector<TParticle> {
         if (this._collisionDetector === undefined) {
             this._collisionDetector = Invariants.For(this.createCollisionDetector());

@@ -4,9 +4,10 @@ import { DefaultConfig } from "./_base";
 import { TorusGeometry } from "../physics/torus.geometry";
 import { Gravity } from "../physics/forces/gravity";
 import { ParticleTypes } from "../app/particle";
+import { prng } from "seedrandom";
 
 class ParticleGenerator implements IParticleGenerator<Particle> {
-    public constructor(private readonly width: number, private readonly height: number) {
+    public constructor(private readonly width: number, private readonly height: number, private readonly rng: prng) {
     }
     public generate(): Particle[] {
         const N = 10;
@@ -15,7 +16,9 @@ class ParticleGenerator implements IParticleGenerator<Particle> {
         const coordinates: Q[] = [];
         for (let x = dwidth / 2; x < this.width; x += dwidth) {
             for (let y = dheight / 2; y < this.height; y += dheight) {
-                coordinates.push({ x, y });
+                const offset_x = this.rng() * dwidth / 10;
+                const offset_y = this.rng() * dheight / 10;
+                coordinates.push({ x: x + offset_x, y: y + offset_y });
             }
         }
         const result = coordinates
@@ -26,7 +29,7 @@ class ParticleGenerator implements IParticleGenerator<Particle> {
 }
 class config extends DefaultConfig {
     createGenerator() {
-        return new ParticleGenerator(this.width, this.height);
+        return new ParticleGenerator(this.width, this.height, this.rng);
     }
     createGeometry() {
         return new TorusGeometry(this.width, this.height);
