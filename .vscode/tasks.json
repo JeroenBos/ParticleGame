@@ -1,24 +1,52 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "npm_build",
             "type": "npm",
             "script": "build",
-            "problemMatcher": []
+            "presentation": {
+                "showReuseMessage": false
+            }
         },
         {
-            "identifier": "webpack_watch",
+            "label": "npm_install",
+            "type": "npm",
+            "script": "install",
+            "presentation": {
+                "showReuseMessage": false
+            }
+        },
+        {
+            "label": "npm_rebuild",
+            "type": "npm",
+            "script": "rebuild",
+            "presentation": {
+                "showReuseMessage": false
+            }
+        },
+        {
+            "label": "npm_watch",
             "type": "npm",
             "script": "watch",
-            "isBackground": true,
-            "problemMatcher": {
-                "background": {
-                    "activeOnStart": true,
-                    "beginsPattern": "^\\s*\\d{1,2}:\\d{1,2}:\\d{1,2}(?: AM| PM)? - File change detected\\. Starting incremental compilation\\.\\.\\.",
-                    "endsPattern": "^\\s*\\d{1,2}:\\d{1,2}:\\d{1,2}(?: AM| PM)? - Compilation complete\\. Watching for file changes\\."
-                }
+            "presentation": {
+                "showReuseMessage": false
+            }
+        },
+        {
+            "label": "npm_test",
+            "type": "npm",
+            "script": "test",
+            "presentation": {
+                "showReuseMessage": false
+            }
+        },
+        {
+            "label": "npm_build_test",
+            "type": "npm",
+            "script": "buildAndTest",
+            "presentation": {
+                "showReuseMessage": false
             }
         }
     ]
