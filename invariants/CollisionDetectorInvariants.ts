@@ -14,11 +14,11 @@ class CollectionDetectorInvariants implements ICollisionDetector<P> {
     get count() { return this.obj.count; }
     getTimeToCollision(a: P, b: P) { return this.obj.getTimeToCollision(a, b); }
     constructor(private readonly obj: ICollisionDetector<P>) { }
-    detect(particles: P[]): {
+    detect(particles: P[], real?: false): {
         collisions: Collision[];
         freeParticles: P[];
     } {
-        const result = this.obj.detect(particles);
+        const result = this.obj.detect(particles, real);
         const { collisions, freeParticles } = result;
 
         const collidedParticleIndices = new Set(collisions.map(collision => [collision.i, collision.j]).reduce((a, b) => a.concat(b), []));

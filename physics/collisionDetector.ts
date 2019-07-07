@@ -13,7 +13,7 @@ export class CollisionDetector implements ICollisionDetector<Particle> {
     get count() {
         return this._count;
     }
-    detect(particles: Particle[], real: boolean = true): { collisions: Collision[], freeParticles: Particle[] } {
+    detect(particles: Particle[], real: boolean | undefined = true): { collisions: Collision[], freeParticles: Particle[] } {
         const collisions: Collision[] = [];
 
         const collided = new Array<boolean>(particles.length);
@@ -27,7 +27,7 @@ export class CollisionDetector implements ICollisionDetector<Particle> {
                 if (this.collideQ(p, q)) {
                     const distance = CollisionDetector.distance(p, q);
                     collisions.push({ i: qi, j: pi });
-                    if (real) {
+                    if (real || real === undefined) {
                         this._count++;
                     }
                     collided[pi] = true;

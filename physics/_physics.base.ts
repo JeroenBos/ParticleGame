@@ -15,10 +15,9 @@ export interface ICollisionDetector<TParticle> {
     /** Gets the number of recorded collisions. */
     readonly count: number;
     /**
-     * @param {boolean} [real] Indicates whether the counter property is updated upon detection of a collision. Default is true. 
+     * @param {boolean} [real] Indicates whether the counter property is updated upon detection of a collision. Default/missing is true. 
      */
-    detect(particles: TParticle[]): { collisions: Collision[], freeParticles: TParticle[] };
-    detect(particles: TParticle[], real: false): { collisions: Collision[], freeParticles: TParticle[] };
+    detect(particles: TParticle[], real?: boolean): { collisions: Collision[], freeParticles: TParticle[] };
     getTimeToCollision(particle1: TParticle, particl2: TParticle): number | undefined;
 }
 export interface Collision {
