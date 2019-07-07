@@ -4,7 +4,6 @@ import { Q, Red, M, QMS, QM, Particle, P, PQR, Qed } from ".";
 import { assert } from "../jbsnorro";
 import { isNumber } from "util";
 import { assertTotalConservations } from "../test/testhelper";
-import { CollisionDetector } from "./collisionDetector";
 
 abstract class BaseCollisionHandler implements ICollisionHandler<Particle> {
 
